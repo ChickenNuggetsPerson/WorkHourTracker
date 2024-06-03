@@ -95,6 +95,12 @@ class CoreDataManager {
 
         saveContext()
     }
+    func floodData() {
+        for i in 1...40 {
+            self.populateSampleData()
+        }
+        print("Done")
+    }
     
     
     func fetchJobEntries(dateRange: ClosedRange<Date>) -> [JobEntry] {

@@ -60,150 +60,83 @@ struct MainView: View {
     
     var body: some View {
         
-        VStack(spacing: 0) {
+        ZStack() {
             
-            VStack(spacing: 0){
-                Text(payPeriod.toString())
-                    .font(.title)
-                    .fontWeight(.black)
-                    .foregroundColor(.white)
-                    .padding()
-                    .frame(maxWidth: .infinity)
-                
-                
-                
-                if (self.showingDesc) {
-                    
-                    Text("Enter Task Descriptions Here")
-                    .foregroundColor(.white)
-                    .font(.title3)
-                    .fontWeight(.bold)
-                        
-                    ZStack() {
-                        
-                        TextEditor(text: $jobDescription)
-                            .frame(minHeight: 300)
-                            .foregroundColor(.black)
-                            .font(.title3)
-                            .fontWeight(.bold)
-                            .scrollContentBackground(.hidden)
-                            .background(.thinMaterial)
-                            .cornerRadius(10)
-                            .padding()
-                            .onChange(of: jobDescription) {
-                                self.saveDescString(str: self.jobDescription)
-                            }
-                    }
-                    
-                    Spacer()
-                    
-                }
-  
-                Button(self.jobState.rawValue) {
-                    if (!self.running) {return}
-                    
-                    self.showingDesc.toggle()
-                }
-                .font(
-                        self.running ? .system(size: 60) : .title
-                )
-                .fontWeight(.black)
-                .foregroundColor(.white)
-                .padding(.bottom)
-                .frame(maxWidth: .infinity, minHeight:
-                        self.running ? 250 : 100
-                )
-                .multilineTextAlignment(.center)
-                
-
-            }
-            .background(getJobColor(running: self.running, jobID: self.jobState.rawValue))
-            .overlay(Rectangle().frame(width: nil, height: 10, alignment: .leading).foregroundColor(Color.white), alignment: .bottom)
-            .padding(.bottom)
-            .shadow(
-                color: getJobColor(running: true, jobID: self.jobState.rawValue),
-                radius: self.running ? 20 : 0,
-                x: 0,
-                y: 0
-            )
-            .animation(.bouncy, value: self.running)
+            Color.black.ignoresSafeArea()
             
-            
-            
-            
-            if (!self.showingDesc) {
-                
+            VStack() {
                 Spacer()
                 
-                if (self.running) {
-                    VStack() {
-                        Text("Time:")
-                            .foregroundColor(Color.yellow)
-                            .font(.largeTitle)
-                            .fontWeight(.black)
-                        
-                        Text(self.startTime, style: .timer)
-                            .foregroundColor(Color.white)
-                            .font(.largeTitle)
-                            .fontWeight(.black)
-                            .padding(.bottom)
-                            .monospaced()
-                        
-                        Text("Official Time:")
-                            .foregroundColor(Color.mint)
-                            .font(.largeTitle)
-                            .fontWeight(.black)
-                        Text(self.timerString)
-                            .foregroundColor(Color.white)
-                            .font(.largeTitle)
-                            .fontWeight(.black)
-                            .monospaced()
-                        
-                    }
+                Text("Time:")
+                    .foregroundColor(Color.yellow)
+                    .font(.largeTitle)
+                    .fontWeight(.black)
+                
+                Text(self.startTime, style: .timer)
+                    .foregroundColor(Color.white)
+                    .font(.largeTitle)
+                    .fontWeight(.black)
                     .padding(.bottom)
-                    .opacity(self.running ? 1 : 0)
-                } else {
-                    VStack() {
-                        ForEach(JobTypes.allCases.filter { e in
-                            return e != JobTypes.undef
-                        }, id: \.self) { jobType in
-                            
-                            Button(action: {
-                                self.jobState = jobType
-                                UserDefaults.standard.set(jobType.rawValue, forKey: "jobType")
-                            }) {
-                                Text(jobType.rawValue)
-                                    .foregroundColor(.white)
-                                    .font(.title)
-                                    .fontWeight(.black)
-                                    .padding()
-                                    .frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/)
-                                    .background(self.jobState == jobType ? getJobColor(running: true, jobID: self.jobState.rawValue) : Color.init(red: 0.3, green: 0.3, blue: 0.3))
-                                    .opacity(self.jobState == jobType ? 1 : 0.5)
-                                    .cornerRadius(15)
-                                    .shadow(
-                                        color: self.jobState == jobType ? getJobColor(running: true, jobID: self.jobState.rawValue) : .clear,
-                                        radius: 10,
-                                        x: 0,
-                                        y: 0
-                                    )
-                               
-                            }
-                        }
+                    .monospaced()
+                
+                Text("Official Time:")
+                    .foregroundColor(Color.mint)
+                    .font(.largeTitle)
+                    .fontWeight(.black)
+                Text(self.timerString)
+                    .foregroundColor(Color.white)
+                    .font(.largeTitle)
+                    .fontWeight(.black)
+                    .monospaced()
+                
+            }
+            .padding(.bottom, 210)
+            .opacity(self.running ? 1 : 0)
+            
+            
+            VStack() { // Job Type List
+                ForEach(JobTypes.allCases.filter { e in
+                    return e != JobTypes.undef
+                }, id: \.self) { jobType in
+                    
+                    Button(action: {
+                        self.jobState = jobType
+                        UserDefaults.standard.set(jobType.rawValue, forKey: "jobType")
+                    }) {
+                        Text(jobType.rawValue)
+                            .foregroundColor(.white)
+                            .font(.title)
+                            .fontWeight(.black)
+                            .padding()
+                            .frame(maxWidth: self.jobState == jobType ? .infinity : 330)
+                            .background(
+                                self.jobState == jobType ?
+                                getJobColor(running: true, jobID: self.jobState.rawValue) :
+                                    Color.init(red: 0.3, green: 0.3, blue: 0.3))
+                            .opacity(self.jobState == jobType ? 1 : 0.5)
+                            .cornerRadius(15)
+                            .shadow(
+                                color: self.jobState == jobType ? getJobColor(running: true, jobID: self.jobState.rawValue) : .clear,
+                                radius: 10,
+                                x: 0,
+                                y: 0
+                            )
+                        
                     }
-                    .padding([.leading, .trailing])
-                    
-                    
-                    Spacer()
-                    
-                    NavView(activePage: Pages.Main)
-
                 }
-            } // End of massive IF statement for self.showingDesc
+                
+                NavView(activePage: Pages.Main)
+                    .padding()
+                
+                Spacer()
+            }
+            .padding([.leading, .trailing])
+            .padding(.top, self.running ? -100 : 195)
             
-            Spacer()
             
-            if (!self.showingDesc) {
+
+            VStack() { // Start / Stop Times
+                Spacer()
                 HStack() {
                     Spacer()
                     Text("Start:\n" + self.startTimeString)
@@ -225,13 +158,13 @@ struct MainView: View {
                         Spacer()
                     }
                 }
-                .padding(.bottom)
-                .padding(10)
+                .padding(.bottom, 100)
             }
-            
     
+            
             // Start / Stop Button
             VStack(spacing: 0) {
+                Spacer()
                 
                 Button(action: {
                     self.StartStopBtn()
@@ -247,33 +180,95 @@ struct MainView: View {
                     .fontWeight(.black)
                     .font(.title)
                 }
+                
             }
-            }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(Color.black)
+
             
+            
+            VStack() { // Top Bar
+                
+                VStack() {
+                    Text(payPeriod.toString())
+                        .font(.title)
+                        .fontWeight(.black)
+                        .foregroundColor(.white)
+                        .padding()
+                        .frame(maxWidth: .infinity)
+                    
+                    Button(self.jobState.rawValue) {
+                        if (!self.running) {return}
+                        self.showingDesc.toggle()
+                    }
+                    .font(
+                        self.running ? .system(size: 60) : .title
+                    )
+                    .fontWeight(.black)
+                    .foregroundColor(.white)
+                    .frame(maxWidth: .infinity, minHeight:
+                            self.running ? 250 : 100
+                    )
+                    .multilineTextAlignment(.center)
+                    
+                    
+                    
+                } // End of Inner VStack
+                .background(getJobColor(running: self.running, jobID: self.jobState.rawValue))
+                .overlay(Rectangle().frame(width: nil, height: 10, alignment: .leading).foregroundColor(Color.white), alignment: .bottom)
+                .padding(.bottom)
+                .shadow(
+                    color: getJobColor(running: true, jobID: self.jobState.rawValue),
+                    radius: self.running ? 20 : 0,
+                    x: 0,
+                    y: 0
+                )
         
-            .alert("What do you want to do?", isPresented: $showingSaveAlert) {
-                Button("Save and Stop Timer", role: .none) {
-                    save()
-                    self.setRunning(run: false);
-                }
-                Button("Stop Timer (Don't Save)", role: .destructive) {
-                    self.setRunning(run: false);
-                }
-                Button("Cancel", role: .cancel) { }
+                Spacer()
+
             }
             
-        
+            
+            if (self.showingDesc) {
+                Form() {
+                    Section() {
+                        Button("Close") {
+                            self.showingDesc = false
+                        }
+                        .foregroundColor(.blue)
+                        .fontWeight(.bold)
+                    }
+                    
+                    Section("Job Description") {
+                        TextEditor(text: $jobDescription)
+                            .font(.title3)
+                            .fontWeight(.regular)
+                            .onChange(of: jobDescription) {
+                                self.saveDescString(str: self.jobDescription)
+                            }
+                    }
+                }
+                .transition(.push(from: .leading))
+            }
+        }
         
     
-            // Main updater
-            .onReceive(timer) { (_) in
-                self.updateTexts()
+        .alert("What do you want to do?", isPresented: $showingSaveAlert) {
+            Button("Save and Stop Timer", role: .none) {
+                save()
+                self.setRunning(run: false);
             }
-            .animation(.bouncy(extraBounce: 0.1), value: self.running)
-            .animation(.bouncy(), value: self.jobState)
-            .animation(.bouncy(extraBounce: 0.1), value: self.showingDesc)
+            Button("Stop Timer (Don't Save)", role: .destructive) {
+                self.setRunning(run: false);
+            }
+            Button("Cancel", role: .cancel) { }
+        }
+    
+        // Main updater
+        .onReceive(timer) { (_) in
+            self.updateTexts()
+        }
+        .animation(.bouncy, value: self.running)
+        .animation(.spring, value: self.jobState)
+        .animation(.spring, value: self.showingDesc)
         
     }
         

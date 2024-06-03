@@ -59,28 +59,34 @@ struct TimeTrackingLiveActivityView: View {
     let context: ActivityViewContext<TimeTrackingAttributes>
     
     var body: some View {
-        HStack() {
-            Spacer()
+       
+        ZStack() {
+            Color.black
+                .ignoresSafeArea()
             
-            Text(context.state.jobType)
-                .font(.title2)
-                .fontWeight(.black)
-                .foregroundColor(context.state.jobColor)
+            HStack() {
+                Spacer()
+                
+                Text(context.state.jobType)
+                    .font(.title2)
+                    .fontWeight(.black)
+                    .foregroundColor(context.state.jobColor)
 
-            Spacer()
-            Spacer()
+                Spacer()
+                Spacer()
 
-            Text(context.state.startTime, style:.relative)
-                .font(.title3)
-                .fontWeight(.black)
-                .foregroundColor(.white)
+                Text(context.state.startTime, style:.relative)
+                    .font(.title3)
+                    .fontWeight(.black)
+                    .foregroundColor(.white)
 
-            Spacer()
+                Spacer()
+            }
+
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .padding()
         }
-
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .ignoresSafeArea()
-        .background(Color.black)
+       
     }
 }
 
@@ -106,8 +112,6 @@ struct TimeTrackingSmallIslandView: View {
         return self.getAbriviation(str: context.state.jobType)
     }
     
-    
-    
     var body: some View {
         
         if (self.pos == 0) { // Compact Leading
@@ -115,23 +119,19 @@ struct TimeTrackingSmallIslandView: View {
                 .font(.title)
                 .fontWeight(.black)
                 .foregroundColor(context.state.jobColor)
-                .padding(0)
             
         } else if (self.pos == 1) { // Compact Trailing
-            Text(context.state.startTime, style: .timer)
+            
+            Image(systemName: "timer")
                 .font(.largeTitle)
                 .fontWeight(.black)
                 .foregroundColor(context.state.jobColor)
-                .background(Color.clear)
-                .frame(maxWidth: .minimum(50, 50), alignment: .leading)
-                .monospaced()
-                .padding(0)
+            
         } else { // Minimal
             Text(getTxt())
                 .font(.title)
                 .fontWeight(.black)
                 .foregroundColor(context.state.jobColor)
-                .padding(0)
         }
     }
 }

@@ -10,7 +10,7 @@ import Foundation
 import SwiftUI
 import Combine
 
-struct PayPeriod {
+struct PayPeriod : Equatable {
     var startDate: Date
     var endDate: Date
     

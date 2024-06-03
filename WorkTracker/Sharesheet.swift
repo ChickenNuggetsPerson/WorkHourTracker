@@ -34,10 +34,8 @@ func createAndSharePDF(entries : [JobEntry], payperiod: PayPeriod) {
         
         let text = "Timecard for: " + payperiod.toString(full: true)
         text.draw(at: CGPoint(x: 20, y: 20), withAttributes: boldTitle)
-        
-        
 
-        var yOffset = 55
+        var yOffset = 75
         
         let jobXpos = 20
         let starTimeXPos = 150
@@ -45,18 +43,19 @@ func createAndSharePDF(entries : [JobEntry], payperiod: PayPeriod) {
         let totalTimeXPos = 300
         let descXPos = 400
         
-        "Type of Hours: ".draw(at: CGPoint(x: jobXpos, y: 50), withAttributes: smallTitle)
-        "Start Time: ".draw(at: CGPoint(x: starTimeXPos, y: 50), withAttributes: smallTitle)
-        "End Time: ".draw(at: CGPoint(x: endTimeXPos, y: 50), withAttributes: smallTitle)
-        "Duration: ".draw(at: CGPoint(x: totalTimeXPos, y: 50), withAttributes: smallTitle)
-        "Description: (If applicable)".draw(at: CGPoint(x: descXPos, y: 50), withAttributes: smallTitle)
+        let titlesOff = 70
+        "Type of Hours: ".draw(at: CGPoint(x: jobXpos, y: titlesOff), withAttributes: smallTitle)
+        "Start Time: ".draw(at: CGPoint(x: starTimeXPos, y: titlesOff), withAttributes: smallTitle)
+        "End Time: ".draw(at: CGPoint(x: endTimeXPos, y: titlesOff), withAttributes: smallTitle)
+        "Duration: ".draw(at: CGPoint(x: totalTimeXPos, y: titlesOff), withAttributes: smallTitle)
+        "Description: (If applicable)".draw(at: CGPoint(x: descXPos, y: titlesOff), withAttributes: smallTitle)
         
         var previousDate: Int? = nil
         
         for entry in entries {
             
             if let entryDate = entry.startTime?.getDateComponents().day {
-                if (entryDate != previousDate) {
+                if (entryDate != previousDate) { // Diff Day
 
                     yOffset += 10
                     
@@ -95,6 +94,12 @@ func createAndSharePDF(entries : [JobEntry], payperiod: PayPeriod) {
             let breaks = entry.desc?.split(separator: "\n")
         
             yOffset += 20 + (((breaks?.count ?? 1) - 1) * 10)
+            
+            
+            if (yOffset >= 800) {
+                yOffset = 55
+                context.beginPage()
+            }
         }
     
     }

@@ -26,6 +26,8 @@ struct PayPeriodView: View {
 
     @State var refresh: Bool = false
     
+    private var currentPayPeriod : PayPeriod = getCurrentPayperiod()
+    
     @State var payPeriod : PayPeriod
     @State var titleText: String
     @State var titleColor: Color
@@ -46,6 +48,8 @@ struct PayPeriodView: View {
     
     @State var isShowingShareSheet : Bool = false;
     @State private var jsonData: String = ""
+    
+    @State private var showingDatesForm = false;
     
     @State private var showingNewEntryForm = false;
     @State private var newEntryJobID : String = ""
@@ -73,67 +77,84 @@ struct PayPeriodView: View {
     
     
     var body: some View {
-                
+        
         ZStack() {
         
             Color.black.ignoresSafeArea(.all)
             
-            VStack() { // List
-                List() {
-                    
-                    Color.black
-                        .frame(height: 120)
-                        .padding(-20)
-
-                    
-                    ForEach(
-                        self.jobEntries
-                    ) { job in
-
-                        HStack() {
-                            
-                            Button(action: {
-                                if (highlightedJob == job.id) {
-                                    highlightedJob = nil
-                                } else {
-                                    highlightedJob = job.id
-                                }
-                            }) {
-                            
-                                VStack(alignment: .leading) {
-                                    
-                                    JobView(
-                                        jobID: job.jobID ?? "",
-                                        startTime: job.startTime ?? Date(),
-                                        endTime: job.endTime ?? Date(),
-                                        desc: job.desc ?? ""
-                                    )
-                                        .animation(.bouncy(), value: self.highlightedJob)
-                                    
-                                    if (highlightedJob == job.id) {
-                                        
-                                        DescriptionView(job: job)
-                                        .animation(.bouncy(), value: self.highlightedJob)
-                                    }
-                                } // VStack
-                                
-                            } // Button
-                            
-                            
-                        } // HStack
-                        .listRowBackground(Color.init(red: 0.1, green: 0.1, blue: 0.1))
+            if (self.showingDatesForm) { // Dates from
+                Form {
+                    Section("Choose Time Range:") {
+                        DatePicker(selection: $payPeriod.startDate) {
+                            Text("Start Time:")
+                        }
                         
-
-                    } // For Each
-                    .onDelete(perform: deleteJob)
+                        DatePicker(selection: $payPeriod.endDate, in: self.payPeriod.startDate...) {
+                            Text("End Time:")
+                        }
+                    }
                     
-                } // List
-                .scrollContentBackground(.hidden)
-                .listRowSpacing(10)
-                .padding(.bottom, 70)
-                
-                Spacer()
+                }
+                .padding(.top, 150)
+            } else {
+                VStack() { // List
+                    List() {
+                        
+                        Color.black
+                            .frame(height: 120)
+                            .padding(-20)
+
+                        
+                        ForEach(
+                            self.jobEntries
+                        ) { job in
+
+                            HStack() {
+                                
+                                Button(action: {
+                                    if (highlightedJob == job.id) {
+                                        highlightedJob = nil
+                                    } else {
+                                        highlightedJob = job.id
+                                    }
+                                }) {
+                                
+                                    VStack(alignment: .leading) {
+                                        
+                                        JobView(
+                                            jobID: job.jobID ?? "",
+                                            startTime: job.startTime ?? Date(),
+                                            endTime: job.endTime ?? Date(),
+                                            desc: job.desc ?? ""
+                                        )
+                                            .animation(.bouncy(), value: self.highlightedJob)
+                                        
+                                        if (highlightedJob == job.id) {
+                                            
+                                            DescriptionView(job: job)
+                                            .animation(.bouncy(), value: self.highlightedJob)
+                                        }
+                                    } // VStack
+                                    
+                                } // Button
+                                
+                                
+                            } // HStack
+                            .listRowBackground(Color.init(red: 0.1, green: 0.1, blue: 0.1))
+                            
+
+                        } // For Each
+                        .onDelete(perform: deleteJob)
+                        
+                    } // List
+                    .scrollContentBackground(.hidden)
+                    .listRowSpacing(10)
+                    .padding(.bottom, 70)
+                    
+                    Spacer()
+                }
             }
+            
             
             
             VStack() { // Blurs
@@ -155,11 +176,13 @@ struct PayPeriodView: View {
             }
             
             
-            VStack() {
+            VStack() { // Menus
                 Button(self.titleText) {
                     self.payPeriod = getCurrentPayperiod()
                 }
-                .foregroundColor(self.titleColor)
+                .foregroundColor(
+                    self.currentPayPeriod == self.payPeriod ? self.titleColor : .gray
+                )
                 .font(.largeTitle)
                 .fontWeight(.black)
             
@@ -175,9 +198,9 @@ struct PayPeriodView: View {
                     Spacer()
                     
                     Button(self.payPeriod.toString()) {
-                        
+                        self.showingDatesForm.toggle()
                     }
-                    .foregroundColor(.white)
+                    .foregroundColor(self.showingDatesForm ? .cyan : .white)
                     .font(.largeTitle)
                     .fontWeight(.black)
                     .lineLimit(1)
@@ -233,6 +256,8 @@ struct PayPeriodView: View {
                 }
             }
             
+            
+            
             if (self.showingNewEntryForm) {
                 VStack() {
                     Form {
@@ -266,7 +291,7 @@ struct PayPeriodView: View {
                                     .foregroundColor(Color.red)
                             }
                         }
-                        .frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/)
+                        .frame(alignment: .center)
                         .padding(0)
                 
                         Picker("Job Type:", selection: $newEntryJobID) {
@@ -302,12 +327,11 @@ struct PayPeriodView: View {
                 }
                 .animation(.bouncy, value: self.showingNewEntryForm)
             }
-            
-            
+
             
             
         }
-        .animation(.bouncy(), value: self.highlightedJob)
+        .animation(.bouncy(), value: self.showingDatesForm)
         
     }
     
@@ -379,19 +403,19 @@ struct JobView : View {
         HStack() {
             
             VStack(alignment: .leading) {
-                let color = getJobColor(running: true, jobID: getJobFromID(id: self.jobID ?? "undef").rawValue)
+                let color = getJobColor(running: true, jobID: getJobFromID(id: self.jobID).rawValue)
                 
-                Text(getJobFromID(id: self.jobID ?? "undef").rawValue)
+                Text(getJobFromID(id: self.jobID).rawValue)
                     .fontWeight(.black)
                     .foregroundColor(color)
                     .font(.title2)
                 
-                Text(self.startTime ?? Date(), style: .date)
+                Text(self.startTime, style: .date)
                     .foregroundColor(.white)
                     .font(.title3)
                     .fontWeight(.bold)
                 
-                Text("\(self.startTime ?? Date(), formatter: itemFormatter) - \(self.endTime ?? Date(), formatter: itemFormatter)")
+                Text("\(self.startTime, formatter: itemFormatter) - \(self.endTime, formatter: itemFormatter)")
                     .foregroundColor(.white)
                     .font(.title3)
                     .fontWeight(.bold)
@@ -417,6 +441,7 @@ struct JobView : View {
                 
     
         }
+        
         
     }
 
