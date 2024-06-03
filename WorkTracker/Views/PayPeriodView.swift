@@ -24,6 +24,7 @@ struct PayPeriodView: View {
     
     @Environment(\.managedObjectContext) private var viewContext
 
+    @State var refresh: Bool = false
     
     @State var payPeriod : PayPeriod
     @State var titleText: String
@@ -31,8 +32,9 @@ struct PayPeriodView: View {
     
     var jobEntries: [JobEntry] {
         CoreDataManager.shared.fetchJobEntries(
-            dateRange: self.payPeriod.getRange())
+            dateRange: self.payPeriod.getRange()).sorted { $0.startTime ?? Date() < $1.startTime ?? Date() }
     }
+
     var totalHoursString : String {
         var total = 0.0
         for job in self.jobEntries {
@@ -41,10 +43,19 @@ struct PayPeriodView: View {
         return String(total)
     }
     @State var highlightedJob : ObjectIdentifier? = nil
-
-
+    
     @State var isShowingShareSheet : Bool = false;
     @State private var jsonData: String = ""
+    
+    @State private var showingNewEntryForm = false;
+    @State private var newEntryJobID : String = ""
+    @State private var newEntryStart : Date = roundTime(time: Date())
+    @State private var newEntryEnd : Date = roundTime(time: Date())
+    @State private var newEntryDesc : String = ""
+   
+    var validEntry : Bool {
+        (self.newEntryStart != self.newEntryEnd) && (self.newEntryJobID != "")
+    }
     
     
     init(
@@ -56,6 +67,7 @@ struct PayPeriodView: View {
         self.payPeriod = period
         self.titleText = title
         self.titleColor = color
+
     }
 
     
@@ -90,7 +102,12 @@ struct PayPeriodView: View {
                             
                                 VStack(alignment: .leading) {
                                     
-                                    JobView(job: job)
+                                    JobView(
+                                        jobID: job.jobID ?? "",
+                                        startTime: job.startTime ?? Date(),
+                                        endTime: job.endTime ?? Date(),
+                                        desc: job.desc ?? ""
+                                    )
                                         .animation(.bouncy(), value: self.highlightedJob)
                                     
                                     if (highlightedJob == job.id) {
@@ -122,7 +139,7 @@ struct PayPeriodView: View {
             VStack() { // Blurs
                 
                 Color.black
-                    .opacity(0.5)
+                    .opacity(self.refresh ? 0.5 : 0.500001)
                     .ignoresSafeArea(.all)
                     .background(.ultraThinMaterial)
                     .frame(maxHeight: 130)
@@ -191,12 +208,101 @@ struct PayPeriodView: View {
                     .foregroundColor(.orange)
             
                 
+                
                 Spacer()
+                
+                
                 
                 NavView(activePage: .PayPeriod)
                     .padding(.bottom, 0)
 
             }
+            
+            
+            
+            VStack() {
+                Spacer()
+                HStack() {
+                    Spacer()
+                    Button("", systemImage: "plus") {
+                        self.showingNewEntryForm = true
+                    }
+                    .padding(20)
+                    .font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/)
+                    .fontWeight(.black)
+                }
+            }
+            
+            if (self.showingNewEntryForm) {
+                VStack() {
+                    Form {
+                        
+                        JobView(
+                            jobID: self.newEntryJobID,
+                            startTime: roundTime(time: self.newEntryStart),
+                            endTime: roundTime(time: self.newEntryEnd),
+                            desc: self.newEntryDesc
+                        )
+                        
+                        Section() {
+                            
+                            Button(action: {
+                                self.addJob()
+                            }) {
+                                Text("Submit")
+                                    .font(.title3)
+                                    .fontWeight(.black)
+                                    .foregroundColor(self.validEntry ? Color.blue : Color.gray)
+                                    .animation(.easeInOut, value: self.validEntry)
+                            }
+                            .disabled(!self.validEntry)
+                            
+                            Button(action: {
+                                self.resetNewJob()
+                            }) {
+                                Text("Close")
+                                    .font(.title3)
+                                    .fontWeight(.black)
+                                    .foregroundColor(Color.red)
+                            }
+                        }
+                        .frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/)
+                        .padding(0)
+                
+                        Picker("Job Type:", selection: $newEntryJobID) {
+                            ForEach(JobTypes.allCases.filter { e in
+                                return e != JobTypes.undef
+                            }, id: \.self) { jobType in
+                                
+                                Text(jobType.rawValue)
+                                    .tag(getIDFromJob(type: jobType))
+        
+                            }
+                        }
+                        .pickerStyle(.inline)
+                        
+                        
+                        Section("Time:") {
+                            DatePicker(selection: $newEntryStart) {
+                                Text("Start Time:")
+                            }
+                            .onChange(of: newEntryStart) {
+                                self.newEntryEnd = self.newEntryStart
+                            }
+                            
+                            DatePicker(selection: $newEntryEnd, in: self.newEntryStart...) {
+                                Text("End Time:")
+                            }
+                        }
+                        
+                        Section("Description:") {
+                            TextEditor(text: $newEntryDesc)
+                        }
+                    }
+                }
+                .animation(.bouncy, value: self.showingNewEntryForm)
+            }
+            
             
             
             
@@ -208,10 +314,24 @@ struct PayPeriodView: View {
     
     
     
-    
+    private func resetNewJob() {
+        self.newEntryJobID = ""
+        self.newEntryStart = roundTime(time: Date())
+        self.newEntryEnd = roundTime(time: Date())
+        self.newEntryDesc = ""
+        
+        self.showingNewEntryForm = false;
+    }
     
     private func addJob() {
-       CoreDataManager.shared.createJobEntry(desc: "New Job", jobID: UUID().uuidString, startTime: Date(), endTime: Date())
+        CoreDataManager.shared.createJobEntry(
+            desc: self.newEntryDesc,
+            jobID: self.newEntryJobID,
+            startTime: roundTime(time: self.newEntryStart),
+            endTime: roundTime(time: self.newEntryEnd)
+        )
+        self.resetNewJob()
+        self.refresh.toggle()
    }
 
    private func deleteJob(at offsets: IndexSet) {
@@ -221,7 +341,7 @@ struct PayPeriodView: View {
            let job = self.jobEntries[index]
            
            CoreDataManager.shared.deleteJobEntry(jobEntry: job)
-           
+           self.refresh.toggle()
        }
            
    }
@@ -247,8 +367,11 @@ struct PayPeriodView: View {
 
 
 struct JobView : View {
-    
-    var job : JobEntry
+
+    var jobID : String
+    var startTime : Date
+    var endTime : Date
+    var desc : String
     
     var body: some View {
         
@@ -256,19 +379,19 @@ struct JobView : View {
         HStack() {
             
             VStack(alignment: .leading) {
-                let color = getJobColor(running: true, jobID: getJobFromID(id: self.job.jobID ?? "undef").rawValue)
+                let color = getJobColor(running: true, jobID: getJobFromID(id: self.jobID ?? "undef").rawValue)
                 
-                Text(getJobFromID(id: job.jobID ?? "undef").rawValue)
+                Text(getJobFromID(id: self.jobID ?? "undef").rawValue)
                     .fontWeight(.black)
                     .foregroundColor(color)
                     .font(.title2)
                 
-                Text(job.startTime ?? Date(), style: .date)
+                Text(self.startTime ?? Date(), style: .date)
                     .foregroundColor(.white)
                     .font(.title3)
                     .fontWeight(.bold)
                 
-                Text("\(job.startTime ?? Date(), formatter: itemFormatter) - \(job.endTime ?? Date(), formatter: itemFormatter)")
+                Text("\(self.startTime ?? Date(), formatter: itemFormatter) - \(self.endTime ?? Date(), formatter: itemFormatter)")
                     .foregroundColor(.white)
                     .font(.title3)
                     .fontWeight(.bold)
@@ -279,7 +402,7 @@ struct JobView : View {
             
             VStack() {
                 
-                var num = job.startTime?.hrsOffset(relativeTo: job.endTime ?? Date()) ?? 0.00
+                var num = self.startTime.hrsOffset(relativeTo: self.endTime ?? Date()) ?? 0.00
                 
                 Text(
                     String(num)

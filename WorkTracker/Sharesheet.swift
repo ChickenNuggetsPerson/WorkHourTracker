@@ -48,7 +48,7 @@ func createAndSharePDF(entries : [JobEntry], payperiod: PayPeriod) {
         "Type of Hours: ".draw(at: CGPoint(x: jobXpos, y: 50), withAttributes: smallTitle)
         "Start Time: ".draw(at: CGPoint(x: starTimeXPos, y: 50), withAttributes: smallTitle)
         "End Time: ".draw(at: CGPoint(x: endTimeXPos, y: 50), withAttributes: smallTitle)
-        "Total Time: ".draw(at: CGPoint(x: totalTimeXPos, y: 50), withAttributes: smallTitle)
+        "Duration: ".draw(at: CGPoint(x: totalTimeXPos, y: 50), withAttributes: smallTitle)
         "Description: (If applicable)".draw(at: CGPoint(x: descXPos, y: 50), withAttributes: smallTitle)
         
         var previousDate: Int? = nil

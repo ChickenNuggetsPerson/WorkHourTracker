@@ -15,7 +15,7 @@ struct PayPeriod {
     var endDate: Date
     
     func getRange() -> ClosedRange<Date> {
-        return self.startDate...self.endDate
+        return self.startDate.clearTime()...self.endDate.edgeDay()
     }
     
     func toString(
@@ -124,6 +124,13 @@ extension Date {
         components.second = 0
         components.minute = 0
         components.hour = 0
+        return Calendar.current.date(from: components) ?? Date()
+    }
+    func edgeDay() -> Date {
+        var components = self.getDateComponents()
+        components.second = 59
+        components.minute = 59
+        components.hour = 23
         return Calendar.current.date(from: components) ?? Date()
     }
     

@@ -80,7 +80,7 @@ class CoreDataManager {
         context.delete(jobEntry)
         
         print("Deleting JOB: " + (jobEntry.startTime?.formatted() ?? ""))
-        
+    
         saveContext()
     }
     

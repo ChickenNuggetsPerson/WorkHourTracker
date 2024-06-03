@@ -29,7 +29,9 @@ struct WorkTrackerApp: App {
                 .environment(\.managedObjectContext, coreDataManager.context)
 //                .transition(.scale)
 //                .animation(.spring, value: globalData.currentPage)
+                .environment(\.colorScheme, .dark)
         }
+        
     }
     
     @ViewBuilder
