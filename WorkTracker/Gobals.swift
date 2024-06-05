@@ -149,6 +149,12 @@ extension Date {
         dateFormatter.dateFormat = "E - MMM d, yyyy"
         return dateFormatter.string(from: self)
     }
+    
+    func toHeaderText() -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "EEEE: M/d/yy"
+        return dateFormatter.string(from: self)
+    }
 }
 
 

@@ -36,6 +36,9 @@ struct PayPeriodView: View {
         CoreDataManager.shared.fetchJobEntries(
             dateRange: self.payPeriod.getRange()).sorted { $0.startTime ?? Date() < $1.startTime ?? Date() }
     }
+    var sortedJobEntries: [[JobEntry]] {
+        return self.jobEntries.sortByDay()
+    }
 
     var totalHoursString : String {
         var total = 0.0
@@ -44,10 +47,16 @@ struct PayPeriodView: View {
         }
         return String(total)
     }
+    
+    
+    
     @State var highlightedJob : ObjectIdentifier? = nil
+    @State var editingJob : JobEntry? = nil
+    var isEditing : Bool { self.editingJob != nil }
     
     @State var isShowingShareSheet : Bool = false;
     @State private var jsonData: String = ""
+    
     
     @State private var showingDatesForm = false;
     
@@ -98,61 +107,34 @@ struct PayPeriodView: View {
                 .padding(.top, 150)
             } else {
                 VStack() { // List
-                    List() {
-                        
-                        Color.black
-                            .frame(height: 120)
-                            .padding(-20)
+                    ScrollView() {
 
+                        Color.black
+                            .frame(height: 140)
                         
+//                        let arr = self.sortedJobEntries
+                    
                         ForEach(
                             self.jobEntries
-                        ) { job in
+                        ) { i in
+                        
+                            ListItem(
+                                job: i,
+                                highlightedJob: $highlightedJob,
+                                editingJob: $editingJob
+                            )
 
-                            HStack() {
-                                
-                                Button(action: {
-                                    if (highlightedJob == job.id) {
-                                        highlightedJob = nil
-                                    } else {
-                                        highlightedJob = job.id
-                                    }
-                                }) {
-                                
-                                    VStack(alignment: .leading) {
-                                        
-                                        JobView(
-                                            jobID: job.jobID ?? "",
-                                            startTime: job.startTime ?? Date(),
-                                            endTime: job.endTime ?? Date(),
-                                            desc: job.desc ?? ""
-                                        )
-                                            .animation(.bouncy(), value: self.highlightedJob)
-                                        
-                                        if (highlightedJob == job.id) {
-                                            
-                                            DescriptionView(job: job)
-                                            .animation(.bouncy(), value: self.highlightedJob)
-                                        }
-                                    } // VStack
-                                    
-                                } // Button
-                                
-                                
-                            } // HStack
-                            .listRowBackground(Color.init(red: 0.1, green: 0.1, blue: 0.1))
                             
-
                         } // For Each
                         .onDelete(perform: deleteJob)
+    
                         
-                    } // List
+                    } // Scroll View
                     .scrollContentBackground(.hidden)
                     .listRowSpacing(10)
                     .padding(.bottom, 70)
-                    
-                    Spacer()
                 }
+                .animation(.bouncy, value: self.highlightedJob)
             }
             
             
@@ -164,6 +146,9 @@ struct PayPeriodView: View {
                     .ignoresSafeArea(.all)
                     .background(.ultraThinMaterial)
                     .frame(maxHeight: 130)
+//                    .padding(.top,
+//                             self.isEditing ? -100 : 0
+//                    )
                 
                 Spacer()
                 
@@ -178,7 +163,10 @@ struct PayPeriodView: View {
             
             VStack() { // Menus
                 Button(self.titleText) {
-                    self.payPeriod = getCurrentPayperiod()
+                    if (self.isEditing) { return }
+                    withAnimation {
+                        self.payPeriod = getCurrentPayperiod()
+                    }
                 }
                 .foregroundColor(
                     self.currentPayPeriod == self.payPeriod ? self.titleColor : .gray
@@ -189,7 +177,10 @@ struct PayPeriodView: View {
                     
                 HStack() {
                     Button(" ", systemImage: "arrow.left") {
-                        self.shiftPayPeriod(forwards: false)
+                        if (self.isEditing) { return }
+                        withAnimation {
+                            self.shiftPayPeriod(forwards: false)
+                        }
                     }
                     .foregroundColor(.yellow)
                     .font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/)
@@ -198,7 +189,10 @@ struct PayPeriodView: View {
                     Spacer()
                     
                     Button(self.payPeriod.toString()) {
-                        self.showingDatesForm.toggle()
+                        if (self.isEditing) { return }
+                        withAnimation {
+                            self.showingDatesForm.toggle()
+                        }
                     }
                     .foregroundColor(self.showingDatesForm ? .cyan : .white)
                     .font(.largeTitle)
@@ -210,7 +204,10 @@ struct PayPeriodView: View {
                     Spacer()
                     
                     Button(" ", systemImage: "arrow.right") {
-                        self.shiftPayPeriod(forwards: true)
+                        if (self.isEditing) { return }
+                        withAnimation {
+                            self.shiftPayPeriod(forwards: true)
+                        }
                     }
                     .foregroundColor(.yellow)
                     .font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/)
@@ -219,7 +216,7 @@ struct PayPeriodView: View {
                 .padding([.leading, .trailing], 30)
                 
                 Button(self.totalHoursString + " hrs") {
-
+                    if (self.isEditing) { return }
                     createAndSharePDF(
                         entries: self.jobEntries,
                         payperiod: self.payPeriod
@@ -243,11 +240,12 @@ struct PayPeriodView: View {
             
             
             
-            VStack() {
+            VStack() { // Add Button
                 Spacer()
                 HStack() {
                     Spacer()
                     Button("", systemImage: "plus") {
+                        if (self.isEditing) { return }
                         self.showingNewEntryForm = true
                     }
                     .padding(20)
@@ -265,8 +263,7 @@ struct PayPeriodView: View {
                         JobView(
                             jobID: self.newEntryJobID,
                             startTime: roundTime(time: self.newEntryStart),
-                            endTime: roundTime(time: self.newEntryEnd),
-                            desc: self.newEntryDesc
+                            endTime: roundTime(time: self.newEntryEnd)
                         )
                         
                         Section() {
@@ -395,7 +392,6 @@ struct JobView : View {
     var jobID : String
     var startTime : Date
     var endTime : Date
-    var desc : String
     
     var body: some View {
         
@@ -426,7 +422,7 @@ struct JobView : View {
             
             VStack() {
                 
-                var num = self.startTime.hrsOffset(relativeTo: self.endTime ?? Date()) ?? 0.00
+                let num = self.startTime.hrsOffset(relativeTo: self.endTime)
                 
                 Text(
                     String(num)
@@ -446,27 +442,137 @@ struct JobView : View {
     }
 
 }
-struct DescriptionView : View {
+
+
+
+
+
+
+
+struct ListItem: View {
     
     var job : JobEntry
 
-    var body: some View {
-        VStack(alignment: .leading) {
-            Divider()
-            Text("Job Description:")
-                .font(.title2)
-                .fontWeight(.black)
-                .foregroundColor(.white)
-            
-            
-            Text(self.job.desc ?? "Error Reading Description")
-                .font(.body)
-                .foregroundColor(.white)
-                .monospaced()
-        }
+    @Binding var highlightedJob : ObjectIdentifier?
+    @Binding var editingJob : JobEntry?
+    
+    var isHighlighted : Bool { self.highlightedJob == self.job.id }
+    var isEditing : Bool { self.editingJob != nil }
+    
+    
+    @State private var editEntryJobID : String
+    @State private var editEntryStart : Date
+    @State private var editEntryEnd : Date
+    @State private var editEntryDesc : String
+    
+    init(job: JobEntry, highlightedJob: Binding<ObjectIdentifier?>, editingJob: Binding<JobEntry?>) {
+        self.job = job
+        
+        self._highlightedJob = highlightedJob
+        self._editingJob = editingJob
+        
+        self.editEntryJobID = job.jobID ?? ""
+        self.editEntryStart = job.startTime ?? Date()
+        self.editEntryEnd = job.endTime ?? Date()
+        self.editEntryDesc = job.desc ?? ""
     }
-
+    
+    var body: some View {
+        HStack() {
+            
+            Button(action: {
+                
+                if (self.isEditing) { return }
+                
+                if (self.isHighlighted) {
+                    self.highlightedJob = nil
+                } else {
+                    self.highlightedJob = self.job.id
+                }
+            }) {
+                
+                VStack(alignment: .leading) {
+                    
+                    JobView(
+                        jobID: job.jobID ?? "",
+                        startTime: job.startTime ?? Date(),
+                        endTime: job.endTime ?? Date()
+                    )
+                    
+                    if (self.isHighlighted) {
+                        VStack(alignment: .leading) {
+                            Divider()
+                            
+                            HStack() {
+                                Text("Job Description:")
+                                    .font(.title2)
+                                    .fontWeight(.black)
+                                    .foregroundColor(.white)
+                                
+                                Spacer()
+                                
+                                if (self.isEditing) {
+                                    
+                                    Button("X") {
+                                        self.highlightedJob = self.job.id
+                                        self.editingJob = nil
+                                    }
+                                    .foregroundColor(.red)
+                                    .fontWeight(.black)
+                                    .font(.title2)
+                                    .padding(.trailing, 10)
+                                    
+                                    Button("", systemImage: "checkmark") {
+                                        
+                                        // Save
+                                        self.highlightedJob = self.job.id
+                                        self.editingJob = nil
+                                        
+                                    }
+                                    .foregroundColor(.green)
+                                    .fontWeight(.black)
+                                    .font(.title2)
+                                    
+                                } else {
+                                    Button("", systemImage: "pencil") {
+                                        self.editingJob = self.job
+                                    }
+                                    .fontWeight(.black)
+                                    .font(.title2)
+                                }
+                            }
+                            
+                            
+                            HStack() {
+                                Text(job.desc ?? "")
+                                    .font(.body)
+                                    .foregroundColor(.white)
+                                    .multilineTextAlignment(.leading)
+                                    .monospaced()
+                                    .disabled(!isEditing)
+                            }
+                        }
+                    }
+                } // VStack
+                
+            } // Button
+            .padding()
+            
+        } // HStack
+        .background(Color.init(red: 0.1, green: 0.1, blue: 0.1))
+        .padding([.leading, .trailing])
+        .padding(.bottom, 5)
+        .opacity(
+            !self.isEditing ? 1 : ( self.isHighlighted ? 1 : 0.4 )
+        )
+        .blur(
+            radius: !self.isEditing ? 0 : ( self.isHighlighted ? 0 : 5 )
+        )
+        .animation(.easeInOut, value: self.isEditing)
+    }
 }
+
+
 
 
 

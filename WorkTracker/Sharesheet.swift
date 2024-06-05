@@ -41,7 +41,7 @@ func createAndSharePDF(entries : [JobEntry], payperiod: PayPeriod) {
         let starTimeXPos = 150
         let endTimeXPos = 230
         let totalTimeXPos = 300
-        let descXPos = 400
+        let descXPos = 380
         
         let titlesOff = 70
         "Type of Hours: ".draw(at: CGPoint(x: jobXpos, y: titlesOff), withAttributes: smallTitle)
@@ -89,11 +89,16 @@ func createAndSharePDF(entries : [JobEntry], payperiod: PayPeriod) {
             // Total Time
             (String(entry.startTime?.hrsOffset(relativeTo: entry.endTime ?? Date()) ?? -100) + " hrs").draw(at: CGPoint(x: totalTimeXPos, y: yOffset), withAttributes: normalText)
             
-            entry.desc?.draw(at: CGPoint(x: descXPos, y: yOffset), withAttributes: normalText)
+            // Desc
+            let desc = entry.desc ?? ""
+            let (wrappedDesc, lines) = wrapText(
+                str: desc,
+                charWidth: 10,
+                lineWidth: 250
+            )
+            wrappedDesc.draw(at: CGPoint(x: descXPos, y: yOffset), withAttributes: normalText)
             
-            let breaks = entry.desc?.split(separator: "\n")
-        
-            yOffset += 20 + (((breaks?.count ?? 1) - 1) * 10)
+            yOffset += 30 + (lines * 12)
             
             
             if (yOffset >= 800) {
@@ -119,4 +124,37 @@ func createAndSharePDF(entries : [JobEntry], payperiod: PayPeriod) {
         
         
     } catch {}
+}
+
+
+
+
+
+
+func wrapText(str : String, charWidth : Int, lineWidth : Int) -> (String, Int) {
+    
+    var newStr = ""
+    let words = str.split(separator: " ")
+    
+    var runningWidth = 0;
+    var amtLines = 1
+    
+    for word in words {
+        runningWidth += (word.count + 1) * charWidth
+        newStr += word
+        newStr += " "
+        
+        if (runningWidth > lineWidth) {
+            newStr += "\n"
+            runningWidth = 0
+            amtLines += 1
+        }
+        
+        if (word.hasSuffix("\n") || word.hasPrefix("\n")) {
+            runningWidth = 0
+            amtLines += 1
+        }
+    }
+    
+    return (newStr, amtLines)
 }

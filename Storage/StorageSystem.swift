@@ -180,3 +180,39 @@ class CoreDataManager {
 
     
 }
+
+
+
+extension [JobEntry] {
+    func sortByDay() -> [[JobEntry]] {
+        var newList : [[JobEntry]] = []
+        
+        var runningDay : [JobEntry] = []
+        var previousDate: Int? = nil
+        
+        var firstRun = true;
+        
+        for entry in self {
+            
+            if let entryDate = entry.startTime?.getDateComponents().day {
+                if (entryDate != previousDate) {
+                    previousDate = entryDate
+                    
+                    if (firstRun) {
+                        firstRun = false;
+                    } else {
+                        newList.append(runningDay)
+                        runningDay.removeAll()
+                    }
+                }
+                
+                runningDay.append(entry)
+            }
+            
+        }
+        
+        print(newList)
+        
+        return newList
+    }
+}
