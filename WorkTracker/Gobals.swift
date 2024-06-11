@@ -144,7 +144,7 @@ extension Date {
         return Calendar.current.dateComponents([.era, .year, .month, .day, .hour, .minute], from: self)
     }
     
-    func dayString() -> String {
+    func timecardDayString() -> String {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "E - MMM d, yyyy"
         return dateFormatter.string(from: self)
@@ -154,6 +154,13 @@ extension Date {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "EEEE: M/d/yy"
         return dateFormatter.string(from: self)
+    }
+    
+    func getTimeText() -> String {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .none
+        formatter.timeStyle = .short
+        return formatter.string(from: self)
     }
 }
 
@@ -199,7 +206,25 @@ func getJobFromID(id: String) -> JobTypes {
     }
     
 }
-
+func getPayFromJob(id: String, hrs: Double) -> Double {
+    
+    var rate = 0.0
+    
+    switch (getJobFromID(id: id)) {
+        case .JRTech:
+            rate = 15.6
+        case .SRTech:
+            rate = 35
+        case .Manager:
+            rate = 35
+        case .IT:
+            rate = 16.5
+        case .undef:
+            rate = 0
+    }
+    
+    return rate * hrs
+}
 
 
 
@@ -224,3 +249,6 @@ func getJobColor(running: Bool, jobID: String) -> Color {
             return Color.gray
     }
 }
+
+
+class EmptyClass {}

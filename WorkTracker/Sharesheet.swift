@@ -67,7 +67,7 @@ func createAndSharePDF(entries : [JobEntry], payperiod: PayPeriod) {
                     
                     yOffset += 10
                     
-                    entry.startTime?.dayString().draw(at: CGPoint(x: jobXpos, y: yOffset), withAttributes: smallTitle)
+                    entry.startTime?.timecardDayString().draw(at: CGPoint(x: jobXpos, y: yOffset), withAttributes: smallTitle)
                     
                     
                     yOffset += 15
@@ -145,7 +145,7 @@ func wrapText(str : String, charWidth : Int, lineWidth : Int) -> (String, Int) {
         newStr += " "
         
         if (runningWidth > lineWidth) {
-            newStr += "\n"
+            newStr += "🤪\n"
             runningWidth = 0
             amtLines += 1
         }
