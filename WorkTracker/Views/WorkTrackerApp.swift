@@ -25,11 +25,12 @@ struct WorkTrackerApp: App {
 
     var body: some Scene {
         WindowGroup {
-            contentView(for: globalData.currentPage)
-                .environment(\.managedObjectContext, coreDataManager.context)
-//                .transition(.scale)
-//                .animation(.spring, value: globalData.currentPage)
-                .environment(\.colorScheme, .dark)
+            VStack() {
+                contentView(for: globalData.currentPage)
+                    .environment(\.managedObjectContext, coreDataManager.context)
+                    .environment(\.colorScheme, .dark)
+                    .animation(.easeInOut, value: globalData.currentPage)
+            }
         }
         
     }
@@ -39,12 +40,14 @@ struct WorkTrackerApp: App {
         switch page {
         case .Main:
             MainView()
+                .transition(.move(edge: .leading))
         case .PayPeriod:
             PayPeriodView(
                 period: getCurrentPayperiod(),
                 title: "Pay History:",
                 color: Color.green
             )
+            .transition(.move(edge: .trailing))
         }
         
     }
@@ -65,16 +68,14 @@ struct WorkTrackerApp: App {
 enum Pages : String, CaseIterable {
     case Main = "Main Page"
     case PayPeriod = "History Page"
-//    case History = "History"
-    
+
     var color: Color {
         switch self {
             case .Main:
                 return .orange
             case .PayPeriod:
                 return .orange
-//            case .History:
-//                return .cyan
+
         }
     }
 }

@@ -64,26 +64,21 @@ struct TimeTrackingLiveActivityView: View {
             Color.black
                 .ignoresSafeArea()
             
-            HStack() {
-                Spacer()
-                
+            VStack(alignment: .center) {
                 Text(context.state.jobType)
-                    .font(.title2)
+                    .font(.title)
                     .fontWeight(.black)
                     .foregroundColor(context.state.jobColor)
-
-                Spacer()
-                Spacer()
-
-                Text(context.state.startTime, style:.relative)
-                    .font(.title3)
+                    .multilineTextAlignment(.center)
+                
+                Text(context.state.startTime, style: .relative)
+                    .font(.title2)
                     .fontWeight(.black)
                     .foregroundColor(.white)
-
-                Spacer()
+                    .multilineTextAlignment(.center)
+                    .monospaced()
             }
-
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            
             .padding()
         }
        

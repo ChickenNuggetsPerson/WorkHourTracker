@@ -137,7 +137,7 @@ func wrapText(str : String, charWidth : Int, lineWidth : Int) -> (String, Int) {
     let words = str.split(separator: " ")
     
     var runningWidth = 0;
-    var amtLines = 1
+    var amtLines = 0
     
     for word in words {
         runningWidth += (word.count + 1) * charWidth
@@ -145,7 +145,7 @@ func wrapText(str : String, charWidth : Int, lineWidth : Int) -> (String, Int) {
         newStr += " "
         
         if (runningWidth > lineWidth) {
-            newStr += "🤪\n"
+            newStr += "\n"
             runningWidth = 0
             amtLines += 1
         }

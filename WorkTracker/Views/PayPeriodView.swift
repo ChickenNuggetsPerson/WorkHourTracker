@@ -29,9 +29,6 @@ struct PayPeriodView: View {
         CoreDataManager.shared.fetchJobEntries(
             dateRange: self.payPeriod.getRange()).sorted { $0.startTime ?? Date() < $1.startTime ?? Date() }
     }
-    var sortedJobEntries: [[JobEntry]] {
-        return self.jobEntries.sortByDay()
-    }
 
     var totalHoursString : String {
         var total = 0.0
@@ -51,6 +48,13 @@ struct PayPeriodView: View {
     @State private var editJob : ObjectIdentifier? = nil
     @State private var showingEditEntryFrom = false;
    
+    
+    
+    class ScrollProxyHolder: ObservableObject {
+        @Published var proxy: ScrollViewProxy?
+    }
+    @StateObject private var scrollProxyHolder = ScrollProxyHolder()
+    
     
     init(
         period : PayPeriod = getCurrentPayperiod(),
@@ -73,32 +77,43 @@ struct PayPeriodView: View {
             Color.black.ignoresSafeArea(.all)
             
             VStack() { // List
-                ScrollView() {
+                ScrollViewReader { proxy in
 
-                    Color.black
-                        .frame(height: 140)
-                    
-//                        let arr = self.sortedJobEntries
-                
-                    ForEach(
-                        self.jobEntries
-                    ) { i in
-                    
-                        ListItem(
-                            job: i,
-                            highlightedJob: $highlightedJob,
-                            editJob: $editJob,
-                            preview: false
-                        )
-
+                    ScrollView() {
                         
-                    } // For Each
-
+                        Color.black
+                            .frame(height: 140)
+                        
+                        ForEach(
+                            self.jobEntries
+                        ) { i in
+                            
+                            ListItem(
+                                job: i,
+                                highlightedJob: $highlightedJob,
+                                editJob: $editJob,
+                                preview: false
+                            )
+                            .padding([.leading, .trailing], 10)
+                            .id(i.id)
+                            
+                            
+                        } // For Each
+                        
+                        
+                        Color.black
+                            .frame(height: 80)
+                        
+                        
+                    } // Scroll View
+                    .scrollContentBackground(.hidden)
                     
-                } // Scroll View
-                .scrollContentBackground(.hidden)
-                .listRowSpacing(10)
-                .padding(.bottom, 70)
+                    .onAppear {
+                        scrollProxyHolder.proxy = proxy
+                    }
+                    
+                    
+                }
             }
             .animation(.bouncy, value: self.highlightedJob)
             
@@ -111,6 +126,13 @@ struct PayPeriodView: View {
                     .frame(
                         maxHeight: self.showingDatesForm ? 235 : 130
                     )
+                    .overlay(
+                        Rectangle()
+                        .frame(width: nil, height: 5, alignment: .leading)
+                        .foregroundColor(Color.init(red: 0.2, green: 0.2, blue: 0.2))
+                        
+                        , alignment: .bottom
+                    )
                 
                 Spacer()
                 
@@ -119,6 +141,13 @@ struct PayPeriodView: View {
                     .ignoresSafeArea(.all)
                     .background(.ultraThinMaterial)
                     .frame(maxHeight: 80)
+                    .overlay(
+                        Rectangle()
+                        .frame(width: nil, height: 5, alignment: .leading)
+                        .foregroundColor(Color.init(red: 0.2, green: 0.2, blue: 0.2))
+                        
+                        , alignment: .top
+                    )
                 
             }
             
@@ -138,6 +167,7 @@ struct PayPeriodView: View {
                 HStack() {
                     Button(" ", systemImage: "arrow.left") {
                         self.shiftPayPeriod(forwards: false)
+                        self.highlightedJob = nil
                     }
                     .foregroundColor(.yellow)
                     .font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/)
@@ -159,6 +189,7 @@ struct PayPeriodView: View {
                     
                     Button(" ", systemImage: "arrow.right") {
                         self.shiftPayPeriod(forwards: true)
+                        self.highlightedJob = nil
                     }
                     .foregroundColor(.yellow)
                     .font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/)
@@ -226,8 +257,9 @@ struct PayPeriodView: View {
             
             
             if (self.showingNewEntryForm) { // add form
-                JobEntryForm(showingForm: $showingNewEntryForm)
-                    .transition(.move(edge: .bottom).combined(with: .opacity))
+                JobEntryForm(
+                    showingForm: $showingNewEntryForm
+                )
             }
             if (self.editJob != nil) { // edit form
                 JobEntryForm(
@@ -235,7 +267,6 @@ struct PayPeriodView: View {
                     job: jobEntries.first { $0.id == self.editJob }!,
                     editJobId: $editJob
                 )
-                .transition(.move(edge: .bottom).combined(with: .opacity))
             }
             
 
@@ -253,18 +284,26 @@ struct PayPeriodView: View {
             )
         }
         
+        .onChange(of: self.highlightedJob) {
+            scrollTo(id: self.highlightedJob)
+        }
+        
     }
     
 
+    func scrollTo(id: ObjectIdentifier?) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0) {
+            withAnimation(.easeInOut) {
+                scrollProxyHolder.proxy!.scrollTo(id, anchor: .init(x: 0.5, y: 0.5))
+            }
+        }
+    }
+    
     func shiftPayPeriod(forwards: Bool) {
         if (forwards) {
             
             self.payPeriod.endDate = self.payPeriod.endDate.addDays(days: 14)
             self.payPeriod.startDate = self.payPeriod.startDate.addDays(days: 14)
-//            DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
-//                
-//            }
-
             
         } else {
             
@@ -321,7 +360,9 @@ struct JobEntryForm: View {
     }
     
     
-    init (showingForm : Binding<Bool>) {
+    init (
+        showingForm : Binding<Bool>
+    ) {
         self.newForm = true
         self.job = nil
         self._showingForm = showingForm
@@ -332,7 +373,11 @@ struct JobEntryForm: View {
         self.newEntryEnd = roundTime(time: Date())
         self.newEntryDesc = ""
     }
-    init (showingForm : Binding<Bool>, job : JobEntry, editJobId : Binding<ObjectIdentifier?>) {
+    init (
+        showingForm : Binding<Bool>,
+        job : JobEntry,
+        editJobId : Binding<ObjectIdentifier?>
+    ) {
         self.newForm = false
         self.job = job
         self._showingForm = showingForm
@@ -343,7 +388,6 @@ struct JobEntryForm: View {
         self.newEntryEnd = job.endTime ?? Date()
         self.newEntryDesc = job.desc ?? ""
     }
-    
     
     
     var body: some View {
@@ -359,6 +403,7 @@ struct JobEntryForm: View {
                     preview: true
                 )
                 .padding([.leading, .trailing], -30)
+                .padding([.top, .bottom], -10)
 
                 Section() {
                     
@@ -396,10 +441,12 @@ struct JobEntryForm: View {
         
                 Picker("Job Type:", selection: $newEntryJobID) {
                     ForEach(JobTypes.allCases.filter { e in
-                        return e != JobTypes.undef
+                        return (e != JobTypes.undef) && (e != JobTypes.IT)
                     }, id: \.self) { jobType in
                         
                         Text(jobType.rawValue)
+                            .fontWeight(.bold)
+                            .foregroundColor(.white)
                             .tag(getIDFromJob(type: jobType))
 
                     }
@@ -409,14 +456,14 @@ struct JobEntryForm: View {
                 
                 Section("Time:") {
                     DatePicker(selection: $newEntryStart) {
-                        Text("Start Time:")
+                        Text("Start:")
                     }
                     .onChange(of: newEntryStart) {
                         self.newEntryEnd = self.newEntryStart
                     }
                     
                     DatePicker(selection: $newEntryEnd, in: self.newEntryStart...) {
-                        Text("End Time:")
+                        Text("End:")
                     }
                 }
                 
@@ -438,25 +485,24 @@ struct JobEntryForm: View {
                 }
             }
         }
-        .animation(.bouncy, value: self.showingForm)
-        .animation(.easeInOut, value: self.highlightedJob)
+        .transition(.move(edge: .bottom).combined(with: .opacity))
+        
+        .animation(.bouncy, value: self.newEntryJobID)
+        .animation(.bouncy, value: self.newEntryStart)
+        .animation(.bouncy, value: self.newEntryEnd)
+        .animation(.bouncy, value: self.newEntryDesc)
     }
     
     private func closeForm() {
+        
         withAnimation {
-            self.newEntryJobID = ""
-            self.newEntryStart = roundTime(time: Date())
-            self.newEntryEnd = roundTime(time: Date())
-            self.newEntryDesc = ""
-            
-            self.showingForm = false;
-            
             if (!self.newForm) {
                 self.editJobID = nil
-                self.highlightedJob = self.job?.id
+            } else {
+                self.showingForm = false;
             }
-        
         }
+       
     }
     
     private func addJob() {
@@ -479,8 +525,8 @@ struct JobEntryForm: View {
         self.closeForm()
     }
     private func deleteJob() {
-        
         CoreDataManager.shared.deleteJobEntry(jobEntry: self.job!)
+        highlightedJob = nil
         self.closeForm()
     }
 
@@ -552,6 +598,8 @@ struct ListItem: View {
         HStack() {
             
             Button(action: {
+                if (self.previewMode) { return; }
+                
                 if (self.isHighlighted) {
                     self.highlightedJob = nil
                 } else {
@@ -650,16 +698,21 @@ struct ListItem: View {
             .padding()
             
         } // HStack
-        .background(Color.init(red: 0.1, green: 0.1, blue: 0.1))
         .padding([.leading, .trailing])
-        .padding(.bottom, 5)
-        .opacity(
-            !self.somethingIsHighlighted ? 1 :
-            (self.isHighlighted ? 1 : 0.4)
+        .padding([.top, .bottom], 5)
+        .background(
+            GeometryReader { geometry in
+                Rectangle()
+                .cornerRadius(25)
+                .foregroundColor(Color.init(hex: "1c1c1e"))
+            }
         )
-        .blur(radius: !self.somethingIsHighlighted ? 0 :
-                    (self.isHighlighted ? 0 : 4))
-        .animation(.easeInOut, value: self.isHighlighted)
+        .opacity(
+            self.previewMode ? 1 : (!self.somethingIsHighlighted ? 1 : (self.isHighlighted ? 1 : 0.4))
+        )
+        .blur(
+            radius: self.previewMode ? 0 : (!self.somethingIsHighlighted ? 0 : (self.isHighlighted ? 0 : 4))
+        )
     }
 }
 

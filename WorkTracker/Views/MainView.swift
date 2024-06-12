@@ -66,20 +66,8 @@ struct MainView: View {
             
             VStack() {
                 Spacer()
-                
+            
                 Text("Time:")
-                    .foregroundColor(Color.yellow)
-                    .font(.largeTitle)
-                    .fontWeight(.black)
-                
-                Text(self.startTime, style: .timer)
-                    .foregroundColor(Color.white)
-                    .font(.largeTitle)
-                    .fontWeight(.black)
-                    .padding(.bottom)
-                    .monospaced()
-                
-                Text("Official Time:")
                     .foregroundColor(Color.mint)
                     .font(.largeTitle)
                     .fontWeight(.black)
@@ -90,13 +78,16 @@ struct MainView: View {
                     .monospaced()
                 
             }
-            .padding(.bottom, 210)
+            .padding(.bottom, 180)
             .opacity(self.running ? 1 : 0)
             
             
             VStack() { // Job Type List
+                
+                Spacer()
+                
                 ForEach(JobTypes.allCases.filter { e in
-                    return e != JobTypes.undef
+                    return (e != JobTypes.undef) && (e != JobTypes.IT)
                 }, id: \.self) { jobType in
                     
                     Button(action: {
@@ -107,8 +98,11 @@ struct MainView: View {
                             .foregroundColor(.white)
                             .font(.title)
                             .fontWeight(.black)
-                            .padding()
-                            .frame(maxWidth: self.jobState == jobType ? .infinity : 330)
+                            .frame(
+                                maxWidth: self.running ? 0 
+                                : (self.jobState == jobType ? .infinity : 330),
+                                maxHeight: self.jobState == jobType ? 80 : 70
+                            )
                             .background(
                                 self.jobState == jobType ?
                                 getJobColor(running: true, jobID: self.jobState.rawValue) :
@@ -124,17 +118,21 @@ struct MainView: View {
                         
                     }
                 }
-                
-                NavView(activePage: Pages.Main)
-                    .padding()
-                
-                Spacer()
+                        
             }
             .padding([.leading, .trailing])
-            .padding(.top, self.running ? -100 : 195)
-            
+            .padding(.bottom, 300)
+            .animation(.spring(duration: 0.3), value: self.running)
+            .animation(.bouncy(), value: self.jobState)
             
 
+            VStack() {
+                Spacer()
+                NavView(activePage: Pages.Main)
+            }
+            .padding(.bottom, self.running ? 300 : 200)
+            
+            
             VStack() { // Start / Stop Times
                 Spacer()
                 HStack() {
@@ -158,7 +156,7 @@ struct MainView: View {
                         Spacer()
                     }
                 }
-                .padding(.bottom, 100)
+                .padding(.bottom, 90)
             }
     
             
@@ -205,7 +203,7 @@ struct MainView: View {
                     .fontWeight(.black)
                     .foregroundColor(.white)
                     .frame(maxWidth: .infinity, minHeight:
-                            self.running ? 250 : 100
+                            self.running ? 290 : 120
                     )
                     .multilineTextAlignment(.center)
                     
@@ -213,7 +211,7 @@ struct MainView: View {
                     
                 } // End of Inner VStack
                 .background(getJobColor(running: self.running, jobID: self.jobState.rawValue))
-                .overlay(Rectangle().frame(width: nil, height: 10, alignment: .leading).foregroundColor(Color.white), alignment: .bottom)
+                .overlay(Rectangle().frame(width: nil, height: 5, alignment: .leading).foregroundColor(Color.white), alignment: .bottom)
                 .padding(.bottom)
                 .shadow(
                     color: getJobColor(running: true, jobID: self.jobState.rawValue),
@@ -335,6 +333,8 @@ struct MainView: View {
     func enableDisableLiveAcitivty() {
         
         if (self.running) {
+            liveActivitySystem.stopLiveActivity()
+            
             liveActivitySystem.startLiveActivity(
                 startTime: self.startTime,
                 jobState: self.jobState.rawValue,
