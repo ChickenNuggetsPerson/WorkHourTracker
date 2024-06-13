@@ -7,6 +7,15 @@
 
 import SwiftUI
 
+extension AnyTransition {
+    static func moveOrFade(edge: Edge) -> AnyTransition {
+        AnyTransition.asymmetric(
+            insertion: .move(edge: edge),
+            removal: .move(edge: edge)
+        )
+    }
+}
+
 struct MainView: View {
     
     @State private var running : Bool
@@ -105,12 +114,12 @@ struct MainView: View {
                             )
                             .background(
                                 self.jobState == jobType ?
-                                getJobColor(running: true, jobID: self.jobState.rawValue) :
+                                getJobColor(jobID: self.jobState.rawValue) :
                                     Color.init(red: 0.3, green: 0.3, blue: 0.3))
                             .opacity(self.jobState == jobType ? 1 : 0.5)
                             .cornerRadius(15)
                             .shadow(
-                                color: self.jobState == jobType ? getJobColor(running: true, jobID: self.jobState.rawValue) : .clear,
+                                color: self.jobState == jobType ? getJobColor(jobID: self.jobState.rawValue) : .clear,
                                 radius: 10,
                                 x: 0,
                                 y: 0
@@ -160,6 +169,12 @@ struct MainView: View {
             }
     
             
+            VStack() { // Start / Stop Button Colors
+                Spacer()
+                (self.running ? Color.red : Color.green)
+                    .ignoresSafeArea()
+                    .frame(maxHeight: 60)
+            }
             // Start / Stop Button
             VStack(spacing: 0) {
                 Spacer()
@@ -173,16 +188,28 @@ struct MainView: View {
                     }
                     .frame(maxWidth: .infinity)
                     .padding()
-                    .background(self.running ? Color.red : Color.green)
                     .foregroundStyle(.white)
                     .fontWeight(.black)
                     .font(.title)
                 }
-                
+                .background(.ultraThinMaterial)
             }
 
             
             
+            VStack() { // Top Bar background color
+                getJobColor(jobID: self.jobState.rawValue)
+                
+                    .ignoresSafeArea()
+                    .frame(
+                        maxWidth: .infinity,
+                        maxHeight: self.running ? 360 : 0
+                    )
+                    .padding(.top, self.running ? 0 : -100)
+                    .animation(.snappy, value: self.running)
+                Spacer()
+            }
+                
             VStack() { // Top Bar
                 
                 VStack() {
@@ -210,42 +237,40 @@ struct MainView: View {
                     
                     
                 } // End of Inner VStack
-                .background(getJobColor(running: self.running, jobID: self.jobState.rawValue))
-                .overlay(Rectangle().frame(width: nil, height: 5, alignment: .leading).foregroundColor(Color.white), alignment: .bottom)
-                .padding(.bottom)
-                .shadow(
-                    color: getJobColor(running: true, jobID: self.jobState.rawValue),
-                    radius: self.running ? 20 : 0,
-                    x: 0,
-                    y: 0
+                .background(.ultraThinMaterial)
+                .overlay(
+                    Rectangle()
+                    .frame(width: nil, height: 5, alignment: .leading)
+                    .foregroundColor(Color.init(red: 0.2, green: 0.2, blue: 0.2))
+                    
+                    , alignment: .bottom
                 )
-        
+                
+                
                 Spacer()
 
             }
             
-            
-            if (self.showingDesc) {
-                Form() {
-                    Section() {
-                        Button("Close") {
-                            self.showingDesc = false
-                        }
-                        .foregroundColor(.blue)
-                        .fontWeight(.bold)
+        
+            Form() {
+                Section() {
+                    Button("Close") {
+                        self.showingDesc = false
                     }
-                    
-                    Section("Job Description") {
-                        TextEditor(text: $jobDescription)
-                            .font(.title3)
-                            .fontWeight(.regular)
-                            .onChange(of: jobDescription) {
-                                self.saveDescString(str: self.jobDescription)
-                            }
-                    }
+                    .foregroundColor(.blue)
+                    .fontWeight(.bold)
                 }
-                .transition(.push(from: .leading))
+                
+                Section("Job Description") {
+                    TextEditor(text: $jobDescription)
+                        .font(.title3)
+                        .fontWeight(.regular)
+                        .onChange(of: jobDescription) {
+                            self.saveDescString(str: self.jobDescription)
+                        }
+                }
             }
+            .opacity(self.showingDesc ? 1 : 0)
         }
         
     
@@ -266,8 +291,7 @@ struct MainView: View {
         }
         .animation(.bouncy, value: self.running)
         .animation(.spring, value: self.jobState)
-        .animation(.spring, value: self.showingDesc)
-        
+        .animation(.easeInOut, value: self.showingDesc)
     }
         
     
@@ -338,7 +362,7 @@ struct MainView: View {
             liveActivitySystem.startLiveActivity(
                 startTime: self.startTime,
                 jobState: self.jobState.rawValue,
-                jobColor: getJobColor(running: true, jobID: self.jobState.rawValue)
+                jobColor: getJobColor(jobID: self.jobState.rawValue)
             )
         } else {
             liveActivitySystem.stopLiveActivity()

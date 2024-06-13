@@ -28,8 +28,8 @@ struct WorkTrackerApp: App {
             VStack() {
                 contentView(for: globalData.currentPage)
                     .environment(\.managedObjectContext, coreDataManager.context)
+                    .animation(.spring, value: globalData.currentPage)
                     .environment(\.colorScheme, .dark)
-                    .animation(.easeInOut, value: globalData.currentPage)
             }
         }
         
@@ -101,9 +101,7 @@ struct NavView: View {
             }, id: \.self) { page in
                 
                 Button(page.rawValue) {
-                    withAnimation {
-                        globalData.currentPage = page
-                    }
+                    globalData.currentPage = page
                 }
                 .padding()
                 .background(page.color)

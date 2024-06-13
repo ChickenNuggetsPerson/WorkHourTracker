@@ -12,8 +12,9 @@ import PDFKit
 
 
 
-func createAndSharePDF(entries : [JobEntry], payperiod: PayPeriod) {
+func createAndSharePDF(entries : [JobEntry], payperiod: PayPeriod, showingDesc: Bool) {
     
+    var totalHours = 0.0
     
     let pdfRenderer = UIGraphicsPDFRenderer(bounds: CGRect(x: 0, y: 0, width: 595, height: 842)) // A4 paper size
             
@@ -33,7 +34,7 @@ func createAndSharePDF(entries : [JobEntry], payperiod: PayPeriod) {
         
         
         let text = "Timecard for: " + payperiod.toString(full: true)
-        text.draw(at: CGPoint(x: 20, y: 20), withAttributes: boldTitle)
+        text.draw(at: CGPoint(x: 20, y: 30), withAttributes: boldTitle)
 
         var yOffset = 75
         
@@ -59,18 +60,19 @@ func createAndSharePDF(entries : [JobEntry], payperiod: PayPeriod) {
 
                     yOffset += 10
                     
+                    // Draw line
                     context.cgContext.move(to: CGPoint(x: 20, y: yOffset))
                     context.cgContext.addLine(to: CGPoint(x: 575, y: yOffset))
                     context.cgContext.setStrokeColor(UIColor.black.cgColor)
                     context.cgContext.setLineWidth(1)
                     context.cgContext.strokePath()
                     
-                    yOffset += 10
+                    yOffset += 7
                     
                     entry.startTime?.timecardDayString().draw(at: CGPoint(x: jobXpos, y: yOffset), withAttributes: smallTitle)
                     
                     
-                    yOffset += 15
+                    yOffset += 20
                     
                     previousDate = entryDate
                     
@@ -91,21 +93,58 @@ func createAndSharePDF(entries : [JobEntry], payperiod: PayPeriod) {
             
             // Desc
             let desc = entry.desc ?? ""
-            let (wrappedDesc, lines) = wrapText(
-                str: desc,
-                charWidth: 10,
-                lineWidth: 250
-            )
-            wrappedDesc.draw(at: CGPoint(x: descXPos, y: yOffset), withAttributes: normalText)
             
-            yOffset += 30 + (lines * 12)
+            if (showingDesc) {
+                let description = wrapText(
+                    str: desc,
+                    charWidth: 10,
+                    lineWidth: 250
+                )
+                
+                for sub in description {
+                    String(sub).draw(at: CGPoint(x: descXPos, y: yOffset), withAttributes: normalText)
+                    yOffset += 11
+                    
+                    if (yOffset >= 780) {
+                        yOffset = 55
+                        context.beginPage()
+                    }
+                }
+                
+                if (description.count != 0) {
+                    yOffset -= 11
+                }
+            }
             
             
-            if (yOffset >= 800) {
+            yOffset += 15
+            
+            
+            if (yOffset >= 780) {
                 yOffset = 55
                 context.beginPage()
             }
+            
+            totalHours += entry.startTime?.hrsOffset(relativeTo: entry.endTime ?? Date()) ?? 0
+        } // End of entry loop
+        
+        
+        yOffset += 10
+        if (yOffset >= 780) {
+            yOffset = 55
+            context.beginPage()
         }
+        
+        // Draw line
+        context.cgContext.move(to: CGPoint(x: 20, y: yOffset))
+        context.cgContext.addLine(to: CGPoint(x: 575, y: yOffset))
+        context.cgContext.setStrokeColor(UIColor.black.cgColor)
+        context.cgContext.setLineWidth(1)
+        context.cgContext.strokePath()
+        
+        yOffset += 7
+        
+        ("Total Hours: " + String(totalHours) + " hrs").draw(at: CGPoint(x: jobXpos, y: yOffset), withAttributes: smallTitle)
     
     }
     
@@ -131,13 +170,12 @@ func createAndSharePDF(entries : [JobEntry], payperiod: PayPeriod) {
 
 
 
-func wrapText(str : String, charWidth : Int, lineWidth : Int) -> (String, Int) {
+func wrapText(str : String, charWidth : Int, lineWidth : Int) -> [Substring] {
     
     var newStr = ""
     let words = str.split(separator: " ")
     
     var runningWidth = 0;
-    var amtLines = 0
     
     for word in words {
         runningWidth += (word.count + 1) * charWidth
@@ -147,14 +185,12 @@ func wrapText(str : String, charWidth : Int, lineWidth : Int) -> (String, Int) {
         if (runningWidth > lineWidth) {
             newStr += "\n"
             runningWidth = 0
-            amtLines += 1
         }
         
         if (word.hasSuffix("\n") || word.hasPrefix("\n")) {
             runningWidth = 0
-            amtLines += 1
         }
     }
-    
-    return (newStr, amtLines)
+        
+    return newStr.split(separator: "\n")
 }

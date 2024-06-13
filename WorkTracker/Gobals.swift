@@ -230,14 +230,11 @@ func getPayFromJob(id: String, hrs: Double) -> Double {
 
 
 
-func getJobColor(running: Bool, jobID: String) -> Color {
-    if (!running) {
-        return Color.gray
-    }
+func getJobColor(jobID: String) -> Color {
     
     switch(jobID) {
         case JobTypes.JRTech.rawValue:
-            return Color.orange
+            return Color.init(hex: "#FF6463")
         case JobTypes.SRTech.rawValue:
             return Color.green
         case JobTypes.Manager.rawValue:

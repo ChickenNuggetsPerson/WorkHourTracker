@@ -44,6 +44,7 @@ struct PayPeriodView: View {
     @State private var showingDatesForm = false;
     @State private var showingNewEntryForm = false;
     @State private var showingInfoAlert = false;
+    @State private var showingExportAlert = false;
     
     @State private var editJob : ObjectIdentifier? = nil
     @State private var showingEditEntryFrom = false;
@@ -155,6 +156,7 @@ struct PayPeriodView: View {
                 Button(self.titleText) {
                     withAnimation {
                         self.payPeriod = getCurrentPayperiod()
+                        self.highlightedJob = nil
                     }
                 }
                 .foregroundColor(
@@ -198,11 +200,7 @@ struct PayPeriodView: View {
                 .padding([.leading, .trailing], 30)
                 
                 Button(self.totalHoursString + " hrs") {
-                    createAndSharePDF(
-                        entries: self.jobEntries,
-                        payperiod: self.payPeriod
-                    )
-                    
+                    self.showingExportAlert = true;
                 }
                     .font(.title)
                     .fontWeight(.black)
@@ -282,6 +280,23 @@ struct PayPeriodView: View {
                 message: Text(self.getInfoTxt()),
                 dismissButton: .default(Text("OK"))
             )
+        }
+        .alert("Export Timecard:", isPresented: $showingExportAlert) {
+            Button("With Descriptions", role: .none) {
+                createAndSharePDF(
+                    entries: self.jobEntries,
+                    payperiod: self.payPeriod,
+                    showingDesc: true
+                )
+            }
+            Button("Without Descriptions", role: .none) {
+                createAndSharePDF(
+                    entries: self.jobEntries,
+                    payperiod: self.payPeriod,
+                    showingDesc: false
+                )
+            }
+            Button("Cancel", role: .cancel) { }
         }
         
         .onChange(of: self.highlightedJob) {
@@ -613,7 +628,7 @@ struct ListItem: View {
                     HStack() {
                         
                         VStack(alignment: .leading) {
-                            let color = getJobColor(running: true, jobID: getJobFromID(id: self.entryJobID).rawValue)
+                            let color = getJobColor(jobID: getJobFromID(id: self.entryJobID).rawValue)
                             
                             Text(getJobFromID(id: self.entryJobID).rawValue)
                                 .fontWeight(.black)
