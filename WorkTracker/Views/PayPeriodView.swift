@@ -82,8 +82,7 @@ struct PayPeriodView: View {
 
                     ScrollView() {
                         
-                        Color.black
-                            .frame(height: 140)
+                        Color.black.frame(height: 140)
                         
                         ForEach(
                             self.jobEntries
@@ -98,22 +97,17 @@ struct PayPeriodView: View {
                             .padding([.leading, .trailing], 10)
                             .id(i.id)
                             
-                            
                         } // For Each
                         
                         
-                        Color.black
-                            .frame(height: 80)
+                        Color.black.frame(height: 80)
                         
                         
                     } // Scroll View
                     .scrollContentBackground(.hidden)
-                    
                     .onAppear {
                         scrollProxyHolder.proxy = proxy
                     }
-                    
-                    
                 }
             }
             .animation(.bouncy, value: self.highlightedJob)
@@ -273,6 +267,7 @@ struct PayPeriodView: View {
         .animation(.bouncy(extraBounce: 0.1), value: self.payPeriod)
         .animation(.bouncy(), value: self.editJob)
         .animation(.bouncy(), value: self.showingNewEntryForm)
+        .contentTransition(.numericText())
         
         .alert(isPresented: $showingInfoAlert) {
             Alert(
@@ -302,6 +297,7 @@ struct PayPeriodView: View {
         .onChange(of: self.highlightedJob) {
             scrollTo(id: self.highlightedJob)
         }
+        
         
     }
     
@@ -665,7 +661,6 @@ struct ListItem: View {
                             .font(.title2)
                             .fontWeight(.black)
                             .monospaced()
-                            
                         }
                             
                 
@@ -728,6 +723,7 @@ struct ListItem: View {
         .blur(
             radius: self.previewMode ? 0 : (!self.somethingIsHighlighted ? 0 : (self.isHighlighted ? 0 : 4))
         )
+        .contentTransition(.numericText())
     }
 }
 

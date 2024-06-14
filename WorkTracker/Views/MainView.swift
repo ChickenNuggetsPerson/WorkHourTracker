@@ -193,6 +193,7 @@ struct MainView: View {
                     .font(.title)
                 }
                 .background(.ultraThinMaterial)
+                .contentTransition(.interpolate)
             }
 
             
@@ -292,6 +293,7 @@ struct MainView: View {
         .animation(.bouncy, value: self.running)
         .animation(.spring, value: self.jobState)
         .animation(.easeInOut, value: self.showingDesc)
+        .contentTransition(.numericText())
     }
         
     
