@@ -84,25 +84,6 @@ class CoreDataManager {
         saveContext()
     }
     
-    
-    func populateSampleData() {
-        // Add sample data here
-        let jobEntry1 = JobEntry(context: context)
-        jobEntry1.desc = "Sample Job 1"
-        jobEntry1.jobID = getIDFromJob(type: .Manager)
-        jobEntry1.startTime = Date().addingTimeInterval(-10000000)
-        jobEntry1.endTime = Date().addingTimeInterval(3600)
-
-        saveContext()
-    }
-    func floodData() {
-        for i in 1...40 {
-            self.populateSampleData()
-        }
-        print("Done")
-    }
-    
-    
     func fetchJobEntries(dateRange: ClosedRange<Date>) -> [JobEntry] {
         let fetchRequest: NSFetchRequest<JobEntry> = JobEntry.fetchRequest()
            fetchRequest.predicate = NSPredicate(format: "(startTime >= %@) AND (startTime <= %@)", dateRange.lowerBound as NSDate, dateRange.upperBound as NSDate)

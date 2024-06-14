@@ -18,7 +18,7 @@
 		0A7696AF2C0A1779001CB02B /* StorageSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A7696AE2C0A1779001CB02B /* StorageSystem.swift */; };
 		0A7696B62C0ABA81001CB02B /* NSManagedObjectPatch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A7696B52C0ABA81001CB02B /* NSManagedObjectPatch.swift */; };
 		0A7696B82C0ABCF0001CB02B /* Sharesheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A7696B72C0ABCF0001CB02B /* Sharesheet.swift */; };
-		0AEE4CAA2C07735F00CD5E7A /* TimeTrackingAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AEE4CA92C07735F00CD5E7A /* TimeTrackingAttributes.swift */; };
+		0AA7A0DC2C1CF00E000EB9CE /* TimeTrackingAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AEE4CA92C07735F00CD5E7A /* TimeTrackingAttributes.swift */; };
 		0AEE4CB22C07779200CD5E7A /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0AEE4CB12C07779200CD5E7A /* WidgetKit.framework */; };
 		0AEE4CB42C07779200CD5E7A /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0AEE4CB32C07779200CD5E7A /* SwiftUI.framework */; };
 		0AEE4CB72C07779200CD5E7A /* TrackingWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AEE4CB62C07779200CD5E7A /* TrackingWidgetBundle.swift */; };
@@ -146,7 +146,6 @@
 				0AEE4CCB2C07933C00CD5E7A /* Launch Screen.storyboard */,
 				0A127B442C0940F800D801EC /* LiveActivitySystem.swift */,
 				0A127B462C09961700D801EC /* Views */,
-				0AEE4CA92C07735F00CD5E7A /* TimeTrackingAttributes.swift */,
 				0A6CCCD62C068597009CD0DA /* Assets.xcassets */,
 				0A6CCCD82C068597009CD0DA /* Preview Content */,
 				0A7696B72C0ABCF0001CB02B /* Sharesheet.swift */,
@@ -183,6 +182,7 @@
 		0AEE4CB52C07779200CD5E7A /* TrackingWidget */ = {
 			isa = PBXGroup;
 			children = (
+				0AEE4CA92C07735F00CD5E7A /* TimeTrackingAttributes.swift */,
 				0AEE4CB62C07779200CD5E7A /* TrackingWidgetBundle.swift */,
 				0AEE4CB82C07779200CD5E7A /* TrackingWidget.swift */,
 				0AEE4CBA2C07779300CD5E7A /* Assets.xcassets */,
@@ -301,7 +301,7 @@
 				0A6CCCE72C0697AB009CD0DA /* Gobals.swift in Sources */,
 				0A127B4A2C09A39300D801EC /* PayPeriodView.swift in Sources */,
 				0A7696B62C0ABA81001CB02B /* NSManagedObjectPatch.swift in Sources */,
-				0AEE4CAA2C07735F00CD5E7A /* TimeTrackingAttributes.swift in Sources */,
+				0AA7A0DC2C1CF00E000EB9CE /* TimeTrackingAttributes.swift in Sources */,
 				0A7696AF2C0A1779001CB02B /* StorageSystem.swift in Sources */,
 				0A7696B82C0ABCF0001CB02B /* Sharesheet.swift in Sources */,
 				0A6CCCD32C068596009CD0DA /* WorkTrackerApp.swift in Sources */,

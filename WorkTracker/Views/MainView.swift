@@ -22,7 +22,7 @@ struct MainView: View {
     @State private var jobState : JobTypes
     
     @State private var startTime : Date
-    @State var jobDescription : String
+    @State private var jobDescription : String
     
     var payPeriod : PayPeriod = getCurrentPayperiod()
 
@@ -32,9 +32,9 @@ struct MainView: View {
         in: .common
     ).autoconnect()
     
-    @State var timerString: String = " "
-    @State var startTimeString: String = " "
-    @State var endTimeString: String = " "
+    @State private var timerString: String = " "
+    @State private var startTimeString: String = " "
+    @State private var endTimeString: String = " "
     
     @State private var showingSaveAlert = false;
     @State private var showingDesc = false;
@@ -146,6 +146,7 @@ struct MainView: View {
                 Spacer()
                 HStack() {
                     Spacer()
+                    
                     Text("Start:\n" + self.startTimeString)
                         .foregroundColor(self.running ? Color.cyan : .white)
                         .font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/)
@@ -162,6 +163,7 @@ struct MainView: View {
                             .fontWeight(.black)
                             .multilineTextAlignment(.center)
                             .monospacedDigit()
+                        
                         Spacer()
                     }
                 }
@@ -183,7 +185,7 @@ struct MainView: View {
                     self.StartStopBtn()
                 }) {
                     HStack() {
-                        Image(systemName: self.running ? "stop" : "play")
+//                        Image(systemName: self.running ? "stop" : "play")
                         Text(self.running ? "Stop" : "Start")
                     }
                     .frame(maxWidth: .infinity)
@@ -191,9 +193,9 @@ struct MainView: View {
                     .foregroundStyle(.white)
                     .fontWeight(.black)
                     .font(.title)
+                    .monospaced()
                 }
                 .background(.ultraThinMaterial)
-                .contentTransition(.interpolate)
             }
 
             
@@ -317,8 +319,7 @@ struct MainView: View {
         if (!self.running) {
         
             let newStart = roundTime(time: Date())
-            self.startTime = newStart
-            UserDefaults.standard.set(newStart, forKey: "startTime")
+            self.setStartTime(time: newStart)
             
             self.setRunning(run: true);
             
@@ -350,6 +351,10 @@ struct MainView: View {
             self.jobDescription = ""
             self.saveDescString(str: "")
         }
+    }
+    func setStartTime(time: Date) {
+        self.startTime = time
+        UserDefaults.standard.set(time, forKey: "startTime")
     }
     
     func saveDescString(str : String) {

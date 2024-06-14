@@ -15,8 +15,8 @@ struct TrackingWidget: Widget {
 
     var body: some WidgetConfiguration {
         ActivityConfiguration(for: TimeTrackingAttributes.self) { context in
-            TimeTrackingLiveActivityView(context: context)
             
+            LiveActivityView(context: context)
             
         } dynamicIsland: { context in
             DynamicIsland {
@@ -39,11 +39,11 @@ struct TrackingWidget: Widget {
                 
             }
             compactLeading: {
-                TimeTrackingSmallIslandView(context: context, pos: 0)
+                DynamicIslandView(context: context, pos: 0)
             } compactTrailing: {
-                TimeTrackingSmallIslandView(context: context, pos: 1)
+                DynamicIslandView(context: context, pos: 1)
             } minimal: {
-                TimeTrackingSmallIslandView(context: context, pos: 2)
+                DynamicIslandView(context: context, pos: 2)
             }
             .keylineTint(context.state.jobColor)
         }
@@ -52,17 +52,13 @@ struct TrackingWidget: Widget {
 
 
 
-
-
-
-struct TimeTrackingLiveActivityView: View {
+struct LiveActivityView: View {
     let context: ActivityViewContext<TimeTrackingAttributes>
     
     var body: some View {
        
         ZStack() {
-            Color.black
-                .ignoresSafeArea()
+            Color.black.ignoresSafeArea()
             
             VStack(alignment: .center) {
                 Text(context.state.jobType)
@@ -88,9 +84,7 @@ struct TimeTrackingLiveActivityView: View {
 
 
 
-
-
-struct TimeTrackingSmallIslandView: View {
+struct DynamicIslandView: View {
     let context: ActivityViewContext<TimeTrackingAttributes>
     let pos : Int
     
@@ -103,33 +97,26 @@ struct TimeTrackingSmallIslandView: View {
         return String(firstLetters).uppercased()
     }
     
-    func getTxt() -> String {
-        return self.getAbriviation(str: context.state.jobType)
-    }
-    
     var body: some View {
         
         if (self.pos == 0) { // Compact Leading
-            Text(getTxt())
+            Text(self.getAbriviation(str: context.state.jobType))
                 .font(.title)
                 .fontWeight(.black)
                 .foregroundColor(context.state.jobColor)
             
         } else if (self.pos == 1) { // Compact Trailing
-            
             Image(systemName: "timer")
                 .font(.largeTitle)
                 .fontWeight(.black)
                 .foregroundColor(context.state.jobColor)
             
         } else { // Minimal
-            Text(getTxt())
+            Text(self.getAbriviation(str: context.state.jobType))
                 .font(.title)
                 .fontWeight(.black)
                 .foregroundColor(context.state.jobColor)
+        
         }
     }
 }
-
-
-

@@ -111,6 +111,7 @@ struct PayPeriodView: View {
                 }
             }
             .animation(.bouncy, value: self.highlightedJob)
+            .contentTransition(.opacity)
             
             VStack() { // Blurs
                 
@@ -148,10 +149,8 @@ struct PayPeriodView: View {
             
             VStack() { // Menus
                 Button(self.titleText) {
-                    withAnimation {
-                        self.payPeriod = getCurrentPayperiod()
-                        self.highlightedJob = nil
-                    }
+                    self.payPeriod = getCurrentPayperiod()
+                    self.highlightedJob = nil
                 }
                 .foregroundColor(
                     self.currentPayPeriod == self.payPeriod ? self.titleColor : .gray
@@ -161,7 +160,7 @@ struct PayPeriodView: View {
             
                     
                 HStack() {
-                    Button(" ", systemImage: "arrow.left") {
+                    Button("", systemImage: "arrow.left") {
                         self.shiftPayPeriod(forwards: false)
                         self.highlightedJob = nil
                     }
@@ -179,11 +178,11 @@ struct PayPeriodView: View {
                     .fontWeight(.black)
                     .lineLimit(1)
                     .minimumScaleFactor(0.01)
-                        
+                    .monospaced()
                     
                     Spacer()
                     
-                    Button(" ", systemImage: "arrow.right") {
+                    Button("", systemImage: "arrow.right") {
                         self.shiftPayPeriod(forwards: true)
                         self.highlightedJob = nil
                     }
@@ -191,7 +190,7 @@ struct PayPeriodView: View {
                     .font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/)
                     .fontWeight(.black)
                 }
-                .padding([.leading, .trailing], 30)
+                .padding([.leading, .trailing], 25)
                 
                 Button(self.totalHoursString + " hrs") {
                     self.showingExportAlert = true;
@@ -469,11 +468,11 @@ struct JobEntryForm: View {
                     DatePicker(selection: $newEntryStart) {
                         Text("Start:")
                     }
-                    .onChange(of: newEntryStart) {
-                        self.newEntryEnd = self.newEntryStart
-                    }
                     
-                    DatePicker(selection: $newEntryEnd, in: self.newEntryStart...) {
+                    DatePicker(
+                        selection: $newEntryEnd,
+                        in: self.newEntryStart...self.newEntryStart.addHours(hours: 23)
+                    ) {
                         Text("End:")
                     }
                 }
