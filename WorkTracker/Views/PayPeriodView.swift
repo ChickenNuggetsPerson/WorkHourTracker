@@ -327,10 +327,11 @@ struct PayPeriodView: View {
         var totalPay = 0.0
         var totalHours = 0.0
         
+
         let entries = self.jobEntries
         for entry in entries {
-            let hrs = entry.startTime?.hrsOffset(relativeTo: entry.endTime ?? Date()) ?? 0
-            
+            let hrs = entry.startTime?.hrsOffset(relativeTo: entry.endTime ?? Date()) ?? 0.0
+
             totalHours += hrs
             totalPay += getPayFromJob(
                 id: entry.jobID ?? "",
@@ -338,8 +339,11 @@ struct PayPeriodView: View {
             )
         }
         
+        var infoTXT = String(totalHours) + " hrs\n$" + String(floor(totalPay * 0.88)) + "\n"
         
-        return String(totalHours) + " hrs\n$" + String(floor(totalPay * 0.88))
+        infoTXT += entries.getHoursTotals().toText()
+        
+        return infoTXT
     }
 
 }

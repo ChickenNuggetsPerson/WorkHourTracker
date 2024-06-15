@@ -130,7 +130,7 @@ func createAndSharePDF(entries : [JobEntry], payperiod: PayPeriod, showingDesc: 
         
         
         yOffset += 10
-        if (yOffset >= 780) {
+        if (yOffset >= 710) {
             yOffset = 55
             context.beginPage()
         }
@@ -145,6 +145,8 @@ func createAndSharePDF(entries : [JobEntry], payperiod: PayPeriod, showingDesc: 
         yOffset += 7
         
         ("Total Hours: " + String(totalHours) + " hrs").draw(at: CGPoint(x: jobXpos, y: yOffset), withAttributes: smallTitle)
+        yOffset += 5
+        entries.getHoursTotals().toText().draw(at: CGPoint(x: jobXpos, y: yOffset), withAttributes: normalText)
     
     }
     

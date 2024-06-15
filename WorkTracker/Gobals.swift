@@ -227,9 +227,6 @@ func getPayFromJob(id: String, hrs: Double) -> Double {
 }
 
 
-
-
-
 func getJobColor(jobID: String) -> Color {
     
     switch(jobID) {
@@ -244,6 +241,43 @@ func getJobColor(jobID: String) -> Color {
         
         default:
             return Color.gray
+    }
+}
+
+
+typealias JobHoursDict = [ JobTypes : Double ]
+extension [JobEntry] {
+    func getHoursTotals() -> JobHoursDict {
+        var jobHours : JobHoursDict = [:]
+        for job in JobTypes.allCases {
+            jobHours[job] = 0.0
+        }
+        
+        for entry in self {
+            let hrs = entry.startTime?.hrsOffset(relativeTo: entry.endTime ?? Date()) ?? 0.0
+            let jobID = getJobFromID(id: entry.jobID ?? "")
+            jobHours[jobID]! += hrs
+        }
+        
+        return jobHours
+    }
+}
+extension JobHoursDict {
+    func toText() -> String {
+        var infoTXT = ""
+        
+        for job in JobTypes.allCases {
+            let hrs = self[job] ?? 0.0
+            if (hrs == 0.0) { continue; }
+            
+            infoTXT += "\n"
+            infoTXT += job.rawValue
+            infoTXT += ": "
+            infoTXT += String(hrs)
+            infoTXT += " hrs"
+        }
+        
+        return infoTXT
     }
 }
 
