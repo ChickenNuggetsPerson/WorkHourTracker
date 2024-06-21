@@ -182,15 +182,19 @@ enum JobTypes : String, CaseIterable, AppEnum {
     static var typeDisplayRepresentation: TypeDisplayRepresentation {
         TypeDisplayRepresentation(name: "JobTypes")
     }
-   
+       
     static var caseDisplayRepresentations: [JobTypes : DisplayRepresentation] {
         [
            .JRTech: DisplayRepresentation(title: "Junior Tech"),
            .SRTech: DisplayRepresentation(title: "Senior Tech"),
            .Manager: DisplayRepresentation(title: "Rentals Manager"),
-           .IT: DisplayRepresentation(title: ""),
-           .undef: DisplayRepresentation(title: "")
+           .IT: DisplayRepresentation(title: "IT"),
+           .undef: DisplayRepresentation(title: "Undef")
         ]
+    }
+    
+    static var siriDisplayRepresentations: [JobTypes : DisplayRepresentation] {
+        caseDisplayRepresentations.filter { $0.key != .IT && $0.key != .undef }
     }
 }
 

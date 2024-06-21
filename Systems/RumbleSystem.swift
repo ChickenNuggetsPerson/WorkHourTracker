@@ -8,7 +8,6 @@
 import Foundation
 import UIKit
 
-
 class RumbleSystem {
     static let shared = RumbleSystem()
     let generator = UIImpactFeedbackGenerator(style: .medium)

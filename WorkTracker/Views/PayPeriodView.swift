@@ -151,6 +151,7 @@ struct PayPeriodView: View {
                 Button(self.titleText) {
                     self.payPeriod = getCurrentPayperiod()
                     self.highlightedJob = nil
+                    RumbleSystem.shared.rumble()
                 }
                 .foregroundColor(
                     self.currentPayPeriod == self.payPeriod ? self.titleColor : .gray
@@ -163,6 +164,7 @@ struct PayPeriodView: View {
                     Button("", systemImage: "arrow.left") {
                         self.shiftPayPeriod(forwards: false)
                         self.highlightedJob = nil
+                        RumbleSystem.shared.rumble()
                     }
                     .foregroundColor(.yellow)
                     .font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/)
@@ -172,6 +174,7 @@ struct PayPeriodView: View {
                     
                     Button(self.payPeriod.toString()) {
                         self.showingDatesForm.toggle()
+                        RumbleSystem.shared.rumble()
                     }
                     .foregroundColor(self.showingDatesForm ? .cyan : .white)
                     .font(.largeTitle)
@@ -185,6 +188,7 @@ struct PayPeriodView: View {
                     Button("", systemImage: "arrow.right") {
                         self.shiftPayPeriod(forwards: true)
                         self.highlightedJob = nil
+                        RumbleSystem.shared.rumble()
                     }
                     .foregroundColor(.yellow)
                     .font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/)
@@ -194,6 +198,7 @@ struct PayPeriodView: View {
                 
                 Button(self.totalHoursString + " hrs") {
                     self.showingExportAlert = true;
+                    RumbleSystem.shared.rumble()
                 }
                     .font(.title)
                     .fontWeight(.black)
@@ -231,6 +236,7 @@ struct PayPeriodView: View {
                 HStack() {
                     Button("", systemImage: "info.circle") {
                         self.showingInfoAlert = true
+                        RumbleSystem.shared.rumble()
                     }
                     .padding(20)
                     .font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/)
@@ -238,6 +244,7 @@ struct PayPeriodView: View {
                     Spacer()
                     Button("", systemImage: "plus") {
                         self.showingNewEntryForm = true
+                        RumbleSystem.shared.rumble()
                     }
                     .padding(20)
                     .font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/)

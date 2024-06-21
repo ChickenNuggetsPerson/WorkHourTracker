@@ -81,13 +81,11 @@ class TimerSystem : ObservableObject {
     
     func startTimer() {
         self.running = true
-        UserDefaults.standard.set(self.running, forKey: "running")
         self.startTime = roundTime(time: Date())
         self.enableDisableLiveAcitivty()
     }
     func stopTimer() {
         self.running = false
-        UserDefaults.standard.set(self.running, forKey: "running")
         self.jobDescription = ""
         self.enableDisableLiveAcitivty()
     }
@@ -101,6 +99,12 @@ class TimerSystem : ObservableObject {
             jobID: getIDFromJob(type: self.jobState),
             startTime: start,
             endTime: stop
+        )
+        
+        LiveActivitySystem.shared.updateActivity(
+            startTime: self.startTime,
+            jobState: "Saved",
+            jobColor: getJobColor(jobID: self.jobState.rawValue)
         )
     }
 

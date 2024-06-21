@@ -101,6 +101,7 @@ struct NavView: View {
             }, id: \.self) { page in
                 
                 Button(page.rawValue) {
+                    RumbleSystem.shared.rumble()
                     globalData.currentPage = page
                 }
                 .padding()

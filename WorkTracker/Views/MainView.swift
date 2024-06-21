@@ -7,15 +7,6 @@
 
 import SwiftUI
 
-extension AnyTransition {
-    static func moveOrFade(edge: Edge) -> AnyTransition {
-        AnyTransition.asymmetric(
-            insertion: .move(edge: edge),
-            removal: .move(edge: edge)
-        )
-    }
-}
-
 struct MainView: View {
     
     @ObservedObject var timerSystem = TimerSystem.shared
@@ -38,10 +29,6 @@ struct MainView: View {
     init() {
         self.showingSaveAlert = false;
     }
-    
-    
-    
-    
     
     var body: some View {
         
@@ -77,7 +64,7 @@ struct MainView: View {
                     
                     Button(action: {
                         self.timerSystem.jobState = jobType
-                        
+                        RumbleSystem.shared.rumble()
                     }) {
                         Text(jobType.rawValue)
                             .foregroundColor(.white)

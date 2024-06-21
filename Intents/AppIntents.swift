@@ -25,6 +25,7 @@ struct StopTimerIntent : AppIntent, LiveActivityIntent {
         
         if (TimerSystem.shared.startTime != roundTime(time: Date())) {
             TimerSystem.shared.save()
+            try? await Task.sleep(nanoseconds: 2_000_000_000)
         }
     
         TimerSystem.shared.stopTimer()
@@ -76,8 +77,11 @@ struct ToggleTimerIntent : AppIntent, LiveActivityIntent {
             
             if (TimerSystem.shared.startTime != roundTime(time: Date())) {
                 TimerSystem.shared.save()
+                try? await Task.sleep(nanoseconds: 2_000_000_000)
             }
+        
             TimerSystem.shared.stopTimer()
+            
         } else {
             TimerSystem.shared.startTimer()
         }

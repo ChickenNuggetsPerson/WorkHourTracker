@@ -77,6 +77,8 @@ struct ListItemView: View {
                 } else {
                     self.highlightedJob = self.entryID
                 }
+                
+                RumbleSystem.shared.rumble()
             }) {
                 
                 VStack(alignment: .leading) {
