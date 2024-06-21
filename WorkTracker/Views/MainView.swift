@@ -18,11 +18,7 @@ extension AnyTransition {
 
 struct MainView: View {
     
-    @State private var running : Bool
-    @State private var jobState : JobTypes
-    
-    @State private var startTime : Date
-    @State private var jobDescription : String
+    @ObservedObject var timerSystem = TimerSystem.shared
     
     var payPeriod : PayPeriod = getCurrentPayperiod()
 
@@ -39,28 +35,8 @@ struct MainView: View {
     @State private var showingSaveAlert = false;
     @State private var showingDesc = false;
     
-    var liveActivitySystem = LiveActivitySystem()
-    
     init() {
-        if let storedTime = UserDefaults.standard.object(forKey: "startTime") as? Date {
-            self.startTime = storedTime
-    
-        } else {
-            
-            print("Could not read")
-            
-            self.startTime = roundTime(time: Date())
-        }
-        
-        self.running = UserDefaults.standard.bool(forKey: "running")
-        self.jobState = JobTypes(rawValue: UserDefaults.standard.string(forKey: "jobType") ?? JobTypes.Manager.rawValue)!
-
         self.showingSaveAlert = false;
-        
-        self.jobDescription = UserDefaults.standard.string(forKey: "desc") ?? ""
-        
-        self.enableDisableLiveAcitivty()
-
     }
     
     
@@ -88,7 +64,7 @@ struct MainView: View {
                 
             }
             .padding(.bottom, 180)
-            .opacity(self.running ? 1 : 0)
+            .opacity(timerSystem.running ? 1 : 0)
             
             
             VStack() { // Job Type List
@@ -100,26 +76,26 @@ struct MainView: View {
                 }, id: \.self) { jobType in
                     
                     Button(action: {
-                        self.jobState = jobType
-                        UserDefaults.standard.set(jobType.rawValue, forKey: "jobType")
+                        self.timerSystem.jobState = jobType
+                        
                     }) {
                         Text(jobType.rawValue)
                             .foregroundColor(.white)
                             .font(.title)
                             .fontWeight(.black)
                             .frame(
-                                maxWidth: self.running ? 0 
-                                : (self.jobState == jobType ? .infinity : 330),
-                                maxHeight: self.jobState == jobType ? 80 : 70
+                                maxWidth: self.timerSystem.running ? 0
+                                : (self.timerSystem.jobState == jobType ? .infinity : 330),
+                                maxHeight: self.timerSystem.jobState == jobType ? 80 : 70
                             )
                             .background(
-                                self.jobState == jobType ?
-                                getJobColor(jobID: self.jobState.rawValue) :
+                                self.timerSystem.jobState == jobType ?
+                                getJobColor(jobID: self.timerSystem.jobState.rawValue) :
                                     Color.init(red: 0.3, green: 0.3, blue: 0.3))
-                            .opacity(self.jobState == jobType ? 1 : 0.5)
+                            .opacity(self.timerSystem.jobState == jobType ? 1 : 0.5)
                             .cornerRadius(15)
                             .shadow(
-                                color: self.jobState == jobType ? getJobColor(jobID: self.jobState.rawValue) : .clear,
+                                color: self.timerSystem.jobState == jobType ? getJobColor(jobID: self.timerSystem.jobState.rawValue) : .clear,
                                 radius: 10,
                                 x: 0,
                                 y: 0
@@ -131,15 +107,15 @@ struct MainView: View {
             }
             .padding([.leading, .trailing])
             .padding(.bottom, 300)
-            .animation(.spring(duration: 0.3), value: self.running)
-            .animation(.bouncy(), value: self.jobState)
+            .animation(.spring(duration: 0.3), value: self.timerSystem.running)
+            .animation(.bouncy(), value: self.timerSystem.jobState)
             
 
             VStack() {
                 Spacer()
                 NavView(activePage: Pages.Main)
             }
-            .padding(.bottom, self.running ? 300 : 200)
+            .padding(.bottom, self.timerSystem.running ? 300 : 200)
             
             
             VStack() { // Start / Stop Times
@@ -148,7 +124,7 @@ struct MainView: View {
                     Spacer()
                     
                     Text("Start:\n" + self.startTimeString)
-                        .foregroundColor(self.running ? Color.cyan : .white)
+                        .foregroundColor(self.timerSystem.running ? Color.cyan : .white)
                         .font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/)
                         .fontWeight(.black)
                         .multilineTextAlignment(.center)
@@ -156,9 +132,9 @@ struct MainView: View {
                     
                     Spacer()
                     
-                    if (self.running) {
+                    if (self.timerSystem.running) {
                         Text("End:\n" + self.endTimeString)
-                            .foregroundColor(self.running ? .gray : .white)
+                            .foregroundColor(self.timerSystem.running ? .gray : .white)
                             .font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/)
                             .fontWeight(.black)
                             .multilineTextAlignment(.center)
@@ -173,7 +149,7 @@ struct MainView: View {
             
             VStack() { // Start / Stop Button Colors
                 Spacer()
-                (self.running ? Color.red : Color.green)
+                (self.timerSystem.running ? Color.red : Color.green)
                     .ignoresSafeArea()
                     .frame(maxHeight: 60)
             }
@@ -182,11 +158,10 @@ struct MainView: View {
                 Spacer()
                 
                 Button(action: {
-                    self.StartStopBtn()
+                    self.startStopButtonPress()
                 }) {
                     HStack() {
-//                        Image(systemName: self.running ? "stop" : "play")
-                        Text(self.running ? "Stop" : "Start")
+                        Text(self.timerSystem.running ? "Stop" : "Start")
                     }
                     .frame(maxWidth: .infinity)
                     .padding()
@@ -201,15 +176,15 @@ struct MainView: View {
             
             
             VStack() { // Top Bar background color
-                getJobColor(jobID: self.jobState.rawValue)
+                getJobColor(jobID: self.timerSystem.jobState.rawValue)
                 
                     .ignoresSafeArea()
                     .frame(
                         maxWidth: .infinity,
-                        maxHeight: self.running ? 360 : 0
+                        maxHeight: self.timerSystem.running ? 360 : 0
                     )
-                    .padding(.top, self.running ? 0 : -100)
-                    .animation(.snappy, value: self.running)
+                    .padding(.top, self.timerSystem.running ? 0 : -100)
+                    .animation(.snappy, value: self.timerSystem.running)
                 Spacer()
             }
                 
@@ -223,17 +198,17 @@ struct MainView: View {
                         .padding()
                         .frame(maxWidth: .infinity)
                     
-                    Button(self.jobState.rawValue) {
-                        if (!self.running) {return}
+                    Button(self.timerSystem.jobState.rawValue) {
+                        if (!self.timerSystem.running) {return}
                         self.showingDesc.toggle()
                     }
                     .font(
-                        self.running ? .system(size: 60) : .title
+                        self.timerSystem.running ? .system(size: 60) : .title
                     )
                     .fontWeight(.black)
                     .foregroundColor(.white)
                     .frame(maxWidth: .infinity, minHeight:
-                            self.running ? 290 : 120
+                            self.timerSystem.running ? 290 : 120
                     )
                     .multilineTextAlignment(.center)
                     
@@ -259,18 +234,16 @@ struct MainView: View {
                 Section() {
                     Button("Close") {
                         self.showingDesc = false
+                        self.hideKeyboard()
                     }
                     .foregroundColor(.blue)
                     .fontWeight(.bold)
                 }
                 
                 Section("Job Description") {
-                    TextEditor(text: $jobDescription)
+                    TextEditor(text: $timerSystem.jobDescription)
                         .font(.title3)
                         .fontWeight(.regular)
-                        .onChange(of: jobDescription) {
-                            self.saveDescString(str: self.jobDescription)
-                        }
                 }
             }
             .opacity(self.showingDesc ? 1 : 0)
@@ -279,11 +252,11 @@ struct MainView: View {
     
         .alert("What do you want to do?", isPresented: $showingSaveAlert) {
             Button("Save and Stop Timer", role: .none) {
-                save()
-                self.setRunning(run: false);
+                self.timerSystem.save()
+                self.timerSystem.stopTimer()
             }
             Button("Stop Timer (Don't Save)", role: .destructive) {
-                self.setRunning(run: false);
+                self.timerSystem.stopTimer()
             }
             Button("Cancel", role: .cancel) { }
         }
@@ -292,8 +265,8 @@ struct MainView: View {
         .onReceive(timer) { (_) in
             self.updateTexts()
         }
-        .animation(.bouncy, value: self.running)
-        .animation(.spring, value: self.jobState)
+        .animation(.bouncy, value: self.timerSystem.running)
+        .animation(.spring, value: self.timerSystem.jobState)
         .animation(.easeInOut, value: self.showingDesc)
         .contentTransition(.numericText())
     }
@@ -302,94 +275,34 @@ struct MainView: View {
     
     
     func updateTexts() {
-        self.timerString = String(self.startTime.hrsOffset(relativeTo: roundTime(time: Date()))) + " hrs"
+        self.timerString = String(
+            self.timerSystem.startTime.hrsOffset(relativeTo: roundTime(time: Date()))
+        ) + " hrs"
        
-        if (self.running) {
+        if (self.timerSystem.running) {
             
-            self.startTimeString = dateToTime(date: roundTime(time: self.startTime))
+            self.startTimeString = dateToTime(date: roundTime(time: self.timerSystem.startTime))
             
             self.endTimeString = dateToTime(date: roundTime(time: Date()))
         } else {
             self.startTimeString = dateToTime(date: roundTime(time: Date()))
         }
     }
-
-    func StartStopBtn() {
-
-        if (!self.running) {
+    
+    func startStopButtonPress() {
         
-            let newStart = roundTime(time: Date())
-            self.setStartTime(time: newStart)
-            
-            self.setRunning(run: true);
-            
-        } else {
-            // Done
-            let endTime = roundTime(time: Date())
-            if (self.startTime == endTime) {
-                
-                self.setRunning(run: false);
-                
-                return; // Not enough time has passed
+        if (self.timerSystem.running) {
+            if (self.timerSystem.startTime != roundTime(time: Date())) {
+                self.showingSaveAlert = true
+                return
             }
-            
-            // Save time
-            showingSaveAlert = true;
-            return
-            
         }
-        
     
+        self.timerSystem.toggleTimer()
     }
     
-    func setRunning(run : Bool) {
-        self.running = run;
-        UserDefaults.standard.set(self.running, forKey: "running")
-        self.enableDisableLiveAcitivty()
-        if (run == false) {
-            self.showingDesc = false
-            self.jobDescription = ""
-            self.saveDescString(str: "")
-        }
-    }
-    func setStartTime(time: Date) {
-        self.startTime = time
-        UserDefaults.standard.set(time, forKey: "startTime")
-    }
-    
-    func saveDescString(str : String) {
-        UserDefaults.standard.set(str, forKey: "desc")
-    }
-    
-    func enableDisableLiveAcitivty() {
-        
-        if (self.running) {
-            liveActivitySystem.stopLiveActivity()
-            
-            liveActivitySystem.startLiveActivity(
-                startTime: self.startTime,
-                jobState: self.jobState.rawValue,
-                jobColor: getJobColor(jobID: self.jobState.rawValue)
-            )
-        } else {
-            liveActivitySystem.stopLiveActivity()
-        }
-    }
-    
-    func save() {
-        let start = self.startTime
-        let stop = roundTime(time: Date())
-//        print(start.formatted())
-//        print(stop.formatted())
-        
-        CoreDataManager.shared.createJobEntry(
-            desc: self.jobDescription,
-            jobID: getIDFromJob(type: self.jobState),
-            startTime: start,
-            endTime: stop
-        )
-        
-        
+    private func hideKeyboard() {
+        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
     }
     
 }

@@ -9,6 +9,7 @@
 import Foundation
 import SwiftUI
 import Combine
+import AppIntents
 
 struct PayPeriod : Equatable {
     var startDate: Date
@@ -168,12 +169,29 @@ extension Date {
 
 
 
-enum JobTypes : String, CaseIterable {
+enum JobTypes : String, CaseIterable, AppEnum {
+    
     case JRTech = "Junior Tech"
     case SRTech = "Senior Tech"
     case Manager = "Rentals Manager"
     case IT = "IT"
     case undef
+    
+    var id: String { rawValue }
+       
+    static var typeDisplayRepresentation: TypeDisplayRepresentation {
+        TypeDisplayRepresentation(name: "JobTypes")
+    }
+   
+    static var caseDisplayRepresentations: [JobTypes : DisplayRepresentation] {
+        [
+           .JRTech: DisplayRepresentation(title: "Junior Tech"),
+           .SRTech: DisplayRepresentation(title: "Senior Tech"),
+           .Manager: DisplayRepresentation(title: "Rentals Manager"),
+           .IT: DisplayRepresentation(title: ""),
+           .undef: DisplayRepresentation(title: "")
+        ]
+    }
 }
 
 func getIDFromJob(type: JobTypes) -> String {

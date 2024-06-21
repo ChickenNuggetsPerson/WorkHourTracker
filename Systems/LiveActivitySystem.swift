@@ -10,6 +10,8 @@ import ActivityKit
 import SwiftUI
 
 class LiveActivitySystem {
+    static let shared = LiveActivitySystem()
+    
     @State private var activity: Activity<TimeTrackingAttributes>? = nil
     
     func startLiveActivity(

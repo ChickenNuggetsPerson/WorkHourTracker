@@ -143,20 +143,20 @@ class CoreDataManager {
     }
     
     
-    func exportToJSON() -> String {
-        let jobEntries : [JobEntry] = CoreDataManager.shared.fetchAllJobEntries()
-        let jobEntryDicts = jobEntries.map { $0.toDictionary() }
-        
+//    func exportToJSON() -> String {
+//        let jobEntries : [JobEntry] = CoreDataManager.shared.fetchAllJobEntries()
+//        let jobEntryDicts = jobEntries.map { $0.toDictionary() }
+//        
 //        print(jobEntryDicts)
-        
-        do {
-            let jsondata = try JSONSerialization.data(withJSONObject: jobEntryDicts, options: .prettyPrinted)
-            return String(data: jsondata, encoding: .utf8) ?? ""
-        } catch {
-            print("Error Making JSON Data")
-            return ""
-        }
-    }
+//        
+//        do {
+//            let jsondata = try JSONSerialization.data(withJSONObject: jobEntryDicts, options: .prettyPrinted)
+//            return String(data: jsondata, encoding: .utf8) ?? ""
+//        } catch {
+//            print("Error Making JSON Data")
+//            return ""
+//        }
+//    }
     
 
     

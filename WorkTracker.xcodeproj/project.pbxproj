@@ -18,6 +18,18 @@
 		0A7696AF2C0A1779001CB02B /* StorageSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A7696AE2C0A1779001CB02B /* StorageSystem.swift */; };
 		0A7696B62C0ABA81001CB02B /* NSManagedObjectPatch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A7696B52C0ABA81001CB02B /* NSManagedObjectPatch.swift */; };
 		0A7696B82C0ABCF0001CB02B /* Sharesheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A7696B72C0ABCF0001CB02B /* Sharesheet.swift */; };
+		0A9918762C24BC7D00CD8694 /* RumbleSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A9918752C24BC7D00CD8694 /* RumbleSystem.swift */; };
+		0A9918782C24BF9400CD8694 /* TimerSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A9918772C24BF9400CD8694 /* TimerSystem.swift */; };
+		0A9918842C2513FD00CD8694 /* AppIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A9918832C2513FD00CD8694 /* AppIntents.swift */; };
+		0A9918852C2513FD00CD8694 /* AppIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A9918832C2513FD00CD8694 /* AppIntents.swift */; };
+		0A9918862C2515B300CD8694 /* TimerSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A9918772C24BF9400CD8694 /* TimerSystem.swift */; };
+		0A9918872C2515BE00CD8694 /* Gobals.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A6CCCE62C0697AB009CD0DA /* Gobals.swift */; };
+		0A9918882C2515D400CD8694 /* LiveActivitySystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A127B442C0940F800D801EC /* LiveActivitySystem.swift */; };
+		0A99188A2C2515FA00CD8694 /* RumbleSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A9918752C24BC7D00CD8694 /* RumbleSystem.swift */; };
+		0A99188B2C25161000CD8694 /* StorageSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A7696AE2C0A1779001CB02B /* StorageSystem.swift */; };
+		0A99188C2C25162600CD8694 /* Storage.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 0A6CCCE82C06A011009CD0DA /* Storage.xcdatamodeld */; };
+		0A99188E2C2516EE00CD8694 /* JobItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A99188D2C2516EE00CD8694 /* JobItemView.swift */; };
+		0A99188F2C2516EE00CD8694 /* JobItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A99188D2C2516EE00CD8694 /* JobItemView.swift */; };
 		0AA7A0DC2C1CF00E000EB9CE /* TimeTrackingAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AEE4CA92C07735F00CD5E7A /* TimeTrackingAttributes.swift */; };
 		0AEE4CB22C07779200CD5E7A /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0AEE4CB12C07779200CD5E7A /* WidgetKit.framework */; };
 		0AEE4CB42C07779200CD5E7A /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0AEE4CB32C07779200CD5E7A /* SwiftUI.framework */; };
@@ -69,6 +81,10 @@
 		0A7696AE2C0A1779001CB02B /* StorageSystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageSystem.swift; sourceTree = "<group>"; };
 		0A7696B52C0ABA81001CB02B /* NSManagedObjectPatch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSManagedObjectPatch.swift; sourceTree = "<group>"; };
 		0A7696B72C0ABCF0001CB02B /* Sharesheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sharesheet.swift; sourceTree = "<group>"; };
+		0A9918752C24BC7D00CD8694 /* RumbleSystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RumbleSystem.swift; sourceTree = "<group>"; };
+		0A9918772C24BF9400CD8694 /* TimerSystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerSystem.swift; sourceTree = "<group>"; };
+		0A9918832C2513FD00CD8694 /* AppIntents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIntents.swift; sourceTree = "<group>"; };
+		0A99188D2C2516EE00CD8694 /* JobItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobItemView.swift; sourceTree = "<group>"; };
 		0AEE4CA92C07735F00CD5E7A /* TimeTrackingAttributes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeTrackingAttributes.swift; sourceTree = "<group>"; };
 		0AEE4CAF2C07779200CD5E7A /* TrackingWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = TrackingWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		0AEE4CB12C07779200CD5E7A /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
@@ -110,6 +126,7 @@
 				0A6CCCD22C068596009CD0DA /* WorkTrackerApp.swift */,
 				0A6CCCD42C068596009CD0DA /* MainView.swift */,
 				0A127B492C09A39300D801EC /* PayPeriodView.swift */,
+				0A99188D2C2516EE00CD8694 /* JobItemView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -117,10 +134,11 @@
 		0A6CCCC62C068595009CD0DA = {
 			isa = PBXGroup;
 			children = (
-				0A7696B42C0A18C0001CB02B /* Storage */,
+				0A99187C2C2511D700CD8694 /* Intents */,
 				0AEE4CC92C07929100CD5E7A /* Artboard 1.png */,
 				0AEE4CC52C077AA500CD5E7A /* ColorPatch.swift */,
 				0A7696B52C0ABA81001CB02B /* NSManagedObjectPatch.swift */,
+				0A9918892C2515E800CD8694 /* Systems */,
 				0A6CCCD12C068596009CD0DA /* WorkTracker */,
 				0AEE4CB52C07779200CD5E7A /* TrackingWidget */,
 				0AEE4CB02C07779200CD5E7A /* Frameworks */,
@@ -140,11 +158,11 @@
 		0A6CCCD12C068596009CD0DA /* WorkTracker */ = {
 			isa = PBXGroup;
 			children = (
+				0A7696B42C0A18C0001CB02B /* Storage */,
 				0AFF99A32C0D7BE90019160F /* WorkTracker.entitlements */,
 				0AEE4CC82C078F3700CD5E7A /* Info.plist */,
 				0A6CCCE62C0697AB009CD0DA /* Gobals.swift */,
 				0AEE4CCB2C07933C00CD5E7A /* Launch Screen.storyboard */,
-				0A127B442C0940F800D801EC /* LiveActivitySystem.swift */,
 				0A127B462C09961700D801EC /* Views */,
 				0A6CCCD62C068597009CD0DA /* Assets.xcassets */,
 				0A6CCCD82C068597009CD0DA /* Preview Content */,
@@ -168,6 +186,24 @@
 				0A6CCCE82C06A011009CD0DA /* Storage.xcdatamodeld */,
 			);
 			path = Storage;
+			sourceTree = "<group>";
+		};
+		0A99187C2C2511D700CD8694 /* Intents */ = {
+			isa = PBXGroup;
+			children = (
+				0A9918832C2513FD00CD8694 /* AppIntents.swift */,
+			);
+			path = Intents;
+			sourceTree = "<group>";
+		};
+		0A9918892C2515E800CD8694 /* Systems */ = {
+			isa = PBXGroup;
+			children = (
+				0A9918752C24BC7D00CD8694 /* RumbleSystem.swift */,
+				0A9918772C24BF9400CD8694 /* TimerSystem.swift */,
+				0A127B442C0940F800D801EC /* LiveActivitySystem.swift */,
+			);
+			path = Systems;
 			sourceTree = "<group>";
 		};
 		0AEE4CB02C07779200CD5E7A /* Frameworks */ = {
@@ -295,16 +331,20 @@
 			buildActionMask = 2147483647;
 			files = (
 				0A6CCCD52C068596009CD0DA /* MainView.swift in Sources */,
+				0A9918762C24BC7D00CD8694 /* RumbleSystem.swift in Sources */,
 				0A6CCCEA2C06A011009CD0DA /* Storage.xcdatamodeld in Sources */,
 				0AEE4CC62C077AA500CD5E7A /* ColorPatch.swift in Sources */,
 				0A127B452C0940F800D801EC /* LiveActivitySystem.swift in Sources */,
 				0A6CCCE72C0697AB009CD0DA /* Gobals.swift in Sources */,
 				0A127B4A2C09A39300D801EC /* PayPeriodView.swift in Sources */,
+				0A9918842C2513FD00CD8694 /* AppIntents.swift in Sources */,
 				0A7696B62C0ABA81001CB02B /* NSManagedObjectPatch.swift in Sources */,
 				0AA7A0DC2C1CF00E000EB9CE /* TimeTrackingAttributes.swift in Sources */,
 				0A7696AF2C0A1779001CB02B /* StorageSystem.swift in Sources */,
+				0A9918782C24BF9400CD8694 /* TimerSystem.swift in Sources */,
 				0A7696B82C0ABCF0001CB02B /* Sharesheet.swift in Sources */,
 				0A6CCCD32C068596009CD0DA /* WorkTrackerApp.swift in Sources */,
+				0A99188E2C2516EE00CD8694 /* JobItemView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -312,9 +352,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0A9918862C2515B300CD8694 /* TimerSystem.swift in Sources */,
 				0AEE4CB92C07779200CD5E7A /* TrackingWidget.swift in Sources */,
+				0A99188B2C25161000CD8694 /* StorageSystem.swift in Sources */,
+				0A9918852C2513FD00CD8694 /* AppIntents.swift in Sources */,
 				0AEE4CC42C07780100CD5E7A /* TimeTrackingAttributes.swift in Sources */,
+				0A99188F2C2516EE00CD8694 /* JobItemView.swift in Sources */,
+				0A99188A2C2515FA00CD8694 /* RumbleSystem.swift in Sources */,
+				0A9918872C2515BE00CD8694 /* Gobals.swift in Sources */,
+				0A9918882C2515D400CD8694 /* LiveActivitySystem.swift in Sources */,
 				0AEE4CC72C077AA800CD5E7A /* ColorPatch.swift in Sources */,
+				0A99188C2C25162600CD8694 /* Storage.xcdatamodeld in Sources */,
 				0AEE4CB72C07779200CD5E7A /* TrackingWidgetBundle.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -464,6 +512,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = WorkTracker/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_NSSupportsLiveActivities = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -479,6 +528,10 @@
 				PRODUCT_BUNDLE_IDENTIFIER = HSteele.WorkTracker;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -500,6 +553,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = WorkTracker/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_NSSupportsLiveActivities = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -515,6 +569,10 @@
 				PRODUCT_BUNDLE_IDENTIFIER = HSteele.WorkTracker;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

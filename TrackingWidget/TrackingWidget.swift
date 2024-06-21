@@ -16,27 +16,14 @@ struct TrackingWidget: Widget {
     var body: some WidgetConfiguration {
         ActivityConfiguration(for: TimeTrackingAttributes.self) { context in
             
-            LiveActivityView(context: context)
+            LargeLiveActivityView(context: context)
             
         } dynamicIsland: { context in
             DynamicIsland {
-                
                 DynamicIslandExpandedRegion(.center) {
-                    Text(context.state.jobType)
-                        .font(.title)
-                        .fontWeight(.black)
-                        .foregroundColor(context.state.jobColor)
-                        .multilineTextAlignment(.center)
-                    Text(context.state.startTime, style: .relative)
-                        .font(.title2)
-                        .fontWeight(.black)
-                        .foregroundColor(.white)
-                        .multilineTextAlignment(.center)
-                        .monospaced()
+                    LargeLiveActivityView(context: context)
                 }
 
-                
-                
             }
             compactLeading: {
                 DynamicIslandView(context: context, pos: 0)
@@ -52,7 +39,7 @@ struct TrackingWidget: Widget {
 
 
 
-struct LiveActivityView: View {
+struct LargeLiveActivityView: View {
     let context: ActivityViewContext<TimeTrackingAttributes>
     
     var body: some View {
@@ -61,11 +48,17 @@ struct LiveActivityView: View {
             Color.black.ignoresSafeArea()
             
             VStack(alignment: .center) {
-                Text(context.state.jobType)
-                    .font(.title)
-                    .fontWeight(.black)
-                    .foregroundColor(context.state.jobColor)
-                    .multilineTextAlignment(.center)
+                
+                Button(intent: StopTimerIntent()) {
+                    Text(context.state.jobType)
+                        .font(.title)
+                        .fontWeight(.black)
+                        .foregroundColor(context.state.jobColor)
+                        .multilineTextAlignment(.center)
+                }
+                    .buttonStyle(PlainButtonStyle())
+                
+                
                 
                 Text(context.state.startTime, style: .relative)
                     .font(.title2)
