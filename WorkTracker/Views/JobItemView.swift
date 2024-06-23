@@ -189,3 +189,17 @@ struct ListItemView: View {
         .contentTransition(.numericText())
     }
 }
+
+
+
+
+#Preview {
+    ListItemView(
+        jobTypeID: getIDFromJob(type: .Manager),
+        startTime: Date().addHours(hours: -1).addMinutes(minutes: -15),
+        endTime: Date(),
+        jobDesc: "- Super Cool Job",
+        highlightedJob: Binding<ObjectIdentifier?>(get: { nil }, set: { _ in }),
+        preview: true
+    )
+}

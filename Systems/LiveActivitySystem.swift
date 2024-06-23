@@ -11,9 +11,7 @@ import SwiftUI
 
 class LiveActivitySystem {
     static let shared = LiveActivitySystem()
-    
-    @State private var activity: Activity<TimeTrackingAttributes>? = nil
-    
+        
     func startLiveActivity(
         startTime: Date = Date(),
         jobState: String = "",
@@ -23,12 +21,13 @@ class LiveActivitySystem {
         let state = TimeTrackingAttributes.ContentState(
             startTime: startTime,
             jobType: jobState,
-            jobColor: jobColor
+            jobColor: jobColor,
+            saveState: false
         )
         
         let attributes = TimeTrackingAttributes()
         
-        self.activity = try? Activity<TimeTrackingAttributes>.request(
+        try? Activity<TimeTrackingAttributes>.request(
             attributes: attributes,
             contentState: state,
             pushType: nil
@@ -39,9 +38,6 @@ class LiveActivitySystem {
     func stopLiveActivity() {
         // End Live activity
         print("Stopping Live Activity")
-        Task {
-            await self.activity?.end(dismissalPolicy: .immediate)
-        }
         
         // End Stray Activities
         for activity in Activity<TimeTrackingAttributes>.activities {
@@ -53,25 +49,24 @@ class LiveActivitySystem {
     }
     
     
-    
     func updateActivity(
         startTime: Date = Date(),
         jobState: String = "",
-        jobColor: Color = Color.white
+        jobColor: Color = Color.white,
+        saveState: Bool = false
     ) {
-            Task {
-                let contentState = TimeTrackingAttributes.ContentState(
-                    startTime: startTime,
-                    jobType: jobState,
-                    jobColor: jobColor
-                )
-                
-                for activity in Activity<TimeTrackingAttributes>.activities {
-                    Task {
-                        await activity.update(using: contentState)
-                    }
-                }
+        Task {
+            let contentState = TimeTrackingAttributes.ContentState(
+                startTime: startTime,
+                jobType: jobState,
+                jobColor: jobColor,
+                saveState: saveState
+            )
+            
+            for activity in Activity<TimeTrackingAttributes>.activities {
+                await activity.update(using: contentState)
             }
         }
+    }
     
 }

@@ -16,5 +16,6 @@ struct TimeTrackingAttributes: ActivityAttributes {
         var startTime: Date
         var jobType: String
         var jobColor: Color
+        var saveState: Bool
     }
 }

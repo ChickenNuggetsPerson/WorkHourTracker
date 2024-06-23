@@ -34,6 +34,10 @@ class TimerSystem : ObservableObject {
     }
     
     
+    var isValidTime : Bool {
+        self.startTime.hrsOffset(relativeTo: roundTime(time: Date())) != 0.0
+    }
+    
     
     init() {
         if let storedTime = UserDefaults.standard.object(forKey: "startTime") as? Date {
@@ -100,11 +104,30 @@ class TimerSystem : ObservableObject {
             startTime: start,
             endTime: stop
         )
-        
+
+        self.updateLiveActivity(saveState: true, newTitle: "Saved")
+    }
+    
+    
+    func shiftTimer(shiftMins: Int) {
+        self.startTime = roundTime(time: self.startTime.addMinutes(minutes: shiftMins))
+        self.updateLiveActivity()
+    }
+    
+    func updateLiveActivity(saveState: Bool = false) {
         LiveActivitySystem.shared.updateActivity(
             startTime: self.startTime,
-            jobState: "Saved",
-            jobColor: getJobColor(jobID: self.jobState.rawValue)
+            jobState: self.jobState.rawValue,
+            jobColor: getJobColor(jobID: self.jobState.rawValue),
+            saveState: saveState
+        )
+    }
+    func updateLiveActivity(saveState: Bool, newTitle: String) {
+        LiveActivitySystem.shared.updateActivity(
+            startTime: self.startTime,
+            jobState: newTitle,
+            jobColor: getJobColor(jobID: self.jobState.rawValue),
+            saveState: saveState
         )
     }
 

@@ -25,6 +25,14 @@ struct MainView: View {
     
     @State private var showingSaveAlert = false;
     @State private var showingDesc = false;
+    @State private var showingEditSheet = false {
+        didSet {
+            if (showingEditSheet == false) {
+                timerSystem.startTime = roundTime(time: timerSystem.startTime)
+                timerSystem.updateLiveActivity()
+            }
+        }
+    }
     
     init() {
         self.showingSaveAlert = false;
@@ -110,12 +118,17 @@ struct MainView: View {
                 HStack() {
                     Spacer()
                     
-                    Text("Start:\n" + self.startTimeString)
-                        .foregroundColor(self.timerSystem.running ? Color.cyan : .white)
-                        .font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/)
-                        .fontWeight(.black)
-                        .multilineTextAlignment(.center)
-                        .monospacedDigit()
+                    Button(action: {
+                        self.showingEditSheet.toggle()
+                    }) {
+                        Text("Start:\n" + self.startTimeString)
+                            .foregroundColor(self.timerSystem.running ? Color.cyan : .white)
+                            .font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/)
+                            .fontWeight(.black)
+                            .multilineTextAlignment(.center)
+                            .monospacedDigit()
+                    }
+                    .disabled(!self.timerSystem.running)
                     
                     Spacer()
                     
@@ -234,6 +247,48 @@ struct MainView: View {
                 }
             }
             .opacity(self.showingDesc ? 1 : 0)
+            
+            VStack() {
+                Spacer()
+                
+                ListItemView(
+                    jobTypeID: getIDFromJob(type: timerSystem.jobState),
+                    startTime: roundTime(time: timerSystem.startTime),
+                    endTime: roundTime(time: Date()),
+                    jobDesc: "",
+                    highlightedJob: Binding<ObjectIdentifier?>(get: { nil }, set: { _ in }),
+                    preview: true
+                )
+                .padding(10)
+                
+                VStack {
+                    DatePicker("Select Start Time", selection: $timerSystem.startTime, in: Date().clearTime()...roundTime(time: Date()), displayedComponents: .hourAndMinute)
+                        .datePickerStyle(WheelDatePickerStyle())
+                    .labelsHidden()
+                    .frame(maxWidth: .infinity)
+                    
+                    Button("Done") {
+                        self.showingEditSheet.toggle()
+                    }
+                    .foregroundColor(.white)
+                    .fontWeight(.black)
+                    .font(.body)
+                    .padding()
+                }
+                .background(
+                    GeometryReader { geometry in
+                        Rectangle()
+                        .cornerRadius(25)
+                        .foregroundColor(Color.init(hex: "1c1c1e"))
+                    }
+                )
+                .frame(maxWidth: .infinity)
+                .padding(10)
+                
+                Spacer()
+            }
+            .background(.black)
+            .opacity(self.showingEditSheet ? 1 : 0)
         }
         
     
@@ -255,6 +310,8 @@ struct MainView: View {
         .animation(.bouncy, value: self.timerSystem.running)
         .animation(.spring, value: self.timerSystem.jobState)
         .animation(.easeInOut, value: self.showingDesc)
+        .animation(.bouncy, value: self.showingEditSheet)
+        .animation(.bouncy, value: self.timerSystem.startTime)
         .contentTransition(.numericText())
     }
         

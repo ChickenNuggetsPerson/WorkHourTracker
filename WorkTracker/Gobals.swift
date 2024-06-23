@@ -11,6 +11,8 @@ import SwiftUI
 import Combine
 import AppIntents
 
+// NULL Object identifier binding -> Binding<ObjectIdentifier?>(get: { nil }, set: { _ in })
+
 struct PayPeriod : Equatable {
     var startDate: Date
     var endDate: Date

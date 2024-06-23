@@ -20,8 +20,16 @@ struct TrackingWidget: Widget {
             
         } dynamicIsland: { context in
             DynamicIsland {
-                DynamicIslandExpandedRegion(.center) {
+                DynamicIslandExpandedRegion(.bottom) {
                     LargeLiveActivityView(context: context)
+                        .animation(.bouncy, value: context.state.startTime)
+                        .contentTransition(.numericText())
+                }
+                DynamicIslandExpandedRegion(.leading) {
+                    
+                }
+                DynamicIslandExpandedRegion(.trailing) {
+                    
                 }
 
             }
@@ -47,9 +55,11 @@ struct LargeLiveActivityView: View {
         ZStack() {
             Color.black.ignoresSafeArea()
             
+            let saveState : Bool = context.state.saveState
+            
             VStack(alignment: .center) {
                 
-                Button(intent: StopTimerIntent()) {
+                Button(intent: EnableSaveStateIntent()) {
                     Text(context.state.jobType)
                         .font(.title)
                         .fontWeight(.black)
@@ -58,17 +68,52 @@ struct LargeLiveActivityView: View {
                 }
                     .buttonStyle(PlainButtonStyle())
                 
+                HStack() {
+                    
+                    if (!saveState) {
+                        Button("-15",intent: Sub15MinIntent())
+                            .disabled(
+                                !saveState && context.state.startTime.addMinutes(minutes: 15) > Date()
+                            )
+                    } else {
+                        Button("No", intent: DisableSaveStateIntent())
+                    }
+                    
+                    Spacer()
+                    
+                    if (!context.state.saveState) {
+                        Text(context.state.startTime, style: .timer)
+                            .font(.title2)
+                            .fontWeight(.black)
+                            .foregroundColor(.white)
+                            .multilineTextAlignment(.center)
+                            .monospaced()
+                    } else {
+                        Text(
+                            String(context.state.startTime.hrsOffset(relativeTo: roundTime(time: Date())))
+                            + " hrs"
+                        )
+                            .font(.title2)
+                            .fontWeight(.black)
+                            .foregroundColor(.white)
+                            .multilineTextAlignment(.center)
+                            .monospaced()
+                    }
                 
+                    Spacer()
+                    
+                    if (!saveState) {
+                        Button("+15",intent: Add15MinIntent())
+                    } else {
+                        Button("Yes", intent: StopTimerIntent())
+                    }
+                    
+                }
                 
-                Text(context.state.startTime, style: .relative)
-                    .font(.title2)
-                    .fontWeight(.black)
-                    .foregroundColor(.white)
-                    .multilineTextAlignment(.center)
-                    .monospaced()
             }
             
             .padding()
+            .contentTransition(.numericText())
         }
        
     }
@@ -91,25 +136,27 @@ struct DynamicIslandView: View {
     }
     
     var body: some View {
-        
-        if (self.pos == 0) { // Compact Leading
-            Text(self.getAbriviation(str: context.state.jobType))
-                .font(.title)
-                .fontWeight(.black)
-                .foregroundColor(context.state.jobColor)
+        HStack() {
+            if (self.pos == 0) { // Compact Leading
+                Text(self.getAbriviation(str: context.state.jobType))
+                    .font(.title)
+                    .fontWeight(.black)
+                    .foregroundColor(context.state.jobColor)
+                
+            } else if (self.pos == 1) { // Compact Trailing
+                Image(systemName: "clock")
+                    .font(.largeTitle)
+                    .fontWeight(.black)
+                    .foregroundColor(context.state.jobColor)
+            } else { // Minimal
+                Text(self.getAbriviation(str: context.state.jobType))
+                    .font(.title)
+                    .fontWeight(.black)
+                    .foregroundColor(context.state.jobColor)
             
-        } else if (self.pos == 1) { // Compact Trailing
-            Image(systemName: "timer")
-                .font(.largeTitle)
-                .fontWeight(.black)
-                .foregroundColor(context.state.jobColor)
-            
-        } else { // Minimal
-            Text(self.getAbriviation(str: context.state.jobType))
-                .font(.title)
-                .fontWeight(.black)
-                .foregroundColor(context.state.jobColor)
-        
+            }
         }
+        .contentTransition(.numericText())
+        
     }
 }
