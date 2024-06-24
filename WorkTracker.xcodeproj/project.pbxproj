@@ -36,6 +36,7 @@
 		0A99188F2C2516EE00CD8694 /* JobItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A99188D2C2516EE00CD8694 /* JobItemView.swift */; };
 		0AA7A0DC2C1CF00E000EB9CE /* TimeTrackingAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AEE4CA92C07735F00CD5E7A /* TimeTrackingAttributes.swift */; };
 		0AD9F5EA2C29D3B80004892E /* StorageSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A7696AE2C0A1779001CB02B /* StorageSystem.swift */; };
+		0AD9F5EC2C29E3650004892E /* JobEntryForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AD9F5EB2C29E3650004892E /* JobEntryForm.swift */; };
 		0AEE4CB22C07779200CD5E7A /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0AEE4CB12C07779200CD5E7A /* WidgetKit.framework */; };
 		0AEE4CB42C07779200CD5E7A /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0AEE4CB32C07779200CD5E7A /* SwiftUI.framework */; };
 		0AEE4CB72C07779200CD5E7A /* TrackingWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AEE4CB62C07779200CD5E7A /* TrackingWidgetBundle.swift */; };
@@ -93,6 +94,7 @@
 		0A9918832C2513FD00CD8694 /* TimerIntents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerIntents.swift; sourceTree = "<group>"; };
 		0A99188D2C2516EE00CD8694 /* JobItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobItemView.swift; sourceTree = "<group>"; };
 		0AD9F5E92C29B9D50004892E /* WorkTrackerDebug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WorkTrackerDebug.entitlements; sourceTree = "<group>"; };
+		0AD9F5EB2C29E3650004892E /* JobEntryForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobEntryForm.swift; sourceTree = "<group>"; };
 		0AEE4CA92C07735F00CD5E7A /* TimeTrackingAttributes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeTrackingAttributes.swift; sourceTree = "<group>"; };
 		0AEE4CAF2C07779200CD5E7A /* TrackingWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = TrackingWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		0AEE4CB12C07779200CD5E7A /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
@@ -135,6 +137,7 @@
 				0A6CCCD42C068596009CD0DA /* MainView.swift */,
 				0A127B492C09A39300D801EC /* PayPeriodView.swift */,
 				0A99188D2C2516EE00CD8694 /* JobItemView.swift */,
+				0AD9F5EB2C29E3650004892E /* JobEntryForm.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -349,6 +352,7 @@
 				0A7696B82C0ABCF0001CB02B /* Sharesheet.swift in Sources */,
 				0A0E1CC52C2917580067AFAE /* DynamicIslandIntents.swift in Sources */,
 				0A6CCCD32C068596009CD0DA /* WorkTrackerApp.swift in Sources */,
+				0AD9F5EC2C29E3650004892E /* JobEntryForm.swift in Sources */,
 				0A99188E2C2516EE00CD8694 /* JobItemView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

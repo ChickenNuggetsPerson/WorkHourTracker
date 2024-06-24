@@ -256,7 +256,7 @@ struct MainView: View {
                     startTime: roundTime(time: timerSystem.startTime),
                     endTime: roundTime(time: Date()),
                     jobDesc: "",
-                    highlightedJob: Binding<UUID?>(get: { nil }, set: { _ in }),
+                    highlightedJob: .constant(nil),
                     preview: true
                 )
                 .padding(10)

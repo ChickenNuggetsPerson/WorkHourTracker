@@ -211,7 +211,7 @@ struct ListItemView: View {
         startTime: Date().addHours(hours: -1).addMinutes(minutes: -15),
         endTime: Date(),
         jobDesc: "- Super Cool Job",
-        highlightedJob: Binding<UUID?>(get: { nil }, set: { _ in }),
+        highlightedJob: .constant(nil),
         preview: true
     )
 }
