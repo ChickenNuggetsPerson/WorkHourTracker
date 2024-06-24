@@ -98,11 +98,11 @@ class TimerSystem : ObservableObject {
         let start = self.startTime
         let stop = roundTime(time: Date())
         
-        CoreDataManager.shared.createJobEntry(
-            desc: self.jobDescription,
-            jobID: getIDFromJob(type: self.jobState),
+        DataStorageSystem.shared.createEntry(
+            jobTypeID: getIDFromJob(type: self.jobState),
             startTime: start,
-            endTime: stop
+            endTime: stop,
+            desc: self.jobDescription
         )
 
         self.updateLiveActivity(saveState: true, newTitle: "Saved")

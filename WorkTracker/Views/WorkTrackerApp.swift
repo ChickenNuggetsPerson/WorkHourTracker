@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import CoreData
+import SwiftData
 
 
 class GlobalData: ObservableObject {
@@ -21,17 +21,17 @@ class GlobalData: ObservableObject {
 struct WorkTrackerApp: App {
     
     @ObservedObject var globalData = GlobalData.shared
-    let coreDataManager = CoreDataManager.shared
 
     var body: some Scene {
         WindowGroup {
             VStack() {
                 contentView(for: globalData.currentPage)
-                    .environment(\.managedObjectContext, coreDataManager.context)
                     .animation(.spring, value: globalData.currentPage)
                     .environment(\.colorScheme, .dark)
             }
         }
+        .modelContainer(DataStorageSystem.shared.container)
+        .modelContext(DataStorageSystem.shared.context)
         
     }
     
@@ -79,15 +79,6 @@ enum Pages : String, CaseIterable {
         }
     }
 }
-
-
-
-
-
-
-
-
-
 
 struct NavView: View {
     

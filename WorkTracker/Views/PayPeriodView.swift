@@ -8,14 +8,12 @@
 import Foundation
 import SwiftUI
 import UIKit
-
-
-
+import SwiftData
 
 
 struct PayPeriodView: View {
     
-    @Environment(\.managedObjectContext) private var viewContext
+    @Environment(\.modelContext) var modelContext
 
     @State var refresh: Bool = false
     
@@ -24,27 +22,26 @@ struct PayPeriodView: View {
     @State var titleColor: Color
     
     var jobEntries: [JobEntry] {
-        CoreDataManager.shared.fetchJobEntries(
-            dateRange: self.payPeriod.getRange()).sorted { $0.startTime ?? Date() < $1.startTime ?? Date() }
+        DataStorageSystem.shared.fetchJobEntries(dateRange: payPeriod.range)
     }
 
     var totalHoursString : String {
         var total = 0.0
         for job in self.jobEntries {
-            total += job.startTime?.hrsOffset(relativeTo: job.endTime ?? Date()) ?? 0
+            total += job.startTime.hrsOffset(relativeTo: job.endTime)
         }
         return String(total)
     }
     
     
-    @State var highlightedJob : ObjectIdentifier? = nil
+    @State var highlightedJob : UUID? = nil
     
     @State private var showingDatesForm = false;
     @State private var showingNewEntryForm = false;
     @State private var showingInfoAlert = false;
     @State private var showingExportAlert = false;
     
-    @State private var editJob : ObjectIdentifier? = nil
+    @State private var editJob : UUID? = nil
     @State private var showingEditEntryFrom = false;
    
     
@@ -84,19 +81,21 @@ struct PayPeriodView: View {
                         
                         ForEach(
                             self.jobEntries
-                        ) { i in
+                        ) { entry in
                             
                             ListItemView(
-                                job: i,
+                                job: entry,
                                 highlightedJob: $highlightedJob,
                                 editJob: $editJob,
                                 preview: false
                             )
                             .padding([.leading, .trailing], 10)
-                            .id(i.id)
+                            .id(entry.entryID)
                             
                         } // For Each
-                        
+                        .onDelete(perform: { indexSet in
+                            
+                        })
                         
                         Color.black.frame(height: 80)
                         
@@ -252,17 +251,21 @@ struct PayPeriodView: View {
             
             
             
-            if (self.showingNewEntryForm) { // add form
-                JobEntryForm(
-                    showingForm: $showingNewEntryForm
-                )
-            }
-            if (self.editJob != nil) { // edit form
-                JobEntryForm(
-                    showingForm: $showingEditEntryFrom,
-                    job: jobEntries.first { $0.id == self.editJob }!,
-                    editJobId: $editJob
-                )
+            VStack() {
+                if (self.showingNewEntryForm) { // add form
+                    JobEntryForm(
+                        showingForm: $showingNewEntryForm,
+                        hightlightJob: $highlightedJob
+                    )
+                }
+                if (self.editJob != nil) { // edit form
+                    JobEntryForm(
+                        showingForm: $showingEditEntryFrom,
+                        job: jobEntries.first{ $0.entryID == self.editJob } ?? JobEntry(),
+                        editJobId: $editJob,
+                        hightlightJob: $highlightedJob
+                    )
+                }
             }
 
         }
@@ -281,7 +284,7 @@ struct PayPeriodView: View {
                 primaryButton:
                     Alert.Button.default(Text(verbatim: "Close")),
                 secondaryButton:Alert.Button.default(Text(verbatim: "Fix Database"), action: {
-                    CoreDataManager.shared.fixDatabase()
+//                    CoreDataManager.shared.fixDatabase()
                 })
             )
         }
@@ -316,7 +319,7 @@ struct PayPeriodView: View {
     }
     
 
-    func scrollTo(id: ObjectIdentifier?) {
+    func scrollTo(id: UUID?) {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0) {
             withAnimation(.easeInOut) {
                 scrollProxyHolder.proxy!.scrollTo(id, anchor: .init(x: 0.5, y: 0.5))
@@ -345,11 +348,11 @@ struct PayPeriodView: View {
 
         let entries = self.jobEntries
         for entry in entries {
-            let hrs = entry.startTime?.hrsOffset(relativeTo: entry.endTime ?? Date()) ?? 0.0
+            let hrs = entry.startTime.hrsOffset(relativeTo: entry.endTime)
 
             totalHours += hrs
             totalPay += getPayFromJob(
-                id: entry.jobID ?? "",
+                id: entry.jobTypeID,
                 hrs: hrs
             )
         }
@@ -376,10 +379,13 @@ struct PayPeriodView: View {
 
 struct JobEntryForm: View {
     
-    @Binding var showingForm : Bool
-    @Binding var editJobID : ObjectIdentifier?
+    @Environment(\.modelContext) var modelContext
     
-    @State var highlightedJob : ObjectIdentifier? = nil
+    @Binding var showingForm : Bool
+    @Binding var editJobID : UUID?
+    @Binding var actualHighlightID : UUID?
+    
+    @State var highlightedJob : UUID? = nil
     
     @State private var newEntryJobID : String
     @State private var newEntryStart : Date
@@ -387,7 +393,8 @@ struct JobEntryForm: View {
     @State private var newEntryDesc : String
     
     private var newForm : Bool
-    private var job : JobEntry?
+    
+    @State private var job: JobEntry?
     
     var validEntry : Bool {
         (self.newEntryStart != self.newEntryEnd) && (self.newEntryJobID != "")
@@ -395,12 +402,14 @@ struct JobEntryForm: View {
     
     
     init (
-        showingForm : Binding<Bool>
+        showingForm : Binding<Bool>,
+        hightlightJob : Binding<UUID?>
     ) {
         self.newForm = true
         self.job = nil
         self._showingForm = showingForm
-        self._editJobID = Binding<ObjectIdentifier?>(get: { nil }, set: { _ in })
+        self._editJobID = Binding<UUID?>(get: { nil }, set: { _ in })
+        self._actualHighlightID = hightlightJob
         
         self.newEntryJobID = ""
         self.newEntryStart = roundTime(time: Date())
@@ -410,17 +419,19 @@ struct JobEntryForm: View {
     init (
         showingForm : Binding<Bool>,
         job : JobEntry,
-        editJobId : Binding<ObjectIdentifier?>
+        editJobId : Binding<UUID?>,
+        hightlightJob : Binding<UUID?>
     ) {
         self.newForm = false
         self.job = job
         self._showingForm = showingForm
         self._editJobID = editJobId
+        self._actualHighlightID = hightlightJob
         
-        self.newEntryJobID = job.jobID ?? ""
-        self.newEntryStart = job.startTime ?? Date()
-        self.newEntryEnd = job.endTime ?? Date()
-        self.newEntryDesc = job.desc ?? ""
+        self.newEntryJobID = job.jobTypeID
+        self.newEntryStart = job.startTime
+        self.newEntryEnd = job.endTime
+        self.newEntryDesc = job.desc
     }
     
     
@@ -536,31 +547,53 @@ struct JobEntryForm: View {
                 self.showingForm = false;
             }
         }
+        
+        // Hide Keyboard
+        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
        
     }
     
     private func addJob() {
-        CoreDataManager.shared.createJobEntry(
-            desc: self.newEntryDesc,
-            jobID: self.newEntryJobID,
+        let newEntry = JobEntry(
+            jobTypeID: self.newEntryJobID,
             startTime: roundTime(time: self.newEntryStart),
-            endTime: roundTime(time: self.newEntryEnd)
+            endTime: roundTime(time: self.newEntryEnd),
+            desc: self.newEntryDesc
         )
+        withAnimation {
+            modelContext.insert(newEntry)
+        }
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+            actualHighlightID = newEntry.entryID
+        }
+        
         self.closeForm()
     }
     private func updateJob() {
-        CoreDataManager.shared.updateJobEntry(
-            jobEntry: self.job!,
-            desc: self.newEntryDesc,
-            jobID: self.newEntryJobID,
-            startTime: self.newEntryStart,
-            endTime: self.newEntryEnd
-        )
+
+        withAnimation {
+            DataStorageSystem.shared.updateEntry(
+                entry: self.job!,
+                jobTypeID: self.newEntryJobID,
+                startTime: self.newEntryStart,
+                endTime: self.newEntryEnd,
+                desc: self.newEntryDesc
+            )
+        }
+        
         self.closeForm()
     }
     private func deleteJob() {
-        CoreDataManager.shared.deleteJobEntry(jobEntry: self.job!)
+        DataStorageSystem.shared.deleteEntry(entry: self.job!)
+        
         highlightedJob = nil
+        editJobID = nil
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+            actualHighlightID = nil
+        }
+        
         self.closeForm()
     }
 
@@ -578,9 +611,9 @@ struct JobEntryForm: View {
 
 
 #Preview {
-    let context = CoreDataManager.shared.context
-//    CoreDataManager.shared.populateSampleData()
     return PayPeriodView(
         period: getCurrentPayperiod()
-    ).environment(\.managedObjectContext, context)
+    )
+    .modelContainer(DataStorageSystem.shared.container)
+    .modelContext(DataStorageSystem.shared.context)
 }

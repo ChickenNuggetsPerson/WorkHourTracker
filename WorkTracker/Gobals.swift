@@ -18,8 +18,8 @@ struct PayPeriod : Equatable, Sendable {
     var endDate: Date
     
     init(startDate: Date, endDate: Date) {
-        self.startDate = startDate
-        self.endDate = endDate
+        self.startDate = startDate.clearTime()
+        self.endDate = endDate.edgeDay()
     }
     init(entityID : String) {
         let dates = entityID.components(separatedBy: "_")
@@ -36,9 +36,7 @@ struct PayPeriod : Equatable, Sendable {
     
     var isCurrent : Bool { return self == getCurrentPayperiod() }
     
-    func getRange() -> ClosedRange<Date> {
-        return self.startDate.clearTime()...self.endDate.edgeDay()
-    }
+    var range : ClosedRange<Date> { self.startDate...self.endDate }
     
     func toString(
         full: Bool = false,
@@ -300,8 +298,8 @@ extension [JobEntry] {
         }
         
         for entry in self {
-            let hrs = entry.startTime?.hrsOffset(relativeTo: entry.endTime ?? Date()) ?? 0.0
-            let jobID = getJobFromID(id: entry.jobID ?? "")
+            let hrs = entry.startTime.hrsOffset(relativeTo: entry.endTime)
+            let jobID = getJobFromID(id: entry.jobTypeID)
             jobHours[jobID]! += hrs
         }
         

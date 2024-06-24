@@ -6,226 +6,183 @@
 //
 
 import Foundation
+import SwiftData
 
 
-
-
-import Foundation
-import CoreData
-import UIKit
-import CoreData
-
-
-
-
-class CoreDataManager {
-    static let shared = CoreDataManager()
-
-    var persistentContainer: NSPersistentContainer = {
-        let container = NSPersistentContainer(name: "Storage")
-        container.loadPersistentStores { (storeDescription, error) in
-            if let error = error as NSError? {
-                fatalError("Unresolved error \(error), \(error.userInfo)")
-            }
-        }
-        
-        print("Loaded Storage")
-        
-        return container
-    }()
-
-    var context: NSManagedObjectContext {
-        return persistentContainer.viewContext
-    }
-
-    func saveContext() {
-        let context = persistentContainer.viewContext
-        if context.hasChanges {
-            ShortcutsProvider.updateAppShortcutParameters()
-            do {
-                try context.save()
-            } catch {
-                let nserror = error as NSError
-                fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
-            }
-        }
-    }
-
-    // Create a new JobEntry
-    func createJobEntry(desc: String?, jobID: String?, startTime: Date?, endTime: Date?) {
-        let jobEntry = JobEntry(context: context)
-        jobEntry.desc = desc
-        jobEntry.jobID = jobID
-        jobEntry.startTime = startTime
-        jobEntry.endTime = endTime
-        jobEntry.intentEntityID = UUID()
-        
-        print("Saving JOB: " + (startTime?.formatted() ?? ""))
-        
-        saveContext()
-    }
-
-    // Update an existing JobEntry
-    func updateJobEntry(jobEntry: JobEntry, desc: String?, jobID: String?, startTime: Date?, endTime: Date?) {
-        jobEntry.desc = desc
-        jobEntry.jobID = jobID
-        jobEntry.startTime = startTime
-        jobEntry.endTime = endTime
-        
-        print("Updating JOB: " + (startTime?.formatted() ?? ""))
-        
-        saveContext()
-    }
-
-    // Delete a JobEntry
-    func deleteJobEntry(jobEntry: JobEntry) {
-        context.delete(jobEntry)
-        
-        print("Deleting JOB: " + (jobEntry.startTime?.formatted() ?? ""))
+@Model
+final class JobEntry {
     
-        saveContext()
-    }
+    @Attribute var jobTypeID: String
+    @Attribute var startTime: Date
+    @Attribute var endTime: Date
+    @Attribute var desc: String
+    @Attribute var entryID: UUID
     
-    
-    func fetchJobEntries(dateRange: ClosedRange<Date>) -> [JobEntry] {
-        let fetchRequest: NSFetchRequest<JobEntry> = JobEntry.fetchRequest()
-           fetchRequest.predicate = NSPredicate(format: "(startTime >= %@) AND (startTime <= %@)", dateRange.lowerBound as NSDate, dateRange.upperBound as NSDate)
-
-           do {
-               let jobEntries = try context.fetch(fetchRequest)
-               return jobEntries
-           } catch {
-               print("Error fetching job entries: \(error.localizedDescription)")
-               return []
-           }
+    init(jobTypeID: String, startTime: Date, endTime: Date, desc: String) {
+        self.jobTypeID = jobTypeID
+        self.startTime = startTime
+        self.endTime = endTime
+        self.desc = desc
+        self.entryID = UUID()
     }
-    func fetchJobEntries(withUUIDs uuids: [UUID]) -> [JobEntry] {
-        let fetchRequest: NSFetchRequest<JobEntry> = JobEntry.fetchRequest()
-        fetchRequest.predicate = NSPredicate(format: "intentEntityID IN %@", uuids.map { $0 as CVarArg })
+    init() {
+        self.jobTypeID = ""
+        self.startTime = Date()
+        self.endTime = Date()
+        self.desc = ""
+        self.entryID = UUID()
+    }
+}
 
-        // Perform the fetch
+
+class DataStorageSystem {
+    static let shared = DataStorageSystem()
+    
+    let container : ModelContainer
+    let context : ModelContext
+    
+    init() {
+
         do {
-            return try context.fetch(fetchRequest)
+            self.container = try ModelContainer(for: JobEntry.self)
+            self.context = ModelContext(self.container)
         } catch {
-            print("Error fetching job entries: \(error.localizedDescription)")
+            print("CANNOT CREATE CONTAINER")
+            fatalError()
+        }
+    }
+    
+    
+    
+    func createEntry(
+        jobTypeID: String,
+        startTime: Date,
+        endTime: Date,
+        desc: String
+    ) {
+        let newEntry = JobEntry(
+            jobTypeID: jobTypeID,
+            startTime: startTime,
+            endTime: endTime,
+            desc: desc
+        )
+        
+        self.context.insert(newEntry)
+        print("Created Entry: \(newEntry)")
+    }
+    func deleteEntry(
+        entry: JobEntry
+    ) {
+        self.context.delete(entry)
+        print("Deleted Entry: \(entry)")
+    }
+    func updateEntry(
+        entry: JobEntry,
+        jobTypeID: String,
+        startTime: Date,
+        endTime: Date,
+        desc: String
+    ) {
+        
+        do {
+            
+            let job = try fetchJobEntry(uuid: entry.entryID)
+            
+            job.jobTypeID = jobTypeID
+            job.startTime = startTime
+            job.endTime = endTime
+            job.desc = desc
+            
+            print("Updated Entry: \(job)")
+            
+        } catch {
+            print("Error Updated Entry")
+        }
+        
+    }
+    
+    
+    func fetchAllJobEntries() -> [JobEntry] {
+        let descriptor = FetchDescriptor<JobEntry>(sortBy: [
+            .init(\.startTime)
+        ])
+        
+        do {
+            return try context.fetch(descriptor)
+        } catch {
             return []
         }
     }
-    func fetchSuggestedEntries() -> [JobEntry] {
-        let fetchRequest: NSFetchRequest<JobEntry> = JobEntry.fetchRequest()
-        
-        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "startTime", ascending: false)]
-        fetchRequest.fetchLimit = 5
+    func fetchJobEntries(dateRange: ClosedRange<Date>) -> [JobEntry] {
+        let predicate = #Predicate<JobEntry> {
+            $0.startTime > dateRange.lowerBound && $0.startTime < dateRange.upperBound
+        }
+        let descriptor = FetchDescriptor<JobEntry>(
+            predicate: predicate,
+            sortBy: [ .init(\.startTime)]
+        )
         
         do {
-            return try context.fetch(fetchRequest)
+            return try context.fetch(descriptor)
         } catch {
-            print("Error fetching suggestions: \(error.localizedDescription)")
+            return []
+        }
+    }
+    func fetchJobEntry(uuid: UUID) throws -> JobEntry {
+        let predicate = #Predicate<JobEntry> {
+            $0.entryID == uuid
+        }
+        let descriptor = FetchDescriptor<JobEntry>(
+            predicate: predicate,
+            sortBy: [ .init(\.startTime)]
+        )
+        
+        return try context.fetch(descriptor).first!
+    }
+    func fetchSuggestedEntries() -> [JobEntry] {
+        var descriptor = FetchDescriptor<JobEntry>(
+            sortBy: [ .init(\.startTime)]
+        )
+        descriptor.fetchLimit = 5
+        
+        do {
+            return try context.fetch(descriptor)
+        } catch {
             return []
         }
     }
     func fetchPayPeriods() -> [PayPeriod] {
-        
-        let fetchRequest: NSFetchRequest<JobEntry> = JobEntry.fetchRequest()
-        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "startTime", ascending: true)]
-        fetchRequest.fetchLimit = 1
-        
+
         let furthestEntry : JobEntry?
+
+        var descriptor = FetchDescriptor<JobEntry>(
+            sortBy: [SortDescriptor(\.startTime, order: .reverse)]
+        )
+        descriptor.fetchLimit = 1
         
         do {
-            furthestEntry = try context.fetch(fetchRequest).first ?? nil
+            furthestEntry = try context.fetch(descriptor).first
         } catch {
-            print("Error fetching suggestions: \(error.localizedDescription)")
             return []
         }
         
+
         if (furthestEntry == nil) { return [] }
-        
+
         var periods : [PayPeriod] = []
-        
-        var refDate = furthestEntry!.startTime!
+
+        var refDate = furthestEntry!.startTime
         refDate = getPayPeriod(refDay: refDate).endDate // set ref date to end of period
-        
+
         if (refDate < Date()) {
             while refDate < Date() {
                 periods.append(getPayPeriod(refDay: refDate))
                 refDate = refDate.addDays(days: 14)
             }
         }
-        
+
         periods.append(getCurrentPayperiod())
-        
+
         return periods
-    }
-    
-    
-    
-    func fetchAllJobEntries() -> [JobEntry] {
-        let fetchRequest: NSFetchRequest<JobEntry> = JobEntry.fetchRequest()
-        do {
-            return try context.fetch(fetchRequest)
-        } catch {
-            print("Error fetching objects of type \(JobEntry.Type.self): \(error.localizedDescription)")
-            return []
-        }
-    }
-    
- 
-    
-    func fixDatabase() { // Adds uuids to the entries
-        let fetchRequest: NSFetchRequest<JobEntry> = JobEntry.fetchRequest()
-        
-        do {
-            let jobEntries = try context.fetch(fetchRequest)
-            
-            for jobEntry in jobEntries {
-                if jobEntry.intentEntityID == nil {
-                    jobEntry.intentEntityID = UUID()
-                }
-            }
-            
-            saveContext()
-            
-        } catch {
-            print("Error fetching job entries: \(error.localizedDescription)")
-        }
-    }
-
-    
-}
-
-
-
-extension [JobEntry] {
-    func sortByDay() -> [[JobEntry]] {
-        var newList : [[JobEntry]] = []
-        
-        var runningDay : [JobEntry] = []
-        var previousDate: Int? = nil
-        
-        var firstRun = true;
-        
-        for entry in self {
-            
-            if let entryDate = entry.startTime?.getDateComponents().day {
-                if (entryDate != previousDate) {
-                    previousDate = entryDate
-                    
-                    if (firstRun) {
-                        firstRun = false;
-                    } else {
-                        newList.append(runningDay)
-                        runningDay.removeAll()
-                    }
-                }
-                
-                runningDay.append(entry)
-            }
-            
-        }
-        
-        print(newList)
-        
-        return newList
     }
 }

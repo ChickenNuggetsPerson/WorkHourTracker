@@ -77,7 +77,7 @@ func createTimeCardPDF(entries : [JobEntry], payperiod: PayPeriod, showingDesc: 
         
         for entry in entries {
             
-            if let entryDate = entry.startTime?.getDateComponents().day {
+            if let entryDate = entry.startTime.getDateComponents().day {
                 if (entryDate != previousDate) { // Diff Day
                     
                     yOffset += 10
@@ -91,7 +91,7 @@ func createTimeCardPDF(entries : [JobEntry], payperiod: PayPeriod, showingDesc: 
                     
                     yOffset += 7
                     
-                    entry.startTime?.timecardDayString().draw(at: CGPoint(x: jobXpos, y: yOffset), withAttributes: smallTitle)
+                    entry.startTime.timecardDayString().draw(at: CGPoint(x: jobXpos, y: yOffset), withAttributes: smallTitle)
                     
                     
                     yOffset += 20
@@ -102,7 +102,7 @@ func createTimeCardPDF(entries : [JobEntry], payperiod: PayPeriod, showingDesc: 
             }
             
             // Job Text
-            (getJobFromID(id: entry.jobID ?? "Error").rawValue).draw(at: CGPoint(x: jobXpos, y: yOffset), withAttributes: normalText)
+            (getJobFromID(id: entry.jobTypeID).rawValue).draw(at: CGPoint(x: jobXpos, y: yOffset), withAttributes: normalText)
             
             // Start Text
             (dateToTime(date: entry.startTime ?? Date())).draw(at: CGPoint(x: starTimeXPos, y: yOffset), withAttributes: normalText)
@@ -111,7 +111,7 @@ func createTimeCardPDF(entries : [JobEntry], payperiod: PayPeriod, showingDesc: 
             (dateToTime(date: entry.endTime ?? Date())).draw(at: CGPoint(x: endTimeXPos, y: yOffset), withAttributes: normalText)
             
             // Total Time
-            (String(entry.startTime?.hrsOffset(relativeTo: entry.endTime ?? Date()) ?? -100) + " hrs").draw(at: CGPoint(x: totalTimeXPos, y: yOffset), withAttributes: normalText)
+            (String(entry.startTime.hrsOffset(relativeTo: entry.endTime) ?? -100) + " hrs").draw(at: CGPoint(x: totalTimeXPos, y: yOffset), withAttributes: normalText)
             
             // Desc
             let desc = entry.desc ?? ""
@@ -147,7 +147,7 @@ func createTimeCardPDF(entries : [JobEntry], payperiod: PayPeriod, showingDesc: 
                 context.beginPage()
             }
             
-            totalHours += entry.startTime?.hrsOffset(relativeTo: entry.endTime ?? Date()) ?? 0
+            totalHours += entry.startTime.hrsOffset(relativeTo: entry.endTime)
         } // End of entry loop
         
         

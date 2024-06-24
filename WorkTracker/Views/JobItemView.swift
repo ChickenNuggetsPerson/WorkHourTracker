@@ -10,13 +10,19 @@ import SwiftUI
 
 struct ListItemView: View {
     
-    @Binding var highlightedJob : ObjectIdentifier?
-    @Binding var editJobBinding : ObjectIdentifier?
+    @Binding var highlightedJob : UUID?
+    @Binding var editJobBinding : UUID?
     
+    @State var previewHighlightToggle : Bool = false;
     var somethingIsHighlighted : Bool { self.highlightedJob != nil }
-    var isHighlighted : Bool { self.highlightedJob == self.entryID }
+    var isHighlighted : Bool {
+        previewMode ? 
+        previewHighlightToggle :
+        self.highlightedJob == self.entryID
+    }
     
-    @State private var entryID : ObjectIdentifier?
+    
+    @State private var entryID : UUID?
     
     private var entryJobID : String
     private var entryStart : Date
@@ -27,19 +33,19 @@ struct ListItemView: View {
 
     init( // Main List
         job: JobEntry,
-        highlightedJob: Binding<ObjectIdentifier?>,
-        editJob: Binding<ObjectIdentifier?>,
+        highlightedJob: Binding<UUID?>,
+        editJob: Binding<UUID?>,
         preview: Bool
     ) {
     
         self._highlightedJob = highlightedJob
         self._editJobBinding = editJob
         
-        self.entryID = job.id
-        self.entryJobID = job.jobID ?? ""
-        self.entryStart = job.startTime ?? Date()
-        self.entryEnd = job.endTime ?? Date()
-        self.entryDesc = job.desc ?? ""
+        self.entryID = job.entryID
+        self.entryJobID = job.jobTypeID
+        self.entryStart = job.startTime
+        self.entryEnd = job.endTime
+        self.entryDesc = job.desc
 
         self.previewMode = preview
     }
@@ -49,13 +55,13 @@ struct ListItemView: View {
         startTime : Date,
         endTime : Date,
         jobDesc : String,
-        highlightedJob: Binding<ObjectIdentifier?>,
+        highlightedJob: Binding<UUID?>,
         preview: Bool
     ) {
         self._highlightedJob = highlightedJob
         self._editJobBinding = highlightedJob
         
-        self.entryID = ObjectIdentifier(EmptyClass())
+        self.entryID = UUID()
         
         self.entryJobID = jobTypeID
         self.entryStart = startTime
@@ -70,7 +76,12 @@ struct ListItemView: View {
         HStack() {
             
             Button(action: {
-                if (self.previewMode) { return; }
+                if (self.previewMode) {
+                    
+                    self.previewHighlightToggle.toggle()
+                    
+                    return;
+                }
                 
                 if (self.isHighlighted) {
                     self.highlightedJob = nil
@@ -186,6 +197,7 @@ struct ListItemView: View {
         .blur(
             radius: self.previewMode ? 0 : (!self.somethingIsHighlighted ? 0 : (self.isHighlighted ? 0 : 4))
         )
+        .animation(.bouncy, value: self.previewHighlightToggle)
         .contentTransition(.numericText())
     }
 }
@@ -199,7 +211,7 @@ struct ListItemView: View {
         startTime: Date().addHours(hours: -1).addMinutes(minutes: -15),
         endTime: Date(),
         jobDesc: "- Super Cool Job",
-        highlightedJob: Binding<ObjectIdentifier?>(get: { nil }, set: { _ in }),
+        highlightedJob: Binding<UUID?>(get: { nil }, set: { _ in }),
         preview: true
     )
 }

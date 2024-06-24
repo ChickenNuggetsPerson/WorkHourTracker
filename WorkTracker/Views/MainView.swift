@@ -256,7 +256,7 @@ struct MainView: View {
                     startTime: roundTime(time: timerSystem.startTime),
                     endTime: roundTime(time: Date()),
                     jobDesc: "",
-                    highlightedJob: Binding<ObjectIdentifier?>(get: { nil }, set: { _ in }),
+                    highlightedJob: Binding<UUID?>(get: { nil }, set: { _ in }),
                     preview: true
                 )
                 .padding(10)
@@ -354,4 +354,6 @@ struct MainView: View {
 
 #Preview {
     MainView()
+        .modelContainer(DataStorageSystem.shared.container)
+        .modelContext(DataStorageSystem.shared.context)
 }

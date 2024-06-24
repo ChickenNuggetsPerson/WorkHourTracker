@@ -42,7 +42,7 @@ struct JobEntryEntity: AppEntity {
                 stringLiteral: startTime.getTimeText()
                 + " - "
                 + endTime.getTimeText()
-                + " = "
+                + " > "
                 + String(startTime.hrsOffset(relativeTo: endTime))
                 + " hrs\n" + desc
             ),
@@ -59,12 +59,12 @@ extension [JobEntry] {
     func toIntentEntities() -> [JobEntryEntity] {
         var entities : [JobEntryEntity] = []
         for entry in self {
-            let entity = JobEntryEntity(id: entry.intentEntityID!)
+            let entity = JobEntryEntity(id: entry.entryID)
             
-            entity.jobID = entry.jobID ?? ""
-            entity.startTime = entry.startTime ?? Date()
-            entity.endTime = entry.endTime ?? Date()
-            entity.desc = entry.desc ?? ""
+            entity.jobID = entry.jobTypeID
+            entity.startTime = entry.startTime
+            entity.endTime = entry.endTime
+            entity.desc = entry.desc
             
             entities.append(entity)
         }
@@ -78,17 +78,24 @@ struct JobEntryEntityQuery: EntityQuery {
     func entities(for identifiers: [UUID]) async throws -> [JobEntryEntity] {
         print("Query for Job Entries: \(identifiers)")
     
-        return CoreDataManager.shared.fetchJobEntries(withUUIDs: identifiers).toIntentEntities()
+        var entities: [JobEntry] = []
+        for identifier in identifiers {
+            entities.append(
+                try DataStorageSystem.shared.fetchJobEntry(uuid: identifier)
+            )
+        }
+        
+        return entities.toIntentEntities()
     }
 
     func suggestedEntities() async throws -> [JobEntryEntity] {
       
-        return CoreDataManager.shared.fetchSuggestedEntries().toIntentEntities()
+        return DataStorageSystem.shared.fetchSuggestedEntries().toIntentEntities()
     }
     
     func allEntities() async throws -> [JobEntryEntity] {
         
-        return CoreDataManager.shared.fetchAllJobEntries().toIntentEntities()
+        return DataStorageSystem.shared.fetchAllJobEntries().toIntentEntities()
     }
 }
 
@@ -108,7 +115,7 @@ struct GetJobEntriesInPayPeriodIntent : AppIntent {
     func perform() async throws -> some IntentResult & ReturnsValue<[JobEntryEntity]> {
     
         return .result(
-            value: CoreDataManager.shared.fetchJobEntries(dateRange: payPeriod.getRange()).toIntentEntities()
+            value: DataStorageSystem.shared.fetchJobEntries(dateRange: payPeriod.range).toIntentEntities()
         )
         
     }
@@ -157,7 +164,7 @@ struct PayPeriodQuery: EntityQuery {
     }
 
     func suggestedEntities() async throws -> [PayPeriod] {
-        return CoreDataManager.shared.fetchPayPeriods()
+        return DataStorageSystem.shared.fetchPayPeriods()
     }
 
 }
@@ -192,7 +199,7 @@ struct ExportPayPeriodIntent : AppIntent {
     @MainActor
     func perform() async throws -> some IntentResult & ReturnsValue<IntentFile> {
         
-        let entries = CoreDataManager.shared.fetchJobEntries(dateRange: payPeriod.getRange())
+        let entries = DataStorageSystem.shared.fetchJobEntries(dateRange: payPeriod.range)
         
         let url = createTimeCardPDF(
             entries: entries,
