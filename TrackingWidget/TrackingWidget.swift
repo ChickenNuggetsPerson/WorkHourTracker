@@ -17,7 +17,7 @@ struct TrackingWidget: Widget {
         ActivityConfiguration(for: TimeTrackingAttributes.self) { context in
             
             LargeLiveActivityView(context: context)
-            
+    
         } dynamicIsland: { context in
             DynamicIsland {
                 DynamicIslandExpandedRegion(.bottom) {

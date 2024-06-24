@@ -13,9 +13,28 @@ import AppIntents
 
 // NULL Object identifier binding -> Binding<ObjectIdentifier?>(get: { nil }, set: { _ in })
 
-struct PayPeriod : Equatable {
+struct PayPeriod : Equatable, Sendable {
     var startDate: Date
     var endDate: Date
+    
+    init(startDate: Date, endDate: Date) {
+        self.startDate = startDate
+        self.endDate = endDate
+    }
+    init(entityID : String) {
+        let dates = entityID.components(separatedBy: "_")
+        
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "MM-dd-yyyy"
+                
+        self.startDate = dateFormatter.date(from: dates[0]) ?? Date()
+        self.endDate = dateFormatter.date(from: dates[1]) ?? Date()
+        
+        self.startDate = self.startDate.clearTime()
+        self.endDate = self.endDate.edgeDay()
+    }
+    
+    var isCurrent : Bool { return self == getCurrentPayperiod() }
     
     func getRange() -> ClosedRange<Date> {
         return self.startDate.clearTime()...self.endDate.edgeDay()
@@ -29,11 +48,9 @@ struct PayPeriod : Equatable {
         
         if (fileSafe) {
             
-            
             dateFormatter.dateFormat = "MM-dd-yyyy"
             
             return dateFormatter.string(from: startDate) + "_" + dateFormatter.string(from: endDate)
-            
             
         } else {
             
@@ -52,11 +69,16 @@ struct PayPeriod : Equatable {
     }
 }
 
+
+
 func getCurrentPayperiod() -> PayPeriod {
+    return getPayPeriod(refDay: Date())
+}
+func getPayPeriod(refDay : Date) -> PayPeriod {
     let formatter = DateFormatter()
     formatter.dateFormat = "yyyy-MM-dd"
     
-    var now = Date()
+    var now = refDay
 
     var start = Date()
     var end = formatter.date(from: "2024-05-18") ?? Date()
@@ -71,7 +93,7 @@ func getCurrentPayperiod() -> PayPeriod {
     
     start = end.addDays(days: -13)
     
-    return PayPeriod(startDate: start, endDate: end)
+    return PayPeriod(startDate: start.clearTime(), endDate: end.edgeDay())
 }
 
 

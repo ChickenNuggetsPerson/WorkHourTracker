@@ -12,12 +12,34 @@ import PDFKit
 
 
 
-func createAndSharePDF(entries : [JobEntry], payperiod: PayPeriod, showingDesc: Bool) {
+//func createAndSharePDF(entries : [JobEntry], payperiod: PayPeriod, showingDesc: Bool) {
+//    
+//
+//    // Save PDF to a temporary file
+//    do {
+//
+//        let temporaryURL = createTimeCardPDF(
+//            entries: entries,
+//            payperiod: payperiod,
+//            showingDesc: showingDesc
+//        )
+//        
+//        let items: [Any] = [temporaryURL]
+//        let controller = UIActivityViewController(activityItems: items, applicationActivities: nil)
+//        UIApplication.shared.windows.first?.rootViewController?.present(controller, animated: true)
+//        
+//    }
+//}
+
+
+
+
+func createTimeCardPDF(entries : [JobEntry], payperiod: PayPeriod, showingDesc: Bool) -> URL {
     
     var totalHours = 0.0
     
     let pdfRenderer = UIGraphicsPDFRenderer(bounds: CGRect(x: 0, y: 0, width: 595, height: 842)) // A4 paper size
-            
+    
     let data = pdfRenderer.pdfData { context in
         
         context.beginPage()
@@ -35,7 +57,7 @@ func createAndSharePDF(entries : [JobEntry], payperiod: PayPeriod, showingDesc: 
         
         let text = "Timecard for: " + payperiod.toString(full: true)
         text.draw(at: CGPoint(x: 20, y: 30), withAttributes: boldTitle)
-
+        
         var yOffset = 75
         
         let jobXpos = 20
@@ -57,7 +79,7 @@ func createAndSharePDF(entries : [JobEntry], payperiod: PayPeriod, showingDesc: 
             
             if let entryDate = entry.startTime?.getDateComponents().day {
                 if (entryDate != previousDate) { // Diff Day
-
+                    
                     yOffset += 10
                     
                     // Draw line
@@ -77,7 +99,7 @@ func createAndSharePDF(entries : [JobEntry], payperiod: PayPeriod, showingDesc: 
                     previousDate = entryDate
                     
                 }
-           }
+            }
             
             // Job Text
             (getJobFromID(id: entry.jobID ?? "Error").rawValue).draw(at: CGPoint(x: jobXpos, y: yOffset), withAttributes: normalText)
@@ -147,11 +169,11 @@ func createAndSharePDF(entries : [JobEntry], payperiod: PayPeriod, showingDesc: 
         ("Total Hours: " + String(totalHours) + " hrs").draw(at: CGPoint(x: jobXpos, y: yOffset), withAttributes: smallTitle)
         yOffset += 5
         entries.getHoursTotals().toText().draw(at: CGPoint(x: jobXpos, y: yOffset), withAttributes: normalText)
-    
+        
     }
     
     
-
+    
     // Save PDF to a temporary file
     do {
         let temporaryURL = FileManager.default.temporaryDirectory.appendingPathComponent(
@@ -159,13 +181,14 @@ func createAndSharePDF(entries : [JobEntry], payperiod: PayPeriod, showingDesc: 
         )
         try data.write(to: temporaryURL)
         
-        let items: [Any] = [temporaryURL]
-        let controller = UIActivityViewController(activityItems: items, applicationActivities: nil)
-        UIApplication.shared.windows.first?.rootViewController?.present(controller, animated: true)
+        return temporaryURL
         
-        
-    } catch {}
+    } catch {
+        return URL(fileURLWithPath: "")
+    }
 }
+
+
 
 
 

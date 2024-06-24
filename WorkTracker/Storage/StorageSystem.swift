@@ -41,6 +41,7 @@ class CoreDataManager {
     func saveContext() {
         let context = persistentContainer.viewContext
         if context.hasChanges {
+            ShortcutsProvider.updateAppShortcutParameters()
             do {
                 try context.save()
             } catch {
@@ -57,6 +58,7 @@ class CoreDataManager {
         jobEntry.jobID = jobID
         jobEntry.startTime = startTime
         jobEntry.endTime = endTime
+        jobEntry.intentEntityID = UUID()
         
         print("Saving JOB: " + (startTime?.formatted() ?? ""))
         
@@ -84,6 +86,7 @@ class CoreDataManager {
         saveContext()
     }
     
+    
     func fetchJobEntries(dateRange: ClosedRange<Date>) -> [JobEntry] {
         let fetchRequest: NSFetchRequest<JobEntry> = JobEntry.fetchRequest()
            fetchRequest.predicate = NSPredicate(format: "(startTime >= %@) AND (startTime <= %@)", dateRange.lowerBound as NSDate, dateRange.upperBound as NSDate)
@@ -96,6 +99,66 @@ class CoreDataManager {
                return []
            }
     }
+    func fetchJobEntries(withUUIDs uuids: [UUID]) -> [JobEntry] {
+        let fetchRequest: NSFetchRequest<JobEntry> = JobEntry.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "intentEntityID IN %@", uuids.map { $0 as CVarArg })
+
+        // Perform the fetch
+        do {
+            return try context.fetch(fetchRequest)
+        } catch {
+            print("Error fetching job entries: \(error.localizedDescription)")
+            return []
+        }
+    }
+    func fetchSuggestedEntries() -> [JobEntry] {
+        let fetchRequest: NSFetchRequest<JobEntry> = JobEntry.fetchRequest()
+        
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "startTime", ascending: false)]
+        fetchRequest.fetchLimit = 5
+        
+        do {
+            return try context.fetch(fetchRequest)
+        } catch {
+            print("Error fetching suggestions: \(error.localizedDescription)")
+            return []
+        }
+    }
+    func fetchPayPeriods() -> [PayPeriod] {
+        
+        let fetchRequest: NSFetchRequest<JobEntry> = JobEntry.fetchRequest()
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "startTime", ascending: true)]
+        fetchRequest.fetchLimit = 1
+        
+        let furthestEntry : JobEntry?
+        
+        do {
+            furthestEntry = try context.fetch(fetchRequest).first ?? nil
+        } catch {
+            print("Error fetching suggestions: \(error.localizedDescription)")
+            return []
+        }
+        
+        if (furthestEntry == nil) { return [] }
+        
+        var periods : [PayPeriod] = []
+        
+        var refDate = furthestEntry!.startTime!
+        refDate = getPayPeriod(refDay: refDate).endDate // set ref date to end of period
+        
+        if (refDate < Date()) {
+            while refDate < Date() {
+                periods.append(getPayPeriod(refDay: refDate))
+                refDate = refDate.addDays(days: 14)
+            }
+        }
+        
+        periods.append(getCurrentPayperiod())
+        
+        return periods
+    }
+    
+    
     
     func fetchAllJobEntries() -> [JobEntry] {
         let fetchRequest: NSFetchRequest<JobEntry> = JobEntry.fetchRequest()
@@ -107,57 +170,26 @@ class CoreDataManager {
         }
     }
     
+ 
     
-    func fetchMinMaxStartTimes() -> (minDate: Date?, maxDate: Date?) {
-        let fetchRequest: NSFetchRequest<NSDictionary> = NSFetchRequest(entityName: "JobEntry")
-        fetchRequest.resultType = .dictionaryResultType
-
-        // Expression description for minimum start time
-        let minExpressionDesc = NSExpressionDescription()
-        minExpressionDesc.name = "minStartTime"
-        minExpressionDesc.expression = NSExpression(forFunction: "min:", arguments:[NSExpression(forKeyPath: "startTime")])
-        minExpressionDesc.expressionResultType = .dateAttributeType
-
-        // Expression description for maximum start time
-        let maxExpressionDesc = NSExpressionDescription()
-        maxExpressionDesc.name = "maxStartTime"
-        maxExpressionDesc.expression = NSExpression(forFunction: "max:", arguments:[NSExpression(forKeyPath: "startTime")])
-        maxExpressionDesc.expressionResultType = .dateAttributeType
-
-        // Set expressions for fetch request
-        fetchRequest.propertiesToFetch = [minExpressionDesc, maxExpressionDesc]
-
+    func fixDatabase() { // Adds uuids to the entries
+        let fetchRequest: NSFetchRequest<JobEntry> = JobEntry.fetchRequest()
+        
         do {
-            let results = try context.fetch(fetchRequest)
-            if let resultDict = results.first {
-                let minDate = resultDict["minStartTime"] as? Date
-                let maxDate = resultDict["maxStartTime"] as? Date
-                return (minDate, maxDate)
-            } else {
-                return (nil, nil)
+            let jobEntries = try context.fetch(fetchRequest)
+            
+            for jobEntry in jobEntries {
+                if jobEntry.intentEntityID == nil {
+                    jobEntry.intentEntityID = UUID()
+                }
             }
+            
+            saveContext()
+            
         } catch {
-            print("Error fetching min and max start times: \(error.localizedDescription)")
-            return (nil, nil)
+            print("Error fetching job entries: \(error.localizedDescription)")
         }
     }
-    
-    
-//    func exportToJSON() -> String {
-//        let jobEntries : [JobEntry] = CoreDataManager.shared.fetchAllJobEntries()
-//        let jobEntryDicts = jobEntries.map { $0.toDictionary() }
-//        
-//        print(jobEntryDicts)
-//        
-//        do {
-//            let jsondata = try JSONSerialization.data(withJSONObject: jobEntryDicts, options: .prettyPrinted)
-//            return String(data: jsondata, encoding: .utf8) ?? ""
-//        } catch {
-//            print("Error Making JSON Data")
-//            return ""
-//        }
-//    }
-    
 
     
 }

@@ -19,8 +19,6 @@ struct PayPeriodView: View {
 
     @State var refresh: Bool = false
     
-    private var currentPayPeriod : PayPeriod = getCurrentPayperiod()
-    
     @State var payPeriod : PayPeriod
     @State var titleText: String
     @State var titleColor: Color
@@ -154,7 +152,7 @@ struct PayPeriodView: View {
                     RumbleSystem.shared.rumble()
                 }
                 .foregroundColor(
-                    self.currentPayPeriod == self.payPeriod ? self.titleColor : .gray
+                    self.payPeriod.isCurrent ? self.titleColor : .gray
                 )
                 .font(.largeTitle)
                 .fontWeight(.black)
@@ -266,7 +264,6 @@ struct PayPeriodView: View {
                     editJobId: $editJob
                 )
             }
-            
 
         }
         .animation(.bouncy(), value: self.showingDatesForm)
@@ -275,27 +272,38 @@ struct PayPeriodView: View {
         .animation(.bouncy(), value: self.showingNewEntryForm)
         .contentTransition(.numericText())
         
-        .alert(isPresented: $showingInfoAlert) {
+        .alert(
+            isPresented: $showingInfoAlert
+        ) {
             Alert(
-                title: Text(self.payPeriod.toString() + " Info"),
-                message: Text(self.getInfoTxt()),
-                dismissButton: .default(Text("OK"))
+                title: Text(verbatim: self.payPeriod.toString() + " Info"),
+                message: Text(verbatim: self.getInfoTxt()),
+                primaryButton:
+                    Alert.Button.default(Text(verbatim: "Close")),
+                secondaryButton:Alert.Button.default(Text(verbatim: "Fix Database"), action: {
+                    CoreDataManager.shared.fixDatabase()
+                })
             )
         }
         .alert("Export Timecard:", isPresented: $showingExportAlert) {
             Button("With Descriptions", role: .none) {
-                createAndSharePDF(
+                let url = createTimeCardPDF(
                     entries: self.jobEntries,
                     payperiod: self.payPeriod,
                     showingDesc: true
                 )
+                
+                self.shareURL(url: url)
             }
+            
             Button("Without Descriptions", role: .none) {
-                createAndSharePDF(
+                let url = createTimeCardPDF(
                     entries: self.jobEntries,
                     payperiod: self.payPeriod,
                     showingDesc: false
                 )
+                
+                self.shareURL(url: url)
             }
             Button("Cancel", role: .cancel) { }
         }
@@ -351,6 +359,11 @@ struct PayPeriodView: View {
         infoTXT += entries.getHoursTotals().toText()
         
         return infoTXT
+    }
+    
+    func shareURL(url: URL) {
+        let activityViewController = UIActivityViewController(activityItems: [url], applicationActivities: nil)
+        UIApplication.shared.windows.first?.rootViewController?.present(activityViewController, animated: true, completion: nil)
     }
 
 }

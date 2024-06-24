@@ -3,6 +3,7 @@
     <entity name="JobEntry" representedClassName="JobEntry" syncable="YES" codeGenerationType="class">
         <attribute name="desc" optional="YES" attributeType="String"/>
         <attribute name="endTime" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="intentEntityID" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="jobID" optional="YES" attributeType="String"/>
         <attribute name="startTime" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
     </entity>

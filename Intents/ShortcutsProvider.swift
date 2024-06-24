@@ -8,6 +8,7 @@
 import Foundation
 import AppIntents
 
+
 struct ShortcutsProvider : AppShortcutsProvider {
     static var appShortcuts: [AppShortcut] {
         
@@ -17,7 +18,13 @@ struct ShortcutsProvider : AppShortcutsProvider {
             phrases: [
                 "Tell \(.applicationName) to start the timer",
                 "Start the \(.applicationName)",
-                "I am \(.applicationName)"
+                "Start the \(.applicationName) timer",
+                "Start the \(\.$jobType) timer with \(.applicationName)",
+                "Start the \(\.$jobType) timer with \(.applicationName)",
+                "Start the \(.applicationName) \(\.$jobType) timer",
+                "Start the \(.applicationName) \(\.$jobType) job",
+                "Start the \(\.$jobType) \(.applicationName) timer",
+                "Start the \(\.$jobType) \(.applicationName) job"
             ],
             shortTitle: "Start Work Tracker",
             systemImageName: "clock.badge.checkmark"
@@ -28,19 +35,11 @@ struct ShortcutsProvider : AppShortcutsProvider {
             phrases: [
                 "Tell \(.applicationName) to stop the timer",
                 "Stop the \(.applicationName)",
-                "I am done \(.applicationName)"
+                "Stop the \(.applicationName) timer",
+                "Stop the \(.applicationName) job",
             ],
             shortTitle: "Stop Work Tracker",
             systemImageName: "clock.badge.xmark"
-        )
-        
-        AppShortcut(
-            intent: ToggleTimerIntent(),
-            phrases: [
-                "Toggle the \(.applicationName)"
-            ],
-            shortTitle: "Toggle Work Tracker",
-            systemImageName: "clock"
         )
     }
 }
