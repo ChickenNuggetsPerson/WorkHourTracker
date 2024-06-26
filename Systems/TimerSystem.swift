@@ -102,7 +102,8 @@ class TimerSystem : ObservableObject {
             jobTypeID: getIDFromJob(type: self.jobState),
             startTime: start,
             endTime: stop,
-            desc: self.jobDescription
+            desc: self.jobDescription,
+            undoable: false
         )
 
         self.updateLiveActivity(saveState: true, newTitle: "Saved")

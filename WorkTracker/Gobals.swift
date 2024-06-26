@@ -140,6 +140,9 @@ extension Date {
     func addMinutes(minutes: Int) -> Date {
         return Calendar.current.date(byAdding: .minute, value: minutes, to: self)!
     }
+    func addSeconds(seconds: Int) -> Date {
+        return Calendar.current.date(byAdding: .second, value: seconds, to: self)!
+    }
     
     
     func clearTime() -> Date {

@@ -14,7 +14,9 @@ import SwiftData
 struct PayPeriodView: View {
     
     @Environment(\.modelContext) var modelContext
-
+    
+    @ObservedObject var storageSystemInstance = DataStorageSystem.shared
+    
     @State var refresh: Bool = false
     
     @State var payPeriod : PayPeriod
@@ -50,7 +52,6 @@ struct PayPeriodView: View {
         @Published var proxy: ScrollViewProxy?
     }
     @StateObject private var scrollProxyHolder = ScrollProxyHolder()
-    
     
     init(
         period : PayPeriod = getCurrentPayperiod(),
@@ -129,11 +130,13 @@ struct PayPeriodView: View {
                 
                 Spacer()
                 
-                Color.black
+                Color.black // Bottom Blur
                     .opacity(0.5)
                     .ignoresSafeArea(.all)
                     .background(.ultraThinMaterial)
-                    .frame(maxHeight: 80)
+                    .frame(
+                        maxHeight: (DataStorageSystem.shared.showUndo) ? 130 : 80
+                    )
                     .overlay(
                         Rectangle()
                         .frame(width: nil, height: 5, alignment: .leading)
@@ -145,6 +148,8 @@ struct PayPeriodView: View {
             }
             
             VStack() { // Menus
+                
+                
                 Button(self.titleText) {
                     self.payPeriod = getCurrentPayperiod()
                     self.highlightedJob = nil
@@ -193,6 +198,7 @@ struct PayPeriodView: View {
                 }
                 .padding([.leading, .trailing], 25)
                 
+                
                 Button(self.totalHoursString + " hrs") {
                     self.showingExportAlert = true;
                     RumbleSystem.shared.rumble()
@@ -218,18 +224,50 @@ struct PayPeriodView: View {
                 
                 
                 Spacer()
-                
-                
-                
-                NavView(activePage: .PayPeriod)
-                    .padding(.bottom, 0)
 
             }
             
             
             
-            VStack() { // Add Button
+            VStack() { // Bottom Menu
+                
+                
                 Spacer()
+                
+                
+                
+                HStack() {
+                    if (DataStorageSystem.shared.showUndo) {
+                        
+                        Button("Undo", systemImage: "arrow.uturn.backward") {
+                            DataStorageSystem.shared.undo()
+                            self.refresh.toggle()
+                        }
+                        .foregroundColor(
+                            DataStorageSystem.shared.canUndo ? .blue : .gray
+                        )
+                        .font(.title3)
+                        .fontWeight(.black)
+                        .padding(.leading, 10)
+                        .disabled(!DataStorageSystem.shared.canUndo)
+                        
+                        Spacer()
+                        
+                        Button("Redo", systemImage: "arrow.uturn.forward") {
+                            DataStorageSystem.shared.redo()
+                            self.refresh.toggle()
+                        }
+                        .foregroundColor(
+                            DataStorageSystem.shared.canRedo ? .blue : .gray
+                        )
+                        .font(.title3)
+                        .fontWeight(.black)
+                        .padding(.trailing, 10)
+                        .disabled(!DataStorageSystem.shared.canRedo)
+                        
+                    }
+                }
+                
                 HStack() {
                     Button("", systemImage: "info.circle") {
                         self.showingInfoAlert = true
@@ -238,7 +276,15 @@ struct PayPeriodView: View {
                     .padding(20)
                     .font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/)
                     .fontWeight(.black)
+                    
                     Spacer()
+                    
+                    
+                    NavView(activePage: .PayPeriod)
+                        .padding(.bottom, 0)
+                    
+                    Spacer()
+                    
                     Button("", systemImage: "plus") {
                         self.showingNewEntryForm = true
                         RumbleSystem.shared.rumble()
@@ -273,6 +319,9 @@ struct PayPeriodView: View {
         .animation(.bouncy(extraBounce: 0.1), value: self.payPeriod)
         .animation(.bouncy(), value: self.editJob)
         .animation(.bouncy(), value: self.showingNewEntryForm)
+        .animation(.bouncy(), value: DataStorageSystem.shared.canUndo)
+        .animation(.bouncy(), value: DataStorageSystem.shared.canRedo)
+        .animation(.bouncy(), value: DataStorageSystem.shared.showUndo)
         .contentTransition(.numericText())
         
         .alert(
@@ -315,12 +364,11 @@ struct PayPeriodView: View {
             scrollTo(id: self.highlightedJob)
         }
         
-        
     }
     
 
     func scrollTo(id: UUID?) {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0) {
+        DispatchQueue.main.async() {
             withAnimation(.easeInOut) {
                 scrollProxyHolder.proxy!.scrollTo(id, anchor: .init(x: 0.5, y: 0.5))
             }

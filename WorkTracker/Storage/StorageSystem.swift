@@ -35,17 +35,22 @@ final class JobEntry {
 }
 
 
-class DataStorageSystem {
+class DataStorageSystem : ObservableObject {
     static let shared = DataStorageSystem()
     
     let container : ModelContainer
     let context : ModelContext
+
     
     init() {
-
+        self.showUndo = false
+        
         do {
             self.container = try ModelContainer(for: JobEntry.self)
             self.context = ModelContext(self.container)
+            
+            self.context.undoManager = UndoManager()
+            self.context.undoManager?.setActionName("Entry Edit")
         } catch {
             print("CANNOT CREATE CONTAINER")
             fatalError()
@@ -54,11 +59,14 @@ class DataStorageSystem {
     
     
     
+    
+    // Entry Functions
     func createEntry(
         jobTypeID: String,
         startTime: Date,
         endTime: Date,
-        desc: String
+        desc: String,
+        undoable: Bool = true
     ) {
         let newEntry = JobEntry(
             jobTypeID: jobTypeID,
@@ -68,12 +76,18 @@ class DataStorageSystem {
         )
         
         self.context.insert(newEntry)
+        
+        if (undoable) {
+            self.showUndo = true
+        }
+        
         print("Created Entry: \(newEntry)")
     }
     func deleteEntry(
         entry: JobEntry
     ) {
         self.context.delete(entry)
+        self.showUndo = true
         print("Deleted Entry: \(entry)")
     }
     func updateEntry(
@@ -88,11 +102,23 @@ class DataStorageSystem {
             
             let job = try fetchJobEntry(uuid: entry.entryID)
             
+            if (
+                job.jobTypeID == jobTypeID
+                && job.startTime == startTime
+                && job.endTime == endTime
+                && job.desc == desc
+            ) {
+                print("Same Entry, not updating")
+                return
+            }
+            
+            
             job.jobTypeID = jobTypeID
             job.startTime = startTime
             job.endTime = endTime
             job.desc = desc
             
+            self.showUndo = true
             print("Updated Entry: \(job)")
             
         } catch {
@@ -102,6 +128,8 @@ class DataStorageSystem {
     }
     
     
+    
+    // Fetching Functions
     func fetchAllJobEntries() -> [JobEntry] {
         let descriptor = FetchDescriptor<JobEntry>(sortBy: [
             .init(\.startTime)
@@ -184,5 +212,61 @@ class DataStorageSystem {
         periods.append(getCurrentPayperiod())
 
         return periods
+    }
+    
+    
+    
+    
+    // Undo System Functions
+    var lastEdit : Date = Date().addDays(days: -10) // Far away date
+    
+    let showUndoTime : Int = 5
+    @Published var showUndo : Bool {
+        didSet {
+//            print("Set ShowUNDO to \(self.showUndo)")
+            
+            if (self.showUndo) {
+                
+                self.lastEdit = Date()
+    
+                DispatchQueue.main.asyncAfter(deadline: .now() + Double(self.showUndoTime) + 0.1) {
+                    
+//                    print("Check ShowUNDO")
+                    
+                    if (Date() > self.lastEdit.addSeconds(seconds: self.showUndoTime)) {
+                        self.showUndo = false;
+                    }
+                    
+                }
+                                
+            }
+            
+        }
+    }
+    
+    
+    var canUndo : Bool {
+        if ((self.context.undoManager) != nil) {
+            return self.context.undoManager!.canUndo
+        } else {
+            return false
+        }
+    }
+    var canRedo : Bool {
+        if ((self.context.undoManager) != nil) {
+            return self.context.undoManager!.canRedo
+        } else {
+            return false
+        }
+    }
+
+    
+    func undo() {
+        self.context.undoManager?.undo()
+        self.showUndo = true
+    }
+    func redo() {
+        self.context.undoManager?.redo()
+        self.showUndo = true
     }
 }
