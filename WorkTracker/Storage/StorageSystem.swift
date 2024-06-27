@@ -272,4 +272,71 @@ class DataStorageSystem : ObservableObject {
         self.context.undoManager?.redo()
         self.showUndo = true
     }
+    
+    
+    
+    
+    
+    
+    
+    func exportToJSON() throws -> URL {
+        let entities = self.fetchAllJobEntries()
+        let jsonArray = entities.map { $0.toDict() }
+
+        let jsonData = try JSONSerialization.data(withJSONObject: jsonArray, options: .prettyPrinted)
+        
+        let temporaryURL = FileManager.default.temporaryDirectory.appendingPathComponent(
+            "database.json"
+        )
+        
+        try jsonData.write(to: temporaryURL)
+        
+        return temporaryURL
+    }
+    
+    func importDatabase(from url: URL) throws {
+        let jsonData = try Data(contentsOf: url)
+        let jsonArray = try JSONSerialization.jsonObject(with: jsonData, options: []) as! [[String: String]]
+
+        for jsonDict in jsonArray {
+            let entity = JobEntry()
+            entity.fromDictionary(dictionary: jsonDict)
+            context.insert(entity)
+        }
+
+    }
+}
+
+
+
+
+
+
+
+
+extension JobEntry {
+    func toDict() -> [String: String] {
+        return [
+            "jobTypeID": self.jobTypeID,
+            "startTime": self.startTime.description,
+            "endTime": self.endTime.description,
+            "desc": self.desc,
+            "entryID": self.entryID.description
+       ]
+    }
+    
+    func fromDictionary(dictionary: [String: String]) {
+        self.jobTypeID = dictionary["jobTypeID"] ?? ""
+        self.startTime = convertStringToDate(dictionary["startTime"] ?? "")
+        self.endTime = convertStringToDate(dictionary["endTime"] ?? "")
+        self.desc = dictionary["desc"] ?? ""
+        self.entryID = UUID(uuidString: dictionary["entryID"] ?? "") ?? UUID()
+    }
+}
+
+func convertStringToDate(_ dateString: String) -> Date {
+    let dateFormatter = DateFormatter()
+    dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss Z"
+    dateFormatter.locale = Locale(identifier: "en_US_POSIX") // Ensure consistent date parsing
+    return dateFormatter.date(from: dateString) ?? Date()
 }

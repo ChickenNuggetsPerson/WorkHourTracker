@@ -46,6 +46,7 @@ struct PayPeriodView: View {
     @State private var editJob : UUID? = nil
     @State private var showingEditEntryFrom = false;
    
+    @State private var isShowingPicker = false
     
     
     class ScrollProxyHolder: ObservableObject {
@@ -325,18 +326,45 @@ struct PayPeriodView: View {
         .contentTransition(.numericText())
         
         .alert(
+            self.payPeriod.toString() + " Info",
             isPresented: $showingInfoAlert
         ) {
-            Alert(
-                title: Text(verbatim: self.payPeriod.toString() + " Info"),
-                message: Text(verbatim: self.getInfoTxt()),
-                primaryButton:
-                    Alert.Button.default(Text(verbatim: "Close")),
-                secondaryButton:Alert.Button.default(Text(verbatim: "Fix Database"), action: {
-//                    CoreDataManager.shared.fixDatabase()
-                })
-            )
+            Button("Close") {
+                
+            }
+            
+//            Button("Fix Database") {
+//                CoreDataManager.shared.fixDatabase()
+//            }
+            
+            Button("Export Database") {
+                do {
+                    let url = try DataStorageSystem.shared.exportToJSON()
+                    self.shareURL(url: url)
+                } catch {}
+            }
+            
+            Button("Import Database") {
+                self.isShowingPicker = true
+            }
+            
+    
+        } message: {
+            Text(self.getInfoTxt())
         }
+        
+        .fileImporter(isPresented: $isShowingPicker, allowedContentTypes: [ .text ]) { result in
+            
+            do {
+                let fileURL = try result.get()
+                try DataStorageSystem.shared.importDatabase(from: fileURL)
+                
+            } catch {
+                print("Error selecting file: \(error.localizedDescription)")
+            }
+            
+        }
+        
         .alert("Export Timecard:", isPresented: $showingExportAlert) {
             Button("With Descriptions", role: .none) {
                 let url = createTimeCardPDF(
