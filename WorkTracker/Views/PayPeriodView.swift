@@ -329,9 +329,7 @@ struct PayPeriodView: View {
             self.payPeriod.toString() + " Info",
             isPresented: $showingInfoAlert
         ) {
-            Button("Close") {
-                
-            }
+            
             
 //            Button("Fix Database") {
 //                CoreDataManager.shared.fixDatabase()
@@ -348,20 +346,45 @@ struct PayPeriodView: View {
                 self.isShowingPicker = true
             }
             
+            Button("Close") {
+                
+            }
+            
     
         } message: {
             Text(self.getInfoTxt())
         }
         
-        .fileImporter(isPresented: $isShowingPicker, allowedContentTypes: [ .text ]) { result in
+        .fileImporter(isPresented: $isShowingPicker, allowedContentTypes: [ .text ], allowsMultipleSelection: true) { result in
             
-            do {
-                let fileURL = try result.get()
-                try DataStorageSystem.shared.importDatabase(from: fileURL)
+            switch result {
+               case .success(let files):
+                   files.forEach { file in
+                       // gain access to the directory
+                       let gotAccess = file.startAccessingSecurityScopedResource()
+                       if !gotAccess { return }
+                       
+                       
+                       do {
                 
-            } catch {
-                print("Error selecting file: \(error.localizedDescription)")
-            }
+                           try DataStorageSystem.shared.importDatabase(url: file)
+                           
+                           
+                       } catch {
+                           print("Error selecting file: \(error.localizedDescription)")
+                           
+                       }
+                       
+                       
+                       // release access
+                       file.stopAccessingSecurityScopedResource()
+                   }
+               case .failure(let error):
+                   // handle error
+                   print(error)
+               }
+
+            
             
         }
         

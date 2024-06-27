@@ -294,7 +294,7 @@ class DataStorageSystem : ObservableObject {
         return temporaryURL
     }
     
-    func importDatabase(from url: URL) throws {
+    func importDatabase(url : URL) throws {
         let jsonData = try Data(contentsOf: url)
         let jsonArray = try JSONSerialization.jsonObject(with: jsonData, options: []) as! [[String: String]]
 

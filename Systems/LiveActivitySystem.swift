@@ -25,24 +25,47 @@ class LiveActivitySystem {
             saveState: false
         )
         
+        let content = ActivityContent<TimeTrackingAttributes.ContentState>(
+            state: state,
+            staleDate: Date().addMinutes(minutes: 30)
+        )
+        
         let attributes = TimeTrackingAttributes()
         
-        try? Activity<TimeTrackingAttributes>.request(
-            attributes: attributes,
-            contentState: state,
-            pushType: nil
-        )
+        do {
+            let activity = try Activity<TimeTrackingAttributes>.request(
+                attributes: attributes,
+                content: content,
+                pushType: nil
+            )
+            
+            print("Starting Live Activity: \(activity.id)")
+        } catch {
+            print("error starting activitiy: \(error.localizedDescription)")
+            fatalError(error.localizedDescription)
+        }
 
-        print("Starting Live Activity")
     }
     func stopLiveActivity() {
         // End Live activity
         print("Stopping Live Activity")
         
+        let state = TimeTrackingAttributes.ContentState(
+            startTime: Date(),
+            jobType: "",
+            jobColor: .white,
+            saveState: false
+        )
+        
+        let content = ActivityContent<TimeTrackingAttributes.ContentState>(
+            state: state,
+            staleDate: Date()
+        )
+        
         // End Stray Activities
         for activity in Activity<TimeTrackingAttributes>.activities {
             Task {
-                await activity.end(dismissalPolicy: .immediate)
+                await activity.end(content, dismissalPolicy: .immediate)
                 print("Ended activity: \(activity.id)")
             }
         }
@@ -62,9 +85,13 @@ class LiveActivitySystem {
                 jobColor: jobColor,
                 saveState: saveState
             )
+            let content = ActivityContent<TimeTrackingAttributes.ContentState>(
+                state: contentState,
+                staleDate: Date().addMinutes(minutes: 30)
+            )
             
             for activity in Activity<TimeTrackingAttributes>.activities {
-                await activity.update(using: contentState)
+                await activity.update(content)
             }
         }
     }

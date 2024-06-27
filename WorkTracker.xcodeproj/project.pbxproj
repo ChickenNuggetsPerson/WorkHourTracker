@@ -21,7 +21,6 @@
 		0A6CCCD72C068597009CD0DA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0A6CCCD62C068597009CD0DA /* Assets.xcassets */; };
 		0A6CCCDA2C068597009CD0DA /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0A6CCCD92C068597009CD0DA /* Preview Assets.xcassets */; };
 		0A6CCCE72C0697AB009CD0DA /* Gobals.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A6CCCE62C0697AB009CD0DA /* Gobals.swift */; };
-		0A7552A12C2D07A9005A8A46 /* TrackingWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A7552A02C2D07A9005A8A46 /* TrackingWidget.swift */; };
 		0A7696AF2C0A1779001CB02B /* StorageSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A7696AE2C0A1779001CB02B /* StorageSystem.swift */; };
 		0A7696B62C0ABA81001CB02B /* NSManagedObjectPatch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A7696B52C0ABA81001CB02B /* NSManagedObjectPatch.swift */; };
 		0A7696B82C0ABCF0001CB02B /* Sharesheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A7696B72C0ABCF0001CB02B /* Sharesheet.swift */; };
@@ -35,7 +34,7 @@
 		0A99188A2C2515FA00CD8694 /* RumbleSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A9918752C24BC7D00CD8694 /* RumbleSystem.swift */; };
 		0A99188E2C2516EE00CD8694 /* JobItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A99188D2C2516EE00CD8694 /* JobItemView.swift */; };
 		0A99188F2C2516EE00CD8694 /* JobItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A99188D2C2516EE00CD8694 /* JobItemView.swift */; };
-		0AA7A0DC2C1CF00E000EB9CE /* TimeTrackingAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AEE4CA92C07735F00CD5E7A /* TimeTrackingAttributes.swift */; };
+		0ABC7B252C2D5CFA00EFFB7A /* TimeTrackingAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AEE4CA92C07735F00CD5E7A /* TimeTrackingAttributes.swift */; };
 		0AD9F5EA2C29D3B80004892E /* StorageSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A7696AE2C0A1779001CB02B /* StorageSystem.swift */; };
 		0AD9F5EC2C29E3650004892E /* JobEntryForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AD9F5EB2C29E3650004892E /* JobEntryForm.swift */; };
 		0AEE4CB22C07779200CD5E7A /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0AEE4CB12C07779200CD5E7A /* WidgetKit.framework */; };
@@ -88,7 +87,6 @@
 		0A6CCCD62C068597009CD0DA /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		0A6CCCD92C068597009CD0DA /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		0A6CCCE62C0697AB009CD0DA /* Gobals.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Gobals.swift; sourceTree = "<group>"; };
-		0A7552A02C2D07A9005A8A46 /* TrackingWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingWidget.swift; sourceTree = "<group>"; };
 		0A7696AE2C0A1779001CB02B /* StorageSystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = StorageSystem.swift; path = ../WorkTracker/Storage/StorageSystem.swift; sourceTree = "<group>"; };
 		0A7696B52C0ABA81001CB02B /* NSManagedObjectPatch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSManagedObjectPatch.swift; sourceTree = "<group>"; };
 		0A7696B72C0ABCF0001CB02B /* Sharesheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sharesheet.swift; sourceTree = "<group>"; };
@@ -231,7 +229,6 @@
 				0AEE4CA92C07735F00CD5E7A /* TimeTrackingAttributes.swift */,
 				0AEE4CB62C07779200CD5E7A /* TrackingWidgetBundle.swift */,
 				0AEE4CB82C07779200CD5E7A /* TrackingActivity.swift */,
-				0A7552A02C2D07A9005A8A46 /* TrackingWidget.swift */,
 				0AEE4CBA2C07779300CD5E7A /* Assets.xcassets */,
 				0AEE4CBC2C07779300CD5E7A /* Info.plist */,
 			);
@@ -350,7 +347,6 @@
 				0A127B4A2C09A39300D801EC /* PayPeriodView.swift in Sources */,
 				0A9918842C2513FD00CD8694 /* TimerIntents.swift in Sources */,
 				0A7696B62C0ABA81001CB02B /* NSManagedObjectPatch.swift in Sources */,
-				0AA7A0DC2C1CF00E000EB9CE /* TimeTrackingAttributes.swift in Sources */,
 				0A7696AF2C0A1779001CB02B /* StorageSystem.swift in Sources */,
 				0A9918782C24BF9400CD8694 /* TimerSystem.swift in Sources */,
 				0A6A7B3E2C25B33F005F3172 /* ShortcutsProvider.swift in Sources */,
@@ -358,6 +354,7 @@
 				0A0E1CC52C2917580067AFAE /* DynamicIslandIntents.swift in Sources */,
 				0A6CCCD32C068596009CD0DA /* WorkTrackerApp.swift in Sources */,
 				0AD9F5EC2C29E3650004892E /* JobEntryForm.swift in Sources */,
+				0ABC7B252C2D5CFA00EFFB7A /* TimeTrackingAttributes.swift in Sources */,
 				0A99188E2C2516EE00CD8694 /* JobItemView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -372,7 +369,6 @@
 				0A9918852C2513FD00CD8694 /* TimerIntents.swift in Sources */,
 				0AEE4CC42C07780100CD5E7A /* TimeTrackingAttributes.swift in Sources */,
 				0A99188F2C2516EE00CD8694 /* JobItemView.swift in Sources */,
-				0A7552A12C2D07A9005A8A46 /* TrackingWidget.swift in Sources */,
 				0A0E1CE92C29326F0067AFAE /* Sharesheet.swift in Sources */,
 				0A6A7B3F2C25B33F005F3172 /* ShortcutsProvider.swift in Sources */,
 				0A99188A2C2515FA00CD8694 /* RumbleSystem.swift in Sources */,
@@ -552,7 +548,7 @@
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -593,7 +589,7 @@
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
@@ -625,7 +621,7 @@
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -656,7 +652,7 @@
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};

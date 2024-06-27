@@ -33,6 +33,7 @@ struct WorkTrackerApp: App {
         .modelContainer(DataStorageSystem.shared.container)
         .modelContext(DataStorageSystem.shared.context)
         
+        
     }
     
     @ViewBuilder
@@ -51,6 +52,8 @@ struct WorkTrackerApp: App {
         }
         
     }
+    
+    
 }
 
 
