@@ -10,71 +10,34 @@ import AppIntents
 
 
 // Dynamic Island Buttons
-struct EnableSaveStateIntent : AppIntent, LiveActivityIntent {
-    static var title: LocalizedStringResource = "Enables Save State"
-    static var description = IntentDescription("Enables the dynamic island save state")
+struct ChangeSaveStateIntent : AppIntent, LiveActivityIntent {
+    static var title: LocalizedStringResource = "Change Dynamic Island Save State"
+    static var description = IntentDescription("Changes the dynamic islands save state")
     static var openAppWhenRun: Bool = false
     static var isDiscoverable: Bool = false
     
-    @MainActor
-    func perform() async throws -> some IntentResult {
-        TimerSystem.shared.updateLiveActivity(
-            saveState: true,
-            newTitle: TimerSystem.shared.isValidTime ? "Save Job?" : "Cancel Job?"
-        )
-        return .result()
-    }
-}
-struct DisableSaveStateIntent : AppIntent, LiveActivityIntent {
-    static var title: LocalizedStringResource = "Disable Save State"
-    static var description = IntentDescription("Disables the dynamic island save state")
-    static var openAppWhenRun: Bool = false
-    static var isDiscoverable: Bool = false
+    @Parameter(title: "New State", description: "")
+    var newState: Bool
     
-    @MainActor
-    func perform() async throws -> some IntentResult {
-        TimerSystem.shared.updateLiveActivity(saveState: false)
-        return .result()
+    init() {
+        self.newState = false
     }
-}
-
-
-
-struct Add15MinIntent : AppIntent, LiveActivityIntent {
-    static var title: LocalizedStringResource = "Add 15 Minutes"
-    static var description = IntentDescription("Adds 15 minutes to the tracker time")
-    static var openAppWhenRun: Bool = false
-    static var isDiscoverable: Bool = false
+    init (newState: Bool) {
+        self.newState = newState
+    }
     
     @MainActor
     func perform() async throws -> some IntentResult {
         
-        if (!TimerSystem.shared.running) {
-            return .result()
+        if (self.newState) {
+            TimerSystem.shared.updateLiveActivity(
+                saveState: true,
+                newTitle: TimerSystem.shared.isValidTime ? "Save Job?" : "Cancel Job?"
+            )
+        } else {
+            TimerSystem.shared.updateLiveActivity(saveState: false)
         }
         
-        TimerSystem.shared.shiftTimer(shiftMins: -15)
-        
         return .result()
     }
-    
-}
-struct Sub15MinIntent : AppIntent, LiveActivityIntent {
-    static var title: LocalizedStringResource = "Subtract 15 Minutes"
-    static var description = IntentDescription("Subtracts 15 minutes from the tracker time")
-    static var openAppWhenRun: Bool = false
-    static var isDiscoverable: Bool = false
-    
-    @MainActor
-    func perform() async throws -> some IntentResult {
-        
-        if (!TimerSystem.shared.running) {
-            return .result()
-        }
-        
-        TimerSystem.shared.shiftTimer(shiftMins: 15)
-        
-        return .result()
-    }
-    
 }

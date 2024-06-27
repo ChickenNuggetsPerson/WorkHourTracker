@@ -1,162 +1,175 @@
 //
 //  TrackingWidget.swift
-//  TrackingWidget
+//  TrackingWidgetExtension
 //
-//  Created by Hayden Steele on 5/29/24.
+//  Created by Hayden Steele on 6/26/24.
 //
 
-import WidgetKit
+import Foundation
 import SwiftUI
-import ActivityKit
+import WidgetKit
 
 
-
-struct TrackingWidget: Widget {
-
-    var body: some WidgetConfiguration {
-        ActivityConfiguration(for: TimeTrackingAttributes.self) { context in
-            
-            LargeLiveActivityView(context: context)
+struct TrackingWidgetEntry: TimelineEntry {
+    var date: Date
     
-        } dynamicIsland: { context in
-            DynamicIsland {
-                DynamicIslandExpandedRegion(.bottom) {
-                    LargeLiveActivityView(context: context)
-                        .animation(.bouncy, value: context.state.startTime)
-                        .contentTransition(.numericText())
-                }
-                DynamicIslandExpandedRegion(.leading) {
-                    
-                }
-                DynamicIslandExpandedRegion(.trailing) {
-                    
-                }
+    var jobTypeID : String
+    var startTime : Date
+    var endTime : Date
+}
 
-            }
-            compactLeading: {
-                DynamicIslandView(context: context, pos: 0)
-            } compactTrailing: {
-                DynamicIslandView(context: context, pos: 1)
-            } minimal: {
-                DynamicIslandView(context: context, pos: 2)
-            }
-            .keylineTint(context.state.jobColor)
+
+struct TrackingWidgetProvider: TimelineProvider {
+    func placeholder(in context: Context) -> TrackingWidgetEntry {
+        
+        return TrackingWidgetEntry(
+            date: Date(),
+            jobTypeID: getIDFromJob(type: .Manager),
+            startTime: roundTime(time: Date().addMinutes(minutes: -30)),
+            endTime: roundTime(time: Date())
+        )
+    }
+    
+    
+    func getSnapshot(in context: Context, completion: @escaping (TrackingWidgetEntry) -> Void) {
+       
+        if (context.isPreview) {
+            completion(TrackingWidgetEntry(
+                date: Date(),
+                jobTypeID: getIDFromJob(type: .Manager),
+                startTime: roundTime(time: Date().addMinutes(minutes: -30)),
+                endTime: roundTime(time: Date())
+            )
+)
+        } else {
+            let entry = TrackingWidgetEntry(
+                date: Date(),
+                jobTypeID: getIDFromJob(type: .Manager),
+                startTime: Date().addMinutes(minutes: -30),
+                endTime: Date()
+            )
+
+            completion(entry)
         }
+    }
+    
+    
+    func getTimeline(in context: Context, completion: @escaping (Timeline<TrackingWidgetEntry>) -> Void) {
+        
+        var entries : [TrackingWidgetEntry] = []
+        
+//        let currentDate = Date()
+//        for minOff in 0 ..< 4 {
+//            
+//        }
+//        let entryDate = currentDate.addMinutes(minutes: 15)
+        
+        let entry = TrackingWidgetEntry(
+            date: Date(),
+            jobTypeID: getIDFromJob(type: .Manager),
+            startTime: Date().addMinutes(minutes: -30),
+            endTime: Date()
+        )
+        entries.append(entry)
+        
+        let timeline = Timeline(entries: entries, policy: .never)
+        completion(timeline)
+    }
+    
+    typealias Entry = TrackingWidgetEntry
+
+}
+
+
+
+
+
+
+struct TrackingWidget : Widget {
+    let kind: String = "Widget"
+    
+    var body: some WidgetConfiguration {
+        StaticConfiguration(kind: kind, provider: TrackingWidgetProvider()) { entry in
+            
+            TrackingWidgetView(entry: entry)
+                .containerBackground(.black, for: .widget)
+        }
+        .supportedFamilies([.systemMedium])
+        .configurationDisplayName("Timer Widget")
+        .description("Shows the current state of the tracker.")
     }
 }
 
 
 
-struct LargeLiveActivityView: View {
-    let context: ActivityViewContext<TimeTrackingAttributes>
+
+
+struct TrackingWidgetView : View {
+    var entry: TrackingWidgetProvider.Entry
     
     var body: some View {
-       
         ZStack() {
-            Color.black.ignoresSafeArea()
-            
-            let saveState : Bool = context.state.saveState
-            
-            VStack(alignment: .center) {
+            VStack(alignment: .leading) {
                 
-                Button(intent: EnableSaveStateIntent()) {
-                    Text(context.state.jobType)
-                        .font(.title)
-                        .fontWeight(.black)
-                        .foregroundColor(context.state.jobColor)
-                        .multilineTextAlignment(.center)
-                }
-                    .buttonStyle(PlainButtonStyle())
                 
                 HStack() {
                     
-                    if (!saveState) {
-                        Button("-15",intent: Sub15MinIntent())
-                            .disabled(
-                                !saveState && context.state.startTime.addMinutes(minutes: 15) > Date()
-                            )
-                    } else {
-                        Button("No", intent: DisableSaveStateIntent())
-                    }
-                    
-                    Spacer()
-                    
-                    if (!context.state.saveState) {
-                        Text(context.state.startTime, style: .timer)
-                            .font(.title2)
+                    VStack(alignment: .leading) {
+                        let color = getJobColor(jobID: getJobFromID(id: self.entry.jobTypeID).rawValue)
+                        
+                        Text(getJobFromID(id: self.entry.jobTypeID).rawValue)
                             .fontWeight(.black)
+                            .foregroundColor(color)
+                            .font(.title2)
+                        
+                        Text(self.entry.startTime, style: .date)
                             .foregroundColor(.white)
-                            .multilineTextAlignment(.center)
-                            .monospaced()
-                    } else {
+                            .font(.title3)
+                            .fontWeight(.bold)
+                        
                         Text(
-                            String(context.state.startTime.hrsOffset(relativeTo: roundTime(time: Date())))
-                            + " hrs"
+                            self.entry.startTime.getTimeText()
+                            + " - "
+                            + self.entry.endTime.getTimeText()
                         )
-                            .font(.title2)
-                            .fontWeight(.black)
                             .foregroundColor(.white)
-                            .multilineTextAlignment(.center)
-                            .monospaced()
+                            .font(.title3)
+                            .fontWeight(.bold)
+                        
                     }
-                
+                    
                     Spacer()
                     
-                    if (!saveState) {
-                        Button("+15",intent: Add15MinIntent())
-                    } else {
-                        Button("Yes", intent: StopTimerIntent())
+                    VStack() {
+                        
+                        let num = self.entry.startTime.hrsOffset(relativeTo: self.entry.endTime)
+                        
+                        Text(
+                            String(num)
+                            + ((num == 1.0) ? " hr" : " hrs")
+                        )
+                        .foregroundColor(.white)
+                        .font(.title2)
+                        .fontWeight(.black)
+                        .monospaced()
                     }
-                    
-                }
-                
-            }
+                        
             
-            .padding()
-            .contentTransition(.numericText())
+                }
+            } // VStack
         }
-       
     }
 }
 
 
 
-
-struct DynamicIslandView: View {
-    let context: ActivityViewContext<TimeTrackingAttributes>
-    let pos : Int
-    
-    func getAbriviation(str: String) -> String {
-        let components = str.components(separatedBy: .whitespacesAndNewlines)
-        if (components.count == 1) {
-            return str
-        }
-        let firstLetters = components.compactMap() { $0.first }
-        return String(firstLetters).uppercased()
-    }
-    
-    var body: some View {
-        HStack() {
-            if (self.pos == 0) { // Compact Leading
-                Text(self.getAbriviation(str: context.state.jobType))
-                    .font(.title)
-                    .fontWeight(.black)
-                    .foregroundColor(context.state.jobColor)
-                
-            } else if (self.pos == 1) { // Compact Trailing
-                Image(systemName: "clock")
-                    .font(.largeTitle)
-                    .fontWeight(.black)
-                    .foregroundColor(context.state.jobColor)
-            } else { // Minimal
-                Text(self.getAbriviation(str: context.state.jobType))
-                    .font(.title)
-                    .fontWeight(.black)
-                    .foregroundColor(context.state.jobColor)
-            
-            }
-        }
-        .contentTransition(.numericText())
-        
-    }
+#Preview(as: .systemMedium) {
+    TrackingWidget()
+} timeline: {
+    TrackingWidgetEntry(
+        date: Date(),
+        jobTypeID: getIDFromJob(type: .Manager),
+        startTime: Date().addMinutes(minutes: -30),
+        endTime: Date()
+    )
 }

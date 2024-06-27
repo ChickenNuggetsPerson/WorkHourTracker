@@ -97,5 +97,24 @@ extension Color: Codable {
             opacity: Double(a) / 255
         )
     }
+    
+    
+    
+    func darkened(by percentage: Double) -> Color {
+        let uiColor = UIColor(self)
+        var red: CGFloat = 0
+        var green: CGFloat = 0
+        var blue: CGFloat = 0
+        var alpha: CGFloat = 0
+        
+        uiColor.getRed(&red, green: &green, blue: &blue, alpha: &alpha)
+        
+        return Color(
+            red: max(red - percentage, 0),
+            green: max(green - percentage, 0),
+            blue: max(blue - percentage, 0),
+            opacity: Double(alpha)
+        )
+    }
 }
 

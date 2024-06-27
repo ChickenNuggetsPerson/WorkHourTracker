@@ -11,6 +11,7 @@ import SwiftUI
 @main
 struct TrackingWidgetBundle: WidgetBundle {
     var body: some Widget {
-        TrackingWidget()
+        TrackingActivity()
+//        TrackingWidget() // Add this once a good use for widgets is figured out
     }
 }

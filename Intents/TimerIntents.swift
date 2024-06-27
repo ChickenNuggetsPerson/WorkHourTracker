@@ -30,6 +30,10 @@ struct StopTimerIntent : AppIntent, LiveActivityIntent {
         
         if (TimerSystem.shared.startTime != roundTime(time: Date())) {
             TimerSystem.shared.save()
+            TimerSystem.shared.updateLiveActivity(saveState: false, newTitle: "Saved")
+            try? await Task.sleep(nanoseconds: 2_000_000_000)
+        } else {
+            TimerSystem.shared.updateLiveActivity(saveState: false, newTitle: "Canceled")
             try? await Task.sleep(nanoseconds: 2_000_000_000)
         }
     

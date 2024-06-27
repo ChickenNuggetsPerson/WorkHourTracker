@@ -168,10 +168,13 @@ class DataStorageSystem : ObservableObject {
         return try context.fetch(descriptor).first!
     }
     func fetchSuggestedEntries() -> [JobEntry] {
+        return self.fetchLatestEntries(limit: 5)
+    }
+    func fetchLatestEntries(limit: Int) -> [JobEntry] {
         var descriptor = FetchDescriptor<JobEntry>(
             sortBy: [ .init(\.startTime)]
         )
-        descriptor.fetchLimit = 5
+        descriptor.fetchLimit = limit
         
         do {
             return try context.fetch(descriptor)

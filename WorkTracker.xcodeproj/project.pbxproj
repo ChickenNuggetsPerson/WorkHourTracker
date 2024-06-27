@@ -21,6 +21,7 @@
 		0A6CCCD72C068597009CD0DA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0A6CCCD62C068597009CD0DA /* Assets.xcassets */; };
 		0A6CCCDA2C068597009CD0DA /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0A6CCCD92C068597009CD0DA /* Preview Assets.xcassets */; };
 		0A6CCCE72C0697AB009CD0DA /* Gobals.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A6CCCE62C0697AB009CD0DA /* Gobals.swift */; };
+		0A7552A12C2D07A9005A8A46 /* TrackingWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A7552A02C2D07A9005A8A46 /* TrackingWidget.swift */; };
 		0A7696AF2C0A1779001CB02B /* StorageSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A7696AE2C0A1779001CB02B /* StorageSystem.swift */; };
 		0A7696B62C0ABA81001CB02B /* NSManagedObjectPatch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A7696B52C0ABA81001CB02B /* NSManagedObjectPatch.swift */; };
 		0A7696B82C0ABCF0001CB02B /* Sharesheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A7696B72C0ABCF0001CB02B /* Sharesheet.swift */; };
@@ -40,7 +41,7 @@
 		0AEE4CB22C07779200CD5E7A /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0AEE4CB12C07779200CD5E7A /* WidgetKit.framework */; };
 		0AEE4CB42C07779200CD5E7A /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0AEE4CB32C07779200CD5E7A /* SwiftUI.framework */; };
 		0AEE4CB72C07779200CD5E7A /* TrackingWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AEE4CB62C07779200CD5E7A /* TrackingWidgetBundle.swift */; };
-		0AEE4CB92C07779200CD5E7A /* TrackingWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AEE4CB82C07779200CD5E7A /* TrackingWidget.swift */; };
+		0AEE4CB92C07779200CD5E7A /* TrackingActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AEE4CB82C07779200CD5E7A /* TrackingActivity.swift */; };
 		0AEE4CBB2C07779300CD5E7A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0AEE4CBA2C07779300CD5E7A /* Assets.xcassets */; };
 		0AEE4CBF2C07779300CD5E7A /* TrackingWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 0AEE4CAF2C07779200CD5E7A /* TrackingWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		0AEE4CC42C07780100CD5E7A /* TimeTrackingAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AEE4CA92C07735F00CD5E7A /* TimeTrackingAttributes.swift */; };
@@ -79,6 +80,7 @@
 		0A0E1CC72C29281C0067AFAE /* JobEntryIntents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobEntryIntents.swift; sourceTree = "<group>"; };
 		0A127B442C0940F800D801EC /* LiveActivitySystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveActivitySystem.swift; sourceTree = "<group>"; };
 		0A127B492C09A39300D801EC /* PayPeriodView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PayPeriodView.swift; sourceTree = "<group>"; };
+		0A2545D52C2D266B006C4E3A /* TrackingWidgetExtensionDebug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TrackingWidgetExtensionDebug.entitlements; sourceTree = "<group>"; };
 		0A6A7B3D2C25B33F005F3172 /* ShortcutsProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShortcutsProvider.swift; sourceTree = "<group>"; };
 		0A6CCCCF2C068596009CD0DA /* WorkTracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WorkTracker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0A6CCCD22C068596009CD0DA /* WorkTrackerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkTrackerApp.swift; sourceTree = "<group>"; };
@@ -86,6 +88,7 @@
 		0A6CCCD62C068597009CD0DA /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		0A6CCCD92C068597009CD0DA /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		0A6CCCE62C0697AB009CD0DA /* Gobals.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Gobals.swift; sourceTree = "<group>"; };
+		0A7552A02C2D07A9005A8A46 /* TrackingWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingWidget.swift; sourceTree = "<group>"; };
 		0A7696AE2C0A1779001CB02B /* StorageSystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = StorageSystem.swift; path = ../WorkTracker/Storage/StorageSystem.swift; sourceTree = "<group>"; };
 		0A7696B52C0ABA81001CB02B /* NSManagedObjectPatch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSManagedObjectPatch.swift; sourceTree = "<group>"; };
 		0A7696B72C0ABCF0001CB02B /* Sharesheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sharesheet.swift; sourceTree = "<group>"; };
@@ -100,7 +103,7 @@
 		0AEE4CB12C07779200CD5E7A /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		0AEE4CB32C07779200CD5E7A /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 		0AEE4CB62C07779200CD5E7A /* TrackingWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingWidgetBundle.swift; sourceTree = "<group>"; };
-		0AEE4CB82C07779200CD5E7A /* TrackingWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingWidget.swift; sourceTree = "<group>"; };
+		0AEE4CB82C07779200CD5E7A /* TrackingActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingActivity.swift; sourceTree = "<group>"; };
 		0AEE4CBA2C07779300CD5E7A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		0AEE4CBC2C07779300CD5E7A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0AEE4CC52C077AA500CD5E7A /* ColorPatch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorPatch.swift; sourceTree = "<group>"; };
@@ -145,6 +148,7 @@
 		0A6CCCC62C068595009CD0DA = {
 			isa = PBXGroup;
 			children = (
+				0A2545D52C2D266B006C4E3A /* TrackingWidgetExtensionDebug.entitlements */,
 				0A99187C2C2511D700CD8694 /* Intents */,
 				0AEE4CC92C07929100CD5E7A /* Artboard 1.png */,
 				0AEE4CC52C077AA500CD5E7A /* ColorPatch.swift */,
@@ -226,7 +230,8 @@
 			children = (
 				0AEE4CA92C07735F00CD5E7A /* TimeTrackingAttributes.swift */,
 				0AEE4CB62C07779200CD5E7A /* TrackingWidgetBundle.swift */,
-				0AEE4CB82C07779200CD5E7A /* TrackingWidget.swift */,
+				0AEE4CB82C07779200CD5E7A /* TrackingActivity.swift */,
+				0A7552A02C2D07A9005A8A46 /* TrackingWidget.swift */,
 				0AEE4CBA2C07779300CD5E7A /* Assets.xcassets */,
 				0AEE4CBC2C07779300CD5E7A /* Info.plist */,
 			);
@@ -362,11 +367,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				0A9918862C2515B300CD8694 /* TimerSystem.swift in Sources */,
-				0AEE4CB92C07779200CD5E7A /* TrackingWidget.swift in Sources */,
+				0AEE4CB92C07779200CD5E7A /* TrackingActivity.swift in Sources */,
 				0A0E1CC92C29281C0067AFAE /* JobEntryIntents.swift in Sources */,
 				0A9918852C2513FD00CD8694 /* TimerIntents.swift in Sources */,
 				0AEE4CC42C07780100CD5E7A /* TimeTrackingAttributes.swift in Sources */,
 				0A99188F2C2516EE00CD8694 /* JobItemView.swift in Sources */,
+				0A7552A12C2D07A9005A8A46 /* TrackingWidget.swift in Sources */,
 				0A0E1CE92C29326F0067AFAE /* Sharesheet.swift in Sources */,
 				0A6A7B3F2C25B33F005F3172 /* ShortcutsProvider.swift in Sources */,
 				0A99188A2C2515FA00CD8694 /* RumbleSystem.swift in Sources */,
@@ -596,6 +602,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = TrackingWidgetExtensionDebug.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 6RRXN3FBY9;

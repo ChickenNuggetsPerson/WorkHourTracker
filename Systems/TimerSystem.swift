@@ -6,33 +6,33 @@
 //
 
 import Foundation
-
+import WidgetKit
 
 class TimerSystem : ObservableObject {
     static let shared = TimerSystem()
     
+    let userDefaults = UserDefaults(suiteName: "group.com.steele.Worktracker.sharedData")
     
     @Published var running : Bool {
         didSet {
-            UserDefaults.standard.set(self.running, forKey: "running")
+            userDefaults!.set(self.running, forKey: "running")
         }
     }
     @Published var jobState : JobTypes {
         didSet {
-            UserDefaults.standard.set(self.jobState.rawValue, forKey: "jobType")
+            userDefaults!.set(self.jobState.rawValue, forKey: "jobType")
         }
     }
     @Published var startTime : Date {
         didSet {
-            UserDefaults.standard.set(self.startTime, forKey: "startTime")
+            userDefaults!.set(self.startTime, forKey: "startTime")
         }
     }
     @Published var jobDescription : String {
         didSet {
-            UserDefaults.standard.set(self.jobDescription, forKey: "desc")
+            userDefaults!.set(self.jobDescription, forKey: "desc")
         }
     }
-    
     
     var isValidTime : Bool {
         self.startTime.hrsOffset(relativeTo: roundTime(time: Date())) != 0.0
@@ -40,7 +40,7 @@ class TimerSystem : ObservableObject {
     
     
     init() {
-        if let storedTime = UserDefaults.standard.object(forKey: "startTime") as? Date {
+        if let storedTime = userDefaults!.object(forKey: "startTime") as? Date {
             self.startTime = storedTime
     
         } else {
@@ -48,14 +48,15 @@ class TimerSystem : ObservableObject {
             self.startTime = roundTime(time: Date())
         }
         
-        self.running = UserDefaults.standard.bool(forKey: "running")
-        self.jobState = JobTypes(rawValue: UserDefaults.standard.string(forKey: "jobType") ?? JobTypes.Manager.rawValue)!
+        self.running = userDefaults!.bool(forKey: "running")
         
-        self.jobDescription = UserDefaults.standard.string(forKey: "desc") ?? ""
+        self.jobState = JobTypes(rawValue: userDefaults!.string(forKey: "jobType") ?? JobTypes.Manager.rawValue)!
+        
+        self.jobDescription = userDefaults!.string(forKey: "desc") ?? ""
+        
         
         self.enableDisableLiveAcitivty()
     }
-    
     
     func enableDisableLiveAcitivty() {
         if (self.running) {
@@ -105,8 +106,6 @@ class TimerSystem : ObservableObject {
             desc: self.jobDescription,
             undoable: false
         )
-
-        self.updateLiveActivity(saveState: true, newTitle: "Saved")
     }
     
     
@@ -131,6 +130,4 @@ class TimerSystem : ObservableObject {
             saveState: saveState
         )
     }
-
-    
 }
