@@ -72,7 +72,7 @@ struct JobEntryForm: View {
                 
                 ListItemView(
                     jobTypeID: self.newEntryJobID,
-                    startTime: self.newEntryStart,
+                    startTime: roundTime(time: self.newEntryStart),
                     endTime: roundTime(time: self.newEntryEnd),
                     jobDesc: self.newEntryDesc,
                     highlightedJob: $highlightedJob,
@@ -207,8 +207,8 @@ struct JobEntryForm: View {
             DataStorageSystem.shared.updateEntry(
                 entry: self.job!,
                 jobTypeID: self.newEntryJobID,
-                startTime: self.newEntryStart,
-                endTime: self.newEntryEnd,
+                startTime: roundTime(time: self.newEntryStart),
+                endTime: roundTime(time: self.newEntryEnd),
                 desc: self.newEntryDesc
             )
         }

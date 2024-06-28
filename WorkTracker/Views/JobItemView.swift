@@ -30,6 +30,8 @@ struct ListItemView: View {
     private var entryDesc : String
     
     private var previewMode : Bool
+    
+    @State private var isDetectingHold : Bool = false
 
     init( // Main List
         job: JobEntry,
@@ -95,35 +97,42 @@ struct ListItemView: View {
                 VStack(alignment: .leading) {
                     
                     
-                    HStack() {
+                    ZStack() {
                         
-                        VStack(alignment: .leading) {
-                            let color = getJobColor(jobID: getJobFromID(id: self.entryJobID).rawValue)
+                        
+                        HStack() {
+                            VStack(alignment: .leading) {
+                                let color = getJobColor(jobID: getJobFromID(id: self.entryJobID).rawValue)
+                                
+                                Text(getJobFromID(id: self.entryJobID).rawValue)
+                                    .fontWeight(.black)
+                                    .foregroundColor(color)
+                                    .font(.title2)
+                                
+                                Text(self.entryStart, style: .date)
+                                    .foregroundColor(.white)
+                                    .font(.title3)
+                                    .fontWeight(.bold)
+                                
+                                Text(
+                                    self.entryStart.getTimeText()
+                                    + " - "
+                                    + self.entryEnd.getTimeText()
+                                )
+                                    .foregroundColor(.white)
+                                    .font(.title3)
+                                    .fontWeight(.bold)
+                                
+                            }
                             
-                            Text(getJobFromID(id: self.entryJobID).rawValue)
-                                .fontWeight(.black)
-                                .foregroundColor(color)
-                                .font(.title2)
-                            
-                            Text(self.entryStart, style: .date)
-                                .foregroundColor(.white)
-                                .font(.title3)
-                                .fontWeight(.bold)
-                            
-                            Text(
-                                self.entryStart.getTimeText()
-                                + " - "
-                                + self.entryEnd.getTimeText()
-                            )
-                                .foregroundColor(.white)
-                                .font(.title3)
-                                .fontWeight(.bold)
-                            
+                            Spacer()
                         }
                         
-                        Spacer()
                         
-                        VStack() {
+                        
+                        HStack() {
+                            
+                            Spacer()
                             
                             let num = self.entryStart.hrsOffset(relativeTo: self.entryEnd)
                             
@@ -135,60 +144,80 @@ struct ListItemView: View {
                             .font(.title2)
                             .fontWeight(.black)
                             .monospaced()
+                            
+                            
                         }
                             
                 
                     }
-                    
-                    
+                    .padding(.bottom, self.isHighlighted ? 0 : -7)
                     
                     if (self.isHighlighted) {
-                        VStack(alignment: .leading) {
-                            Divider()
+                        Divider()
+                    }
+                    
+                    VStack(alignment: .leading) {
+                        
+                        HStack() {
+                            Text(self.isHighlighted ? "Job Description:" : " ")
+                                .font(.title2)
+                                .fontWeight(.black)
+                                .foregroundColor(.white)
                             
-                            HStack() {
-                                Text("Job Description:")
-                                    .font(.title2)
-                                    .fontWeight(.black)
-                                    .foregroundColor(.white)
-                                
-                                Spacer()
-                                
-                                if (!self.previewMode) {
-                                    Button("", systemImage: "pencil") {
-                                        // Edit mode
-                                        
-                                        self.editJobBinding = self.entryID
-                                        
-                                    }
-                                    .fontWeight(.black)
-                                    .font(.title2)
+                            Spacer()
+                            
+                            if (!self.previewMode && self.isHighlighted) {
+                                Button("", systemImage: "pencil") {
+                                    // Edit mode
+                                    
+                                    self.editJobBinding = self.entryID
+                                    
                                 }
-                            }
-                            
-                            
-                            HStack() {
-                                Text(self.entryDesc)
-                                    .font(.body)
-                                    .foregroundColor(.white)
-                                    .multilineTextAlignment(.leading)
-                                    .monospaced()
+                                .fontWeight(.black)
+                                .font(.title2)
                             }
                         }
+                        
+                        
+                        HStack() {
+                            Text(self.isHighlighted ? self.entryDesc : " ")
+                                .font(.body)
+                                .foregroundColor(.white)
+                                .multilineTextAlignment(.leading)
+                                .monospaced()
+                        }
                     }
+                    .padding(0)
+                    .frame(maxHeight: self.isHighlighted ? nil : 0)
+                    
+                   
                 } // VStack
                 
             } // Button
             .padding()
+            .onLongPressGesture(minimumDuration: 0.5, pressing: { pressing in
+                withAnimation {
+                    self.isDetectingHold = pressing
+                }
+            }, perform: {
+                // Optional: Perform an action on long press
+            })
             
         } // HStack
         .padding([.leading, .trailing])
         .padding([.top, .bottom], 5)
         .background(
             GeometryReader { geometry in
+
                 Rectangle()
-                .cornerRadius(25)
-                .foregroundColor(Color.init(hex: "1c1c1e"))
+                    .cornerRadius(25)
+                    .foregroundColor(Color.init(hex: "0f0f0f"))
+                    .transformEffect(.init(translationX: 8, y: 5))
+
+                Rectangle()
+                    .cornerRadius(25)
+                    .foregroundColor(Color.init(hex: "1c1c1e"))
+
             }
         )
         .opacity(
@@ -197,8 +226,13 @@ struct ListItemView: View {
         .blur(
             radius: self.previewMode ? 0 : (!self.somethingIsHighlighted ? 0 : (self.isHighlighted ? 0 : 4))
         )
+        
         .animation(.bouncy, value: self.previewHighlightToggle)
+        .animation(.bouncy, value: self.isDetectingHold)
         .contentTransition(.numericText())
+        
+        .padding([.top, .bottom], self.isDetectingHold ? 15 : 0)
+        .scaleEffect(self.isDetectingHold ? 1.1 : 1)
     }
 }
 
