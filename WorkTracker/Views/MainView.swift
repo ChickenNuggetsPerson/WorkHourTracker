@@ -28,8 +28,10 @@ struct MainView: View {
     @State private var showingEditSheet = false {
         didSet {
             if (showingEditSheet == false) {
-                timerSystem.startTime = roundTime(time: timerSystem.startTime)
-                timerSystem.updateLiveActivity()
+                withAnimation {
+                    timerSystem.startTime = roundTime(time: timerSystem.startTime)
+                    timerSystem.updateLiveActivity()
+                }
             }
         }
     }
@@ -43,24 +45,6 @@ struct MainView: View {
         ZStack() {
             
             Color.black.ignoresSafeArea()
-            
-            VStack() {
-                Spacer()
-            
-                Text("Time:")
-                    .foregroundColor(Color.mint)
-                    .font(.largeTitle)
-                    .fontWeight(.black)
-                Text(self.timerString)
-                    .foregroundColor(Color.white)
-                    .font(.largeTitle)
-                    .fontWeight(.black)
-                    .monospaced()
-                
-            }
-            .padding(.bottom, 180)
-            .opacity(timerSystem.running ? 1 : 0)
-            
             
             VStack() { // Job Type List
                 
@@ -76,7 +60,9 @@ struct MainView: View {
                     }) {
                         Text(jobType.rawValue)
                             .foregroundColor(.white)
-                            .font(.title)
+                            .font(
+                                self.timerSystem.jobState == jobType ? .largeTitle : .title
+                            )
                             .fontWeight(.black)
                             .frame(
                                 maxWidth: self.timerSystem.running ? 0
@@ -85,8 +71,8 @@ struct MainView: View {
                             )
                             .background(
                                 self.timerSystem.jobState == jobType ?
-                                getJobColor(jobID: self.timerSystem.jobState.rawValue) :
-                                    Color.init(red: 0.3, green: 0.3, blue: 0.3))
+                                    getJobColor(jobID: self.timerSystem.jobState.rawValue)
+                                    : Color.init(red: 0.3, green: 0.3, blue: 0.3))
                             .opacity(self.timerSystem.jobState == jobType ? 1 : 0.5)
                             .cornerRadius(15)
                             .shadow(
@@ -98,19 +84,36 @@ struct MainView: View {
                         
                     }
                 }
-                        
+                
             }
             .padding([.leading, .trailing])
-            .padding(.bottom, 300)
+            .padding(.bottom, 295)
             .animation(.spring(duration: 0.3), value: self.timerSystem.running)
             .animation(.bouncy(), value: self.timerSystem.jobState)
             
-
+            
             VStack() {
+                Spacer()
+                
+                Text(self.timerSystem.running ? "Time:" : " ")
+                    .foregroundColor(Color.mint)
+                    .font(.largeTitle)
+                    .fontWeight(.black)
+                Text(self.timerSystem.running ? self.timerString : " ")
+                    .foregroundColor(Color.white)
+                    .font(.largeTitle)
+                    .fontWeight(.black)
+                    .monospaced()
+                
+            }
+            .padding(.bottom, 180)
+            
+            
+            VStack() { // Nav Button
                 Spacer()
                 NavView(activePage: Pages.Main)
             }
-            .padding(.bottom, self.timerSystem.running ? 300 : 200)
+            .padding(.bottom, self.timerSystem.running ? 300 : 195)
             
             
             VStack() { // Start / Stop Times
@@ -123,7 +126,7 @@ struct MainView: View {
                     }) {
                         Text("Start:\n" + self.startTimeString)
                             .foregroundColor(self.timerSystem.running ? Color.cyan : .white)
-                            .font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/)
+                            .font(.title)
                             .fontWeight(.black)
                             .multilineTextAlignment(.center)
                             .monospacedDigit()
@@ -134,18 +137,19 @@ struct MainView: View {
                     
                     if (self.timerSystem.running) {
                         Text("End:\n" + self.endTimeString)
-                            .foregroundColor(self.timerSystem.running ? .gray : .white)
-                            .font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/)
-                            .fontWeight(.black)
-                            .multilineTextAlignment(.center)
-                            .monospacedDigit()
+                        .foregroundColor(self.timerSystem.running ? .gray : .white)
+                        .font(.title)
+                        .fontWeight(.black)
+                        .multilineTextAlignment(.center)
+                        .monospacedDigit()
                         
                         Spacer()
                     }
+                    
                 }
                 .padding(.bottom, 90)
             }
-    
+            
             
             VStack() { // Start / Stop Button Colors
                 Spacer()
@@ -172,22 +176,8 @@ struct MainView: View {
                 }
                 .background(.ultraThinMaterial)
             }
-
             
             
-            VStack() { // Top Bar background color
-                getJobColor(jobID: self.timerSystem.jobState.rawValue)
-                
-                    .ignoresSafeArea()
-                    .frame(
-                        maxWidth: .infinity,
-                        maxHeight: self.timerSystem.running ? 360 : 0
-                    )
-                    .padding(.top, self.timerSystem.running ? 0 : -100)
-                    .animation(.snappy, value: self.timerSystem.running)
-                Spacer()
-            }
-                
             VStack() { // Top Bar
                 
                 VStack() {
@@ -199,7 +189,6 @@ struct MainView: View {
                         .frame(maxWidth: .infinity)
                     
                     Button(self.timerSystem.jobState.rawValue) {
-                        if (!self.timerSystem.running) {return}
                         self.showingDesc.toggle()
                     }
                     .font(
@@ -211,84 +200,109 @@ struct MainView: View {
                             self.timerSystem.running ? 290 : 120
                     )
                     .multilineTextAlignment(.center)
+                    .disabled(!self.timerSystem.running)
                     
                     
                     
                 } // End of Inner VStack
-                .background(.ultraThinMaterial)
+                .background(
+                    self.timerSystem.running ? 
+                    getJobColor(jobID: self.timerSystem.jobState.rawValue).darkened(by: 0.01)
+                    : Color.init(hex: "#1f1f1f")
+                )
                 .overlay(
                     Rectangle()
-                    .frame(width: nil, height: 5, alignment: .leading)
-                    .foregroundColor(Color.init(red: 0.2, green: 0.2, blue: 0.2))
+                        .frame(width: nil, height: 5, alignment: .leading)
+                        .foregroundColor(
+                            self.timerSystem.running ? 
+                            getJobColor(jobID: self.timerSystem.jobState.rawValue).darkened(by: -0.1) :
+                                Color.init(red: 0.2, green: 0.2, blue: 0.2)
+                        )
                     
                     , alignment: .bottom
                 )
                 
                 
                 Spacer()
-
+                
             }
             
-        
-            Form() {
-                Section() {
-                    Button("Close") {
-                        self.showingDesc = false
-                        self.hideKeyboard()
-                    }
-                    .foregroundColor(.blue)
-                    .fontWeight(.bold)
-                }
-                
-                Section("Job Description") {
-                    TextEditor(text: $timerSystem.jobDescription)
-                        .font(.title3)
-                        .fontWeight(.regular)
-                }
-            }
-            .opacity(self.showingDesc ? 1 : 0)
             
-            VStack() {
-                Spacer()
-                
-                ListItemView(
-                    jobTypeID: getIDFromJob(type: timerSystem.jobState),
-                    startTime: roundTime(time: timerSystem.startTime),
-                    endTime: roundTime(time: Date()),
-                    jobDesc: "",
-                    highlightedJob: .constant(nil),
-                    preview: true
-                )
-                .padding(10)
-                
-                VStack {
-                    DatePicker("Select Start Time", selection: $timerSystem.startTime, in: Date().clearTime()...roundTime(time: Date()), displayedComponents: .hourAndMinute)
-                        .datePickerStyle(WheelDatePickerStyle())
-                    .labelsHidden()
-                    .frame(maxWidth: .infinity)
+            ZStack() {
+                if (self.showingDesc) {
+                    Color.black.ignoresSafeArea()
+                        .transition(.move(edge: .bottom).combined(with: .opacity))
                     
-                    Button("Done") {
-                        self.showingEditSheet.toggle()
+                    Form() {
+                        Section() {
+                            Button("Close") {
+                                self.showingDesc = false
+                                self.hideKeyboard()
+                            }
+                            .foregroundColor(.blue)
+                            .fontWeight(.bold)
+                        }
+                        
+                        Section("Job Description") {
+                            TextEditor(text: $timerSystem.jobDescription)
+                                .font(.title3)
+                                .fontWeight(.regular)
+                        }
                     }
-                    .foregroundColor(.white)
-                    .fontWeight(.black)
-                    .font(.body)
-                    .padding()
+                    .transition(.move(edge: .bottom).combined(with: .opacity))
                 }
-                .background(
-                    GeometryReader { geometry in
-                        Rectangle()
-                        .cornerRadius(25)
-                        .foregroundColor(Color.init(hex: "1c1c1e"))
-                    }
-                )
-                .frame(maxWidth: .infinity)
-                .padding(10)
-                
-                Spacer()
             }
-            .background(.black)
-            .opacity(self.showingEditSheet ? 1 : 0)
+            
+            ZStack() {
+                if (self.showingEditSheet) {
+                    Color.black.ignoresSafeArea()
+                        .transition(.move(edge: .bottom).combined(with: .opacity))
+                    
+                    VStack() {
+                        Spacer()
+                        
+                        ListItemView(
+                            jobTypeID: getIDFromJob(type: timerSystem.jobState),
+                            startTime: roundTime(time: timerSystem.startTime),
+                            endTime: roundTime(time: Date()),
+                            jobDesc: "",
+                            highlightedJob: .constant(nil),
+                            preview: true
+                        )
+                        .padding(10)
+                        
+                        VStack {
+                            DatePicker("Select Start Time", selection: $timerSystem.startTime, in: Date().clearTime()...roundTime(time: Date()), displayedComponents: .hourAndMinute)
+                                .datePickerStyle(WheelDatePickerStyle())
+                                .labelsHidden()
+                                .frame(maxWidth: .infinity)
+                            
+                            Button("Done") {
+                                self.showingEditSheet.toggle()
+                            }
+                            .foregroundColor(.white)
+                            .fontWeight(.black)
+                            .font(.body)
+                            .padding()
+                        }
+                        .background(
+                            GeometryReader { geometry in
+                                Rectangle()
+                                    .cornerRadius(25)
+                                    .foregroundColor(Color.init(hex: "1c1c1e"))
+                            }
+                        )
+                        .frame(maxWidth: .infinity)
+                        .padding(10)
+                        
+                        Spacer()
+                    }
+                    .transition(.move(edge: .bottom).combined(with: .opacity))
+                }
+            }
+            
+            
+            
         }
         
     
@@ -305,14 +319,17 @@ struct MainView: View {
     
         // Main updater
         .onReceive(timer) { (_) in
-            self.updateTexts()
+            withAnimation {
+                self.updateTexts()
+            }
         }
-        .animation(.bouncy, value: self.timerSystem.running)
+        .animation(.snappy(duration: 0.5), value: self.timerSystem.running)
         .animation(.spring, value: self.timerSystem.jobState)
-        .animation(.easeInOut, value: self.showingDesc)
-        .animation(.bouncy, value: self.showingEditSheet)
         .animation(.bouncy, value: self.timerSystem.startTime)
+        .animation(.spring, value: self.showingDesc)
+        .animation(.spring, value: self.showingEditSheet)
         .contentTransition(.numericText())
+        
     }
         
     
@@ -350,6 +367,60 @@ struct MainView: View {
     }
     
 }
+
+
+
+struct RunningBackgroundView : View {
+    var mainColor : Color
+    var height: CGFloat
+    
+    var repeatingAnimation: Animation {
+            Animation
+            .easeInOut(duration: 2)
+                .repeatForever()
+        }
+    
+    
+    static private var startVal : Double = 0.0
+    static private var endVal : Double = 0.02
+    
+    @State var animVal : Double = startVal
+
+    var body: some View {
+        VStack() {
+            mainColor
+                .ignoresSafeArea()
+                
+        }
+        .frame(maxHeight: height)
+        .scaleEffect(x: 0.98 - animVal, y: 1.02 - animVal, anchor: .top)
+        
+        
+        .onChange(of: self.height) {
+            self.animTrigger()
+        }
+        .onChange(of: self.mainColor) {
+            self.animTrigger()
+        }
+        .onAppear() {
+            self.animTrigger()
+        }
+    }
+    
+    
+    func animTrigger() {
+        withAnimation(self.repeatingAnimation) {
+            if (self.animVal == RunningBackgroundView.startVal) {
+                self.animVal = RunningBackgroundView.endVal
+            } else {
+                self.animVal = RunningBackgroundView.startVal
+            }
+        }
+    }
+    
+}
+
+
 
 
 #Preview {
