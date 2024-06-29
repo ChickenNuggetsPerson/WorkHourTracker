@@ -24,10 +24,10 @@ struct ListItemView: View {
     
     @State private var entryID : UUID?
     
-    private var entryJobID : String
-    private var entryStart : Date
-    private var entryEnd : Date
-    private var entryDesc : String
+    var entryJobID : String
+    var entryStart : Date
+    var entryEnd : Date
+    var entryDesc : String
     
     private var previewMode : Bool
     
@@ -71,6 +71,19 @@ struct ListItemView: View {
         self.entryDesc = jobDesc
     
         self.previewMode = preview
+    }
+    init(_ item: ListItemView) {
+        self._highlightedJob = item._highlightedJob
+        self._editJobBinding = item._highlightedJob
+        
+        self.entryID = item.entryID
+        
+        self.entryJobID = item.entryJobID
+        self.entryStart = item.entryStart
+        self.entryEnd = item.entryEnd
+        self.entryDesc = item.entryDesc
+    
+        self.previewMode = item.previewMode
     }
     
     
@@ -233,6 +246,17 @@ struct ListItemView: View {
         
         .padding([.top, .bottom], self.isDetectingHold ? 15 : 0)
         .scaleEffect(self.isDetectingHold ? 1.1 : 1)
+        
+        .draggable(
+            JobEntry(
+                jobTypeID: self.entryJobID,
+                startTime: self.entryStart,
+                endTime: self.entryEnd,
+                desc: self.entryDesc
+            ).toDict().toJSONString()
+        ) {
+            ListItemView(self)
+        }
     }
 }
 

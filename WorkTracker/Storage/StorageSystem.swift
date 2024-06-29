@@ -334,6 +334,17 @@ extension JobEntry {
     }
 }
 
+extension [String: String] {
+    func toJSONString() -> String {
+        do {
+            let data = try JSONSerialization.data(withJSONObject: self, options: .prettyPrinted)
+            return String(data: data, encoding: .utf8)!
+        } catch {
+            return ""
+        }
+    }
+}
+
 func convertStringToDate(_ dateString: String) -> Date {
     let dateFormatter = DateFormatter()
     dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss Z"
