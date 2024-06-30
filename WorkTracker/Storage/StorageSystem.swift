@@ -41,6 +41,7 @@ class DataStorageSystem : ObservableObject {
     let container : ModelContainer
     let context : ModelContext
 
+    var dataBounds : PayPeriod = PayPeriod(startDate: Date(), endDate: Date())
     
     init() {
         self.showUndo = false
@@ -52,9 +53,11 @@ class DataStorageSystem : ObservableObject {
             self.context.undoManager = UndoManager()
             self.context.undoManager?.setActionName("Entry Edit")
         } catch {
-            print("CANNOT CREATE CONTAINER")
-            fatalError()
+            print("ERROR INITIALIZING")
+            fatalError(error.localizedDescription)
         }
+        
+        self.genDataBounds()
     }
     
     
@@ -81,6 +84,8 @@ class DataStorageSystem : ObservableObject {
             self.showUndo = true
         }
         
+        self.genDataBounds()
+        
         print("Created Entry: \(newEntry)")
     }
     func deleteEntry(
@@ -89,6 +94,8 @@ class DataStorageSystem : ObservableObject {
         self.context.delete(entry)
         self.showUndo = true
         print("Deleted Entry: \(entry)")
+        
+        self.genDataBounds()
     }
     func updateEntry(
         entry: JobEntry,
@@ -120,6 +127,8 @@ class DataStorageSystem : ObservableObject {
             
             self.showUndo = true
             print("Updated Entry: \(job)")
+            
+            self.genDataBounds()
             
         } catch {
             print("Error Updated Entry")
@@ -217,6 +226,35 @@ class DataStorageSystem : ObservableObject {
         return periods
     }
     
+    func genDataBounds() {
+        var pprd = PayPeriod(startDate: Date(), endDate: Date())
+        
+    
+        do { // Farthest Date
+            var farthestDesc = FetchDescriptor<JobEntry>(
+                sortBy: [SortDescriptor(\.startTime, order: .forward)]
+            )
+            farthestDesc.fetchLimit = 1
+            
+            let date = try context.fetch(farthestDesc).first!.startTime
+            
+            pprd.startDate = getPayPeriod(refDay: date).startDate
+        } catch {}
+        
+        do { // Recent Date
+            var latestDesc = FetchDescriptor<JobEntry>(
+                sortBy: [SortDescriptor(\.startTime, order: .reverse)]
+            )
+            latestDesc.fetchLimit = 1
+            
+            let date = try context.fetch(latestDesc).first!.startTime
+            pprd.endDate = getPayPeriod(refDay: date).endDate
+        } catch {}
+        
+        print("Bounds: \(pprd.startDate) - \(pprd.endDate)")
+        
+        self.dataBounds = pprd
+    }
     
     
     
@@ -267,10 +305,12 @@ class DataStorageSystem : ObservableObject {
     func undo() {
         self.context.undoManager?.undo()
         self.showUndo = true
+        self.genDataBounds()
     }
     func redo() {
         self.context.undoManager?.redo()
         self.showUndo = true
+        self.genDataBounds()
     }
     
     

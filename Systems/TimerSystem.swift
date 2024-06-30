@@ -93,6 +93,7 @@ class TimerSystem : ObservableObject {
         self.running = false
         self.jobDescription = ""
         self.enableDisableLiveAcitivty()
+        self.startTime = roundTime(time: Date())
     }
     
     func save() {

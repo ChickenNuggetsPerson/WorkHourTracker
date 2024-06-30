@@ -36,15 +36,19 @@ struct PayPeriodView: View {
     }
     
     
+    var canGoBack : Bool { payPeriod.startDate > DataStorageSystem.shared.dataBounds.startDate }
+    var canGoForwards : Bool { payPeriod.endDate < DataStorageSystem.shared.dataBounds.endDate }
+    
+    
     @State var highlightedJob : UUID? = nil
+    @State var highlightedDate : Date? = nil
     
     @State private var showingDatesForm = false;
-    @State private var showingNewEntryForm = false;
     @State private var showingInfoAlert = false;
     @State private var showingExportAlert = false;
     
-    @State private var editJob : UUID? = nil
-    @State private var showingEditEntryFrom = false;
+    @State private var editJob : UUID? = nil;
+    @State private var showingNewEntryForm = false;
    
     @State private var isShowingPicker = false
     
@@ -79,7 +83,7 @@ struct PayPeriodView: View {
 
                     ScrollView() {
                         
-                        Color.black.frame(height: 140)
+                        Color.clear.frame(height: 140)
                         
                         ForEach(
                             self.jobEntries
@@ -93,13 +97,18 @@ struct PayPeriodView: View {
                             )
                             .padding([.leading, .trailing], 10)
                             .id(entry.entryID)
+                            .transition(
+                                .push(from: .bottom)
+                                .combined(with: .opacity)
+                                .combined(with: .scale)
+                            )
                             
                         } // For Each
                         .onDelete(perform: { indexSet in
                             
                         })
                         
-                        Color.black.frame(height: 80)
+                        Color.clear.frame(height: 80)
                         
                         
                     } // Scroll View
@@ -109,8 +118,6 @@ struct PayPeriodView: View {
                     }
                 }
             }
-            .animation(.bouncy, value: self.highlightedJob)
-            .contentTransition(.opacity)
             
             VStack() { // Blurs
                 
@@ -169,9 +176,10 @@ struct PayPeriodView: View {
                         self.highlightedJob = nil
                         RumbleSystem.shared.rumble()
                     }
-                    .foregroundColor(.yellow)
-                    .font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/)
+                    .foregroundColor(self.canGoBack ? Color.yellow.darkened(by: 0.1) : .gray)
+                    .font(.title)
                     .fontWeight(.black)
+                    .disabled(!self.canGoBack)
                     
                     Spacer()
                     
@@ -193,9 +201,10 @@ struct PayPeriodView: View {
                         self.highlightedJob = nil
                         RumbleSystem.shared.rumble()
                     }
-                    .foregroundColor(.yellow)
-                    .font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/)
+                    .foregroundColor(self.canGoForwards ? Color.yellow.darkened(by: 0.1) : .gray)
+                    .font(.title)
                     .fontWeight(.black)
+                    .disabled(!self.canGoForwards)
                 }
                 .padding([.leading, .trailing], 25)
                 
@@ -206,17 +215,23 @@ struct PayPeriodView: View {
                 }
                     .font(.title)
                     .fontWeight(.black)
-                    .foregroundColor(.orange)
+                    .foregroundColor(.blue)
             
                 
                 if (self.showingDatesForm) {
                     Divider()
                     VStack() {
-                        DatePicker(selection: $payPeriod.startDate) {
+                        DatePicker(
+                            selection: $payPeriod.startDate,
+                            in: DataStorageSystem.shared.dataBounds.startDate...DataStorageSystem.shared.dataBounds.endDate
+                        ) {
                             Text("Start Time:")
                         }
                         
-                        DatePicker(selection: $payPeriod.endDate, in: self.payPeriod.startDate...) {
+                        DatePicker(
+                            selection: $payPeriod.endDate,
+                            in: self.payPeriod.startDate...DataStorageSystem.shared.dataBounds.endDate
+                        ) {
                             Text("End Time:")
                         }
                     }
@@ -230,7 +245,7 @@ struct PayPeriodView: View {
             
             
             
-            VStack() { // Bottom Menu
+            VStack() { // Undo Menus
                 
                 
                 Spacer()
@@ -281,7 +296,7 @@ struct PayPeriodView: View {
                     Spacer()
                     
                     
-                    NavView(activePage: .PayPeriod)
+                    NavView(gotoPage: .Main)
                         .padding(.bottom, 0)
                     
                     Spacer()
@@ -302,24 +317,27 @@ struct PayPeriodView: View {
                 if (self.showingNewEntryForm) { // add form
                     JobEntryForm(
                         showingForm: $showingNewEntryForm,
-                        hightlightJob: $highlightedJob
+                        hightlightJob: $highlightedJob,
+                        showDate: $highlightedDate
                     )
                 }
                 if (self.editJob != nil) { // edit form
                     JobEntryForm(
-                        showingForm: $showingEditEntryFrom,
+                        showingForm: .constant(true),
                         job: jobEntries.first{ $0.entryID == self.editJob } ?? JobEntry(),
                         editJobId: $editJob,
-                        hightlightJob: $highlightedJob
+                        hightlightJob: $highlightedJob,
+                        showDate: $highlightedDate
                     )
                 }
             }
 
         }
         .animation(.bouncy(), value: self.showingDatesForm)
-        .animation(.bouncy(extraBounce: 0.1), value: self.payPeriod)
+        .animation(.bouncy(), value: self.payPeriod)
         .animation(.bouncy(), value: self.editJob)
         .animation(.bouncy(), value: self.showingNewEntryForm)
+        .animation(.bouncy(), value: self.highlightedJob)
         .animation(.bouncy(), value: DataStorageSystem.shared.canUndo)
         .animation(.bouncy(), value: DataStorageSystem.shared.canRedo)
         .animation(.bouncy(), value: DataStorageSystem.shared.showUndo)
@@ -413,6 +431,15 @@ struct PayPeriodView: View {
         
         .onChange(of: self.highlightedJob) {
             scrollTo(id: self.highlightedJob)
+        }
+        .onChange(of: highlightedDate) {
+            if (highlightedDate == nil) { return; }
+            
+            print("Calc Show Date")
+            
+            if (!self.payPeriod.range.contains(self.highlightedDate!)) {
+                self.payPeriod = getPayPeriod(refDay: highlightedDate!)
+            }
         }
         
     }

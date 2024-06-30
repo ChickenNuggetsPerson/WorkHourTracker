@@ -13,11 +13,10 @@ struct ListItemView: View {
     @Binding var highlightedJob : UUID?
     @Binding var editJobBinding : UUID?
     
-    @State var previewHighlightToggle : Bool = false;
     var somethingIsHighlighted : Bool { self.highlightedJob != nil }
     var isHighlighted : Bool {
         previewMode ? 
-        previewHighlightToggle :
+        false :
         self.highlightedJob == self.entryID
     }
     
@@ -30,6 +29,7 @@ struct ListItemView: View {
     var entryDesc : String
     
     private var previewMode : Bool
+    private var miniPreviewMode : Bool
     
     @State private var isDetectingHold : Bool = false
 
@@ -50,6 +50,7 @@ struct ListItemView: View {
         self.entryDesc = job.desc
 
         self.previewMode = preview
+        self.miniPreviewMode = false
     }
     
     init( // Preview
@@ -71,19 +72,28 @@ struct ListItemView: View {
         self.entryDesc = jobDesc
     
         self.previewMode = preview
+        self.miniPreviewMode = false
     }
-    init(_ item: ListItemView) {
-        self._highlightedJob = item._highlightedJob
-        self._editJobBinding = item._highlightedJob
-        
-        self.entryID = item.entryID
-        
-        self.entryJobID = item.entryJobID
-        self.entryStart = item.entryStart
-        self.entryEnd = item.entryEnd
-        self.entryDesc = item.entryDesc
     
-        self.previewMode = item.previewMode
+    init( // Preview
+        jobTypeID : String,
+        startTime : Date,
+        endTime : Date,
+        jobDesc : String,
+        miniPreview: Bool
+    ) {
+        self._highlightedJob = .constant(nil)
+        self._editJobBinding = .constant(nil)
+        
+        self.entryID = UUID()
+        
+        self.entryJobID = jobTypeID
+        self.entryStart = startTime
+        self.entryEnd = endTime
+        self.entryDesc = jobDesc
+    
+        self.previewMode = true
+        self.miniPreviewMode = true
     }
     
     
@@ -92,9 +102,6 @@ struct ListItemView: View {
             
             Button(action: {
                 if (self.previewMode) {
-                    
-                    self.previewHighlightToggle.toggle()
-                    
                     return;
                 }
                 
@@ -122,7 +129,7 @@ struct ListItemView: View {
                                     .foregroundColor(color)
                                     .font(.title2)
                                 
-                                Text(self.entryStart, style: .date)
+                                Text(self.entryStart.toDate())
                                     .foregroundColor(.white)
                                     .font(.title3)
                                     .fontWeight(.bold)
@@ -143,22 +150,24 @@ struct ListItemView: View {
                         
                         
                         
-                        HStack() {
-                            
-                            Spacer()
-                            
-                            let num = self.entryStart.hrsOffset(relativeTo: self.entryEnd)
-                            
-                            Text(
-                                String(num)
-                                + ((num == 1.0) ? " hr" : " hrs")
-                            )
-                            .foregroundColor(.white)
-                            .font(.title2)
-                            .fontWeight(.black)
-                            .monospaced()
-                            
-                            
+                        if (!self.miniPreviewMode) {
+                            HStack() {
+                                
+                                Spacer()
+                                
+                                let num = self.entryStart.hrsOffset(relativeTo: self.entryEnd)
+                                
+                                Text(
+                                    String(num)
+                                    + ((num == 1.0) ? " hr" : " hrs")
+                                )
+                                .foregroundColor(.white)
+                                .font(.title2)
+                                .fontWeight(.black)
+                                .monospaced()
+                                
+                                
+                            }
                         }
                             
                 
@@ -209,6 +218,8 @@ struct ListItemView: View {
             } // Button
             .padding()
             .onLongPressGesture(minimumDuration: 0.5, pressing: { pressing in
+                if (previewMode) {return}
+                
                 withAnimation {
                     self.isDetectingHold = pressing
                 }
@@ -222,10 +233,12 @@ struct ListItemView: View {
         .background(
             GeometryReader { geometry in
 
-                Rectangle()
-                    .cornerRadius(25)
-                    .foregroundColor(Color.init(hex: "0f0f0f"))
-                    .transformEffect(.init(translationX: 8, y: 5))
+                if (!self.miniPreviewMode) {
+                    Rectangle()
+                        .cornerRadius(25)
+                        .foregroundColor(Color.init(hex: "0f0f0f"))
+                        .transformEffect(.init(translationX: 8, y: 5))
+                }
 
                 Rectangle()
                     .cornerRadius(25)
@@ -240,27 +253,44 @@ struct ListItemView: View {
             radius: self.previewMode ? 0 : (!self.somethingIsHighlighted ? 0 : (self.isHighlighted ? 0 : 4))
         )
         
-        .animation(.bouncy, value: self.previewHighlightToggle)
         .animation(.bouncy, value: self.isDetectingHold)
         .contentTransition(.numericText())
         
-        .padding([.top, .bottom], self.isDetectingHold ? 15 : 0)
-        .scaleEffect(self.isDetectingHold ? 1.1 : 1)
+        .padding([.top, .bottom], self.isDetectingHold ? 5 : 0)
+        .scaleEffect(self.isDetectingHold ? 0.95 : 1)
         
-        .draggable(
-            JobEntry(
+        .draggable(self.render()!) {
+            ListItemView(
                 jobTypeID: self.entryJobID,
                 startTime: self.entryStart,
                 endTime: self.entryEnd,
-                desc: self.entryDesc
-            ).toDict().toJSONString()
-        ) {
-            ListItemView(self)
+                jobDesc: "",
+                miniPreview: true
+            )
         }
     }
+    
+    @MainActor func render() -> Image? {
+ 
+        let renderer = ImageRenderer(
+            content: ListItemView(
+                        jobTypeID: self.entryJobID,
+                        startTime: self.entryStart,
+                        endTime: self.entryEnd,
+                        jobDesc: "",
+                        miniPreview: true
+            ).body
+        )
+
+        renderer.scale = 8
+
+        if let uiImage = renderer.uiImage {
+            return Image(uiImage: uiImage)
+        }
+        
+        return nil
+   }
 }
-
-
 
 
 #Preview {

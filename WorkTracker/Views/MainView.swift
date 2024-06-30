@@ -14,12 +14,11 @@ struct MainView: View {
     var payPeriod : PayPeriod = getCurrentPayperiod()
 
     let timer = Timer.publish(
-        every: 1, // second
+        every: 15, // second
         on: .main,
         in: .common
     ).autoconnect()
     
-    @State private var timerString: String = " "
     @State private var startTimeString: String = " "
     @State private var endTimeString: String = " "
     
@@ -29,12 +28,14 @@ struct MainView: View {
         didSet {
             if (showingEditSheet == false) {
                 withAnimation {
+                    self.updateTexts()
                     timerSystem.startTime = roundTime(time: timerSystem.startTime)
                     timerSystem.updateLiveActivity()
                 }
             }
         }
     }
+    @State private var listItemSwipeToggle : Bool = true;
     
     init() {
         self.showingSaveAlert = false;
@@ -95,67 +96,95 @@ struct MainView: View {
             VStack() {
                 Spacer()
                 
-                Text(self.timerSystem.running ? "Time:" : " ")
-                    .foregroundColor(Color.mint)
-                    .font(.largeTitle)
-                    .fontWeight(.black)
-                Text(self.timerSystem.running ? self.timerString : " ")
-                    .foregroundColor(Color.white)
-                    .font(.largeTitle)
-                    .fontWeight(.black)
-                    .monospaced()
+                if (self.listItemSwipeToggle) {
+                    ListItemView(
+                        jobTypeID: getIDFromJob(type: self.timerSystem.jobState),
+                        startTime: self.timerSystem.startTime,
+                        endTime: roundTime(time: Date()),
+                        jobDesc: "",
+                        highlightedJob: .constant(nil),
+                        preview: true
+                    )
+                    .padding([.leading, .trailing], 10)
+                    .transition(.slide)
+                } else {
+                    ListItemView(
+                        jobTypeID: getIDFromJob(type: self.timerSystem.jobState),
+                        startTime: self.timerSystem.startTime,
+                        endTime: roundTime(time: Date()),
+                        jobDesc: "",
+                        highlightedJob: .constant(nil),
+                        preview: true
+                    )
+                    .padding([.leading, .trailing], 10)
+                    .transition(.slide)
+                }
                 
             }
-            .padding(.bottom, 180)
-            
+            .padding(.bottom, 80)
+            .animation(.bouncy(extraBounce: 0.1), value: self.listItemSwipeToggle)
             
             VStack() { // Nav Button
                 Spacer()
-                NavView(activePage: Pages.Main)
+                NavView(gotoPage: Pages.PayPeriod)
             }
-            .padding(.bottom, self.timerSystem.running ? 300 : 195)
-            
+            .padding(.bottom, 220)
             
             VStack() { // Start / Stop Times
                 Spacer()
                 HStack() {
                     Spacer()
                     
-                    Button(action: {
-                        self.showingEditSheet.toggle()
-                    }) {
-                        Text("Start:\n" + self.startTimeString)
-                            .foregroundColor(self.timerSystem.running ? Color.cyan : .white)
-                            .font(.title)
-                            .fontWeight(.black)
-                            .multilineTextAlignment(.center)
-                            .monospacedDigit()
+                    if (self.timerSystem.running) {
+                        Button(action: {
+                            self.showingEditSheet.toggle()
+                        }) {
+                            Text(
+                                "Start:\n" + self.startTimeString
+                            )
+                                .foregroundColor(.cyan)
+                                .font(.title)
+                                .fontWeight(.black)
+                                .multilineTextAlignment(.center)
+                                .monospacedDigit()
+                        }
+                        .disabled(!self.timerSystem.running)
+                        .transition(.move(edge: .leading).combined(with: .opacity))
                     }
-                    .disabled(!self.timerSystem.running)
                     
                     Spacer()
                     
                     if (self.timerSystem.running) {
-                        Text("End:\n" + self.endTimeString)
-                        .foregroundColor(self.timerSystem.running ? .gray : .white)
-                        .font(.title)
-                        .fontWeight(.black)
-                        .multilineTextAlignment(.center)
-                        .monospacedDigit()
-                        
-                        Spacer()
+                        Button(action: {}) {
+                            Text(
+                                "End:\n" + self.endTimeString
+                            )
+                            .foregroundColor(.gray)
+                            .font(.title)
+                            .fontWeight(.black)
+                            .multilineTextAlignment(.center)
+                            .monospacedDigit()
+                        }
+                        .disabled(true)
+                        .transition(.move(edge: .trailing).combined(with: .opacity))
                     }
                     
+                    Spacer()
+                    
                 }
-                .padding(.bottom, 90)
+                .padding(.bottom, 300)
             }
             
             
             VStack() { // Start / Stop Button Colors
                 Spacer()
-                (self.timerSystem.running ? Color.red : Color.green)
-                    .ignoresSafeArea()
-                    .frame(maxHeight: 60)
+                RunningBackgroundView(
+                    mainColor: self.timerSystem.running ?
+                        getJobColor(jobID: self.timerSystem.jobState.rawValue)
+                        : .clear,
+                    height: 60,
+                    running: self.timerSystem.running
+                )
             }
             // Start / Stop Button
             VStack(spacing: 0) {
@@ -164,17 +193,25 @@ struct MainView: View {
                 Button(action: {
                     self.startStopButtonPress()
                 }) {
-                    HStack() {
+                    VStack() {
                         Text(self.timerSystem.running ? "Stop" : "Start")
                     }
                     .frame(maxWidth: .infinity)
-                    .padding()
+                    .padding(.top, 20)
+                    .padding(.bottom, 10)
                     .foregroundStyle(.white)
                     .fontWeight(.black)
                     .font(.title)
                     .monospaced()
                 }
                 .background(.ultraThinMaterial)
+                .overlay(
+                    Rectangle()
+                        .frame(width: nil, height: 5, alignment: .leading)
+                        .foregroundColor(Color.init(red: 0.2, green: 0.2, blue: 0.2))
+                    
+                    , alignment: .top
+                )
             }
             
             
@@ -310,6 +347,7 @@ struct MainView: View {
             Button("Save and Stop Timer", role: .none) {
                 self.timerSystem.save()
                 self.timerSystem.stopTimer()
+                self.listItemSwipeToggle.toggle()
             }
             Button("Stop Timer (Don't Save)", role: .destructive) {
                 self.timerSystem.stopTimer()
@@ -323,6 +361,12 @@ struct MainView: View {
                 self.updateTexts()
             }
         }
+        .onAppear() {
+            withAnimation {
+                self.updateTexts()
+            }
+        }
+        
         .animation(.snappy(duration: 0.5), value: self.timerSystem.running)
         .animation(.spring, value: self.timerSystem.jobState)
         .animation(.bouncy, value: self.timerSystem.startTime)
@@ -336,18 +380,15 @@ struct MainView: View {
     
     
     func updateTexts() {
-        self.timerString = String(
-            self.timerSystem.startTime.hrsOffset(relativeTo: roundTime(time: Date()))
-        ) + " hrs"
-       
+        
         if (self.timerSystem.running) {
             
             self.startTimeString = dateToTime(date: roundTime(time: self.timerSystem.startTime))
-            
-            self.endTimeString = dateToTime(date: roundTime(time: Date()))
         } else {
             self.startTimeString = dateToTime(date: roundTime(time: Date()))
         }
+        
+        self.endTimeString = dateToTime(date: roundTime(time: Date()))
     }
     
     func startStopButtonPress() {
@@ -373,42 +414,47 @@ struct MainView: View {
 struct RunningBackgroundView : View {
     var mainColor : Color
     var height: CGFloat
+    var running: Bool
     
     var repeatingAnimation: Animation {
             Animation
-            .easeInOut(duration: 2)
+            .easeInOut(duration: 3)
                 .repeatForever()
-        }
+    }
     
     
     static private var startVal : Double = 0.0
-    static private var endVal : Double = 0.02
+    static private var endVal : Double = 1
     
     @State var animVal : Double = startVal
-
+    
     var body: some View {
         VStack() {
             mainColor
                 .ignoresSafeArea()
-                
         }
         .frame(maxHeight: height)
-        .scaleEffect(x: 0.98 - animVal, y: 1.02 - animVal, anchor: .top)
+        .opacity(animVal)
+        .scaleEffect(x: 1, y: animVal, anchor: .bottom)
         
-        
-        .onChange(of: self.height) {
-            self.animTrigger()
-        }
-        .onChange(of: self.mainColor) {
-            self.animTrigger()
-        }
         .onAppear() {
+            self.animTrigger()
+        }
+        .onChange(of: running) {
             self.animTrigger()
         }
     }
     
     
     func animTrigger() {
+        
+        if (!self.running) {
+            
+            if (self.animVal == RunningBackgroundView.startVal) {return}
+            self.animVal = RunningBackgroundView.startVal
+            return
+        }
+        
         withAnimation(self.repeatingAnimation) {
             if (self.animVal == RunningBackgroundView.startVal) {
                 self.animVal = RunningBackgroundView.endVal

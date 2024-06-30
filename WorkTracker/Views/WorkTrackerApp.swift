@@ -71,45 +71,50 @@ struct WorkTrackerApp: App {
 enum Pages : String, CaseIterable {
     case Main = "Main Page"
     case PayPeriod = "History Page"
-
-    var color: Color {
-        switch self {
-            case .Main:
-                return .orange
-            case .PayPeriod:
-                return .orange
-
-        }
-    }
 }
+
 
 struct NavView: View {
     
-    var activePage : Pages
+    var gotoPage : Pages
     @ObservedObject var globalData = GlobalData.shared
     
     var body: some View {
         HStack() {
-            ForEach(Pages.allCases.filter { p in
-                return p != activePage
-            }, id: \.self) { page in
-                
-                Button(page.rawValue) {
-                    RumbleSystem.shared.rumble()
-                    globalData.currentPage = page
-                }
-                .padding()
-                .background(page.color)
-                .foregroundColor(.white)
-                .font(.title2)
-                .fontWeight(.black)
-                .multilineTextAlignment(.center)
-                .cornerRadius(15) 
-                .shadow(color: Color(hex: "b55612"), radius: 0, x: 0, y: 5)
+            Button(action: {
+                RumbleSystem.shared.rumble()
+                globalData.currentPage = gotoPage
+            }) {
+                Text(gotoPage.rawValue)
+                    .padding()
+                    .background(Color.init(hex: "1c1c1e"))
+                    .foregroundColor(.white)
+                    .font(.title2)
+                    .fontWeight(.black)
+                    .multilineTextAlignment(.center)
+                    .cornerRadius(15)
+                    .shadow(color: Color(hex: "1c1c1e").darkened(by: 0.2), radius: 0, x: 0, y: 5)
+                    
             }
         }
     }
 }
 
-
+#Preview {
+    VStack() {
+        Spacer()
+        
+        HStack() {
+            Spacer()
+            
+            NavView(gotoPage: .PayPeriod, globalData: GlobalData.shared)
+            
+            Spacer()
+        }
+        
+        Spacer()
+    }
+    .ignoresSafeArea()
+    .background(.ultraThinMaterial)
+}
 

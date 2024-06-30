@@ -137,6 +137,13 @@ extension Date {
     func addHours(hours: Int) -> Date {
         return Calendar.current.date(byAdding: .hour, value: hours, to: self)!
     }
+    func addHours(hours: Double) -> Date {
+        let hrs : Int = Int(floor(hours))
+        var mins = hours - floor(hours)
+        mins *= 60
+        
+        return self.addHours(hours: hrs).addMinutes(minutes: Int(mins))
+    }
     func addMinutes(minutes: Int) -> Date {
         return Calendar.current.date(byAdding: .minute, value: minutes, to: self)!
     }
@@ -187,6 +194,12 @@ extension Date {
         formatter.dateStyle = .none
         formatter.timeStyle = .short
         return formatter.string(from: self)
+    }
+    
+    func toDate() -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "MMM d, yyyy"
+        return dateFormatter.string(from: self)
     }
 }
 

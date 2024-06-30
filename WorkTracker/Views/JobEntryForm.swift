@@ -16,6 +16,8 @@ struct JobEntryForm: View {
     @Binding var editJobID : UUID?
     @Binding var actualHighlightID : UUID?
     
+    @Binding var highlightDate : Date?
+    
     @State var highlightedJob : UUID? = nil
     
     @State private var newEntryJobID : String
@@ -34,13 +36,15 @@ struct JobEntryForm: View {
     
     init (
         showingForm : Binding<Bool>,
-        hightlightJob : Binding<UUID?>
+        hightlightJob : Binding<UUID?>,
+        showDate : Binding<Date?>
     ) {
         self.newForm = true
         self.job = nil
         self._showingForm = showingForm
         self._editJobID = .constant(nil)
         self._actualHighlightID = hightlightJob
+        self._highlightDate = showDate
         
         self.newEntryJobID = ""
         self.newEntryStart = roundTime(time: Date())
@@ -51,13 +55,15 @@ struct JobEntryForm: View {
         showingForm : Binding<Bool>,
         job : JobEntry,
         editJobId : Binding<UUID?>,
-        hightlightJob : Binding<UUID?>
+        hightlightJob : Binding<UUID?>,
+        showDate : Binding<Date?>
     ) {
         self.newForm = false
         self.job = job
         self._showingForm = showingForm
         self._editJobID = editJobId
         self._actualHighlightID = hightlightJob
+        self._highlightDate = showDate
         
         self.newEntryJobID = job.jobTypeID
         self.newEntryStart = job.startTime
@@ -134,6 +140,15 @@ struct JobEntryForm: View {
                     DatePicker(selection: $newEntryStart) {
                         Text("Start:")
                     }
+                    .onChange(of: self.newEntryStart) { old, new in
+                        
+                        let newDiff = abs(old.hrsOffset(relativeTo: new))
+                        if (newDiff > 12) {
+                        
+                            let offset = old.hrsOffset(relativeTo: self.newEntryEnd)
+                            self.newEntryEnd = new.addHours(hours: offset)
+                        }
+                    }
                     
                     DatePicker(
                         selection: $newEntryEnd,
@@ -197,6 +212,7 @@ struct JobEntryForm: View {
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
             actualHighlightID = newEntry.entryID
+            highlightDate = newEntry.startTime
         }
         
         self.closeForm()
@@ -212,6 +228,8 @@ struct JobEntryForm: View {
                 desc: self.newEntryDesc
             )
         }
+        
+        highlightDate = roundTime(time: self.newEntryStart)
         
         self.closeForm()
     }
@@ -236,6 +254,7 @@ struct JobEntryForm: View {
     
     JobEntryForm(
         showingForm: .constant(true),
-        hightlightJob: .constant(nil)
+        hightlightJob: .constant(nil),
+        showDate: .constant(nil)
     )
 }
