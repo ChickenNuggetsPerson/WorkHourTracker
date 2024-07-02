@@ -26,7 +26,7 @@ struct WorkTrackerApp: App {
         WindowGroup {
             VStack() {
                 contentView(for: globalData.currentPage)
-                    .animation(.spring, value: globalData.currentPage)
+                    .animation(.snappy, value: globalData.currentPage)
                     .environment(\.colorScheme, .dark)
             }
         }
@@ -48,7 +48,7 @@ struct WorkTrackerApp: App {
                 title: "Pay History:",
                 color: Color.green
             )
-            .transition(.move(edge: .trailing))
+                .transition(.move(edge: .trailing))
         }
         
     }

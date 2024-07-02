@@ -335,8 +335,8 @@ struct PayPeriodView: View {
         }
         .animation(.bouncy(), value: self.showingDatesForm)
         .animation(.bouncy(), value: self.payPeriod)
-        .animation(.bouncy(), value: self.editJob)
-        .animation(.bouncy(), value: self.showingNewEntryForm)
+        .animation(.snappy, value: self.editJob)
+        .animation(.snappy, value: self.showingNewEntryForm)
         .animation(.bouncy(), value: self.highlightedJob)
         .animation(.bouncy(), value: DataStorageSystem.shared.canUndo)
         .animation(.bouncy(), value: DataStorageSystem.shared.canRedo)

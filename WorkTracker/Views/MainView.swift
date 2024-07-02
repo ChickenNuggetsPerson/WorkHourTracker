@@ -27,10 +27,12 @@ struct MainView: View {
     @State private var showingEditSheet = false {
         didSet {
             if (showingEditSheet == false) {
-                withAnimation {
-                    self.updateTexts()
-                    timerSystem.startTime = roundTime(time: timerSystem.startTime)
-                    timerSystem.updateLiveActivity()
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.75) {
+                    withAnimation {
+                        self.updateTexts()
+                        timerSystem.startTime = roundTime(time: timerSystem.startTime)
+                        timerSystem.updateLiveActivity()
+                    }
                 }
             }
         }
@@ -90,7 +92,52 @@ struct MainView: View {
             .padding([.leading, .trailing])
             .padding(.bottom, 295)
             .animation(.spring(duration: 0.3), value: self.timerSystem.running)
-            .animation(.bouncy(), value: self.timerSystem.jobState)
+            
+            
+            
+            ZStack() {
+                if (self.showingEditSheet) {
+                    
+                    VStack() {
+                    
+                        VStack {
+                            DatePicker("Select Start Time", selection: $timerSystem.startTime, in: Date().clearTime()...roundTime(time: Date()), displayedComponents: .hourAndMinute)
+                                .datePickerStyle(WheelDatePickerStyle())
+                                .labelsHidden()
+                                .frame(maxWidth: .infinity)
+                            
+                            Button("Done") {
+                                self.showingEditSheet.toggle()
+                            }
+                            .foregroundColor(.white)
+                            .fontWeight(.black)
+                            .font(.body)
+                            .padding()
+                        }
+                        .background(
+                            GeometryReader { geometry in
+                                
+                                Rectangle()
+                                    .cornerRadius(25)
+                                    .foregroundColor(Color.init(hex: "0f0f0f"))
+                                    .transformEffect(.init(translationX: 8, y: 5))
+                                
+                                Rectangle()
+                                    .cornerRadius(25)
+                                    .foregroundColor(Color.init(hex: "1c1c1e"))
+                            }
+                        )
+                        .frame(maxWidth: .infinity)
+                        .padding(10)
+                        .padding(.top, 175)
+                        
+                        Spacer()
+                    }
+                    .transition(.move(edge: .top).combined(with: .opacity).combined(with: .scale))
+                }
+            }
+            
+            
             
             
             VStack() {
@@ -99,25 +146,26 @@ struct MainView: View {
                 if (self.listItemSwipeToggle) {
                     ListItemView(
                         jobTypeID: getIDFromJob(type: self.timerSystem.jobState),
-                        startTime: self.timerSystem.startTime,
+                        startTime: self.timerSystem.running ? self.timerSystem.startTime : roundTime(time: Date()),
                         endTime: roundTime(time: Date()),
                         jobDesc: "",
                         highlightedJob: .constant(nil),
                         preview: true
                     )
                     .padding([.leading, .trailing], 10)
-                    .transition(.slide)
+//                    .transition(.slide)
+                    .transition(.move(edge: .bottom).combined(with: .opacity))
                 } else {
                     ListItemView(
                         jobTypeID: getIDFromJob(type: self.timerSystem.jobState),
-                        startTime: self.timerSystem.startTime,
+                        startTime: self.timerSystem.running ? self.timerSystem.startTime : roundTime(time: Date()),
                         endTime: roundTime(time: Date()),
                         jobDesc: "",
                         highlightedJob: .constant(nil),
                         preview: true
                     )
                     .padding([.leading, .trailing], 10)
-                    .transition(.slide)
+                    .transition(.move(edge: .bottom).combined(with: .opacity))
                 }
                 
             }
@@ -135,44 +183,47 @@ struct MainView: View {
                 HStack() {
                     Spacer()
                     
-                    if (self.timerSystem.running) {
+                    if (self.timerSystem.running && !self.showingEditSheet) {
                         Button(action: {
                             self.showingEditSheet.toggle()
                         }) {
                             Text(
                                 "Start:\n" + self.startTimeString
                             )
-                                .foregroundColor(.cyan)
-                                .font(.title)
-                                .fontWeight(.black)
-                                .multilineTextAlignment(.center)
-                                .monospacedDigit()
+                            .padding()
+                            .foregroundColor(getJobColor(jobID: self.timerSystem.jobState.rawValue).darkened(by: -0.3))
+                            .font(.title)
+                            .fontWeight(.black)
+                            .multilineTextAlignment(.center)
+                            .monospaced()
                         }
                         .disabled(!self.timerSystem.running)
                         .transition(.move(edge: .leading).combined(with: .opacity))
-                    }
-                    
-                    Spacer()
-                    
-                    if (self.timerSystem.running) {
+                        
+                        Spacer()
+                        
+                        
                         Button(action: {}) {
                             Text(
                                 "End:\n" + self.endTimeString
                             )
+                            .padding()
                             .foregroundColor(.gray)
                             .font(.title)
                             .fontWeight(.black)
                             .multilineTextAlignment(.center)
-                            .monospacedDigit()
+                            .monospaced()
                         }
                         .disabled(true)
                         .transition(.move(edge: .trailing).combined(with: .opacity))
                     }
                     
+            
+                    
                     Spacer()
                     
                 }
-                .padding(.bottom, 300)
+                .padding(.bottom, 285)
             }
             
             
@@ -199,7 +250,7 @@ struct MainView: View {
                     .frame(maxWidth: .infinity)
                     .padding(.top, 20)
                     .padding(.bottom, 10)
-                    .foregroundStyle(.white)
+                    .foregroundStyle(self.showingEditSheet ? .gray : .white)
                     .fontWeight(.black)
                     .font(.title)
                     .monospaced()
@@ -212,6 +263,7 @@ struct MainView: View {
                     
                     , alignment: .top
                 )
+                .disabled(self.showingEditSheet)
             }
             
             
@@ -229,12 +281,14 @@ struct MainView: View {
                         self.showingDesc.toggle()
                     }
                     .font(
-                        self.timerSystem.running ? .system(size: 60) : .title
+                        (self.timerSystem.running && !self.showingEditSheet) ? .system(size: 60) : .title
                     )
                     .fontWeight(.black)
                     .foregroundColor(.white)
-                    .frame(maxWidth: .infinity, minHeight:
-                            self.timerSystem.running ? 290 : 120
+                    .frame(maxWidth: .infinity)
+                    .frame(
+                        height: self.showingEditSheet ? 90 :
+                            (self.timerSystem.running ? 290 : 120)
                     )
                     .multilineTextAlignment(.center)
                     .disabled(!self.timerSystem.running)
@@ -287,59 +341,10 @@ struct MainView: View {
                         }
                     }
                     .transition(.move(edge: .bottom).combined(with: .opacity))
+        
                 }
             }
-            
-            ZStack() {
-                if (self.showingEditSheet) {
-                    Color.black.ignoresSafeArea()
-                        .transition(.move(edge: .bottom).combined(with: .opacity))
-                    
-                    VStack() {
-                        Spacer()
-                        
-                        ListItemView(
-                            jobTypeID: getIDFromJob(type: timerSystem.jobState),
-                            startTime: roundTime(time: timerSystem.startTime),
-                            endTime: roundTime(time: Date()),
-                            jobDesc: "",
-                            highlightedJob: .constant(nil),
-                            preview: true
-                        )
-                        .padding(10)
-                        
-                        VStack {
-                            DatePicker("Select Start Time", selection: $timerSystem.startTime, in: Date().clearTime()...roundTime(time: Date()), displayedComponents: .hourAndMinute)
-                                .datePickerStyle(WheelDatePickerStyle())
-                                .labelsHidden()
-                                .frame(maxWidth: .infinity)
-                            
-                            Button("Done") {
-                                self.showingEditSheet.toggle()
-                            }
-                            .foregroundColor(.white)
-                            .fontWeight(.black)
-                            .font(.body)
-                            .padding()
-                        }
-                        .background(
-                            GeometryReader { geometry in
-                                Rectangle()
-                                    .cornerRadius(25)
-                                    .foregroundColor(Color.init(hex: "1c1c1e"))
-                            }
-                        )
-                        .frame(maxWidth: .infinity)
-                        .padding(10)
-                        
-                        Spacer()
-                    }
-                    .transition(.move(edge: .bottom).combined(with: .opacity))
-                }
-            }
-            
-            
-            
+  
         }
         
     
@@ -362,16 +367,18 @@ struct MainView: View {
             }
         }
         .onAppear() {
-            withAnimation {
-                self.updateTexts()
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                withAnimation {
+                    self.updateTexts()
+                }
             }
         }
         
         .animation(.snappy(duration: 0.5), value: self.timerSystem.running)
-        .animation(.spring, value: self.timerSystem.jobState)
+        .animation(.snappy, value: self.timerSystem.jobState)
         .animation(.bouncy, value: self.timerSystem.startTime)
-        .animation(.spring, value: self.showingDesc)
-        .animation(.spring, value: self.showingEditSheet)
+        .animation(.snappy, value: self.showingDesc)
+        .animation(.snappy, value: self.showingEditSheet)
         .contentTransition(.numericText())
         
     }
