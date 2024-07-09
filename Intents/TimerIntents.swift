@@ -105,7 +105,7 @@ struct TimerStatusResult: AppEntity {
         DisplayRepresentation(
             title: "\(jobTitle) - \(running ? "Running" : "Stopped")",
             subtitle: LocalizedStringResource(
-                stringLiteral: running ? String(startTime.hrsOffset(relativeTo: endTime)) + " hrs" : ""
+                stringLiteral: running ? startTime.hrsOffset(relativeTo: endTime) : ""
             ),
             image: DisplayRepresentation.Image(
                 systemName: running ? "timer" : "pause.circle"

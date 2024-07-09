@@ -474,7 +474,7 @@ struct PayPeriodView: View {
 
         let entries = self.jobEntries
         for entry in entries {
-            let hrs = entry.startTime.hrsOffset(relativeTo: entry.endTime)
+            let hrs : Double = entry.startTime.hrsOffset(relativeTo: entry.endTime)
 
             totalHours += hrs
             totalPay += getPayFromJob(

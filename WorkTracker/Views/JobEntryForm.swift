@@ -145,7 +145,7 @@ struct JobEntryForm: View {
                         let newDiff = abs(old.hrsOffset(relativeTo: new))
                         if (newDiff > 12) {
                         
-                            let offset = old.hrsOffset(relativeTo: self.newEntryEnd)
+                            let offset : Double = old.hrsOffset(relativeTo: self.newEntryEnd)
                             self.newEntryEnd = new.addHours(hours: offset)
                         }
                     }

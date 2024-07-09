@@ -155,12 +155,7 @@ struct ListItemView: View {
                                 
                                 Spacer()
                                 
-                                let num = self.entryStart.hrsOffset(relativeTo: self.entryEnd)
-                                
-                                Text(
-                                    String(num)
-                                    + ((num == 1.0) ? " hr" : " hrs")
-                                )
+                                Text(self.entryStart.hrsOffset(relativeTo: self.entryEnd))
                                 .foregroundColor(.white)
                                 .font(.title2)
                                 .fontWeight(.black)

@@ -43,8 +43,8 @@ struct JobEntryEntity: AppEntity {
                 + " - "
                 + endTime.getTimeText()
                 + " > "
-                + String(startTime.hrsOffset(relativeTo: endTime))
-                + " hrs\n" + desc
+                + startTime.hrsOffset(relativeTo: endTime)
+                + "\n" + desc
             ),
             image: DisplayRepresentation.Image(
                 systemName: "deskclock"

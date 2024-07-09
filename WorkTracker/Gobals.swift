@@ -172,6 +172,12 @@ extension Date {
     func hrsOffset(relativeTo: Date = Date()) -> Double {
         return floor(relativeTo.timeIntervalSince(self) / 36) / 100
     }
+    func hrsOffset(relativeTo: Date = Date()) -> String {
+        let result = floor(relativeTo.timeIntervalSince(self) / 36) / 100
+        
+        return String(result) + ((result == 1.0) ? " hr" : " hrs")
+    }
+    
     
     func getDateComponents() -> DateComponents {
         return Calendar.current.dateComponents([.era, .year, .month, .day, .hour, .minute], from: self)
@@ -179,7 +185,7 @@ extension Date {
     
     func timecardDayString() -> String {
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "E - MMM d, yyyy"
+        dateFormatter.dateFormat = "E MMM d, yyyy"
         return dateFormatter.string(from: self)
     }
     
@@ -314,7 +320,7 @@ extension [JobEntry] {
         }
         
         for entry in self {
-            let hrs = entry.startTime.hrsOffset(relativeTo: entry.endTime)
+            let hrs : Double = entry.startTime.hrsOffset(relativeTo: entry.endTime)
             let jobID = getJobFromID(id: entry.jobTypeID)
             jobHours[jobID]! += hrs
         }
