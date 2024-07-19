@@ -219,27 +219,32 @@ struct JobEntryForm: View {
     }
     private func updateJob() {
 
-        withAnimation {
-            DataStorageSystem.shared.updateEntry(
-                entry: self.job!,
-                jobTypeID: self.newEntryJobID,
-                startTime: roundTime(time: self.newEntryStart),
-                endTime: roundTime(time: self.newEntryEnd),
-                desc: self.newEntryDesc
-            )
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            withAnimation {
+                DataStorageSystem.shared.updateEntry(
+                    entry: self.job!,
+                    jobTypeID: self.newEntryJobID,
+                    startTime: roundTime(time: self.newEntryStart),
+                    endTime: roundTime(time: self.newEntryEnd),
+                    desc: self.newEntryDesc
+                )
+            }
+            
+            highlightDate = roundTime(time: self.newEntryStart)
         }
-        
-        highlightDate = roundTime(time: self.newEntryStart)
         
         self.closeForm()
     }
     private func deleteJob() {
-        DataStorageSystem.shared.deleteEntry(entry: self.job!)
         
         highlightedJob = nil
         editJobID = nil
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            DataStorageSystem.shared.deleteEntry(entry: self.job!)
+        }
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
             actualHighlightID = nil
         }
         

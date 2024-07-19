@@ -32,8 +32,10 @@ final class JobEntry {
         self.desc = ""
         self.entryID = UUID()
     }
+    
+    
+    func totalHours() -> Double { self.startTime.hrsOffset(relativeTo: self.endTime) }
 }
-
 
 class DataStorageSystem : ObservableObject {
     static let shared = DataStorageSystem()
@@ -251,6 +253,10 @@ class DataStorageSystem : ObservableObject {
             pprd.endDate = getPayPeriod(refDay: date).endDate
         } catch {}
         
+        let currentPPRD = getCurrentPayperiod()
+        if (pprd.startDate > currentPPRD.startDate) { pprd.startDate = currentPPRD.startDate }
+        if (pprd.endDate < currentPPRD.endDate) { pprd.endDate = currentPPRD.endDate }
+        
         print("Bounds: \(pprd.startDate) - \(pprd.endDate)")
         
         self.dataBounds = pprd
@@ -391,3 +397,4 @@ func convertStringToDate(_ dateString: String) -> Date {
     dateFormatter.locale = Locale(identifier: "en_US_POSIX") // Ensure consistent date parsing
     return dateFormatter.date(from: dateString) ?? Date()
 }
+

@@ -11,6 +11,8 @@ import UIKit
 import SwiftData
 
 
+
+
 struct PayPeriodView: View {
     
     @Environment(\.modelContext) var modelContext
@@ -27,12 +29,12 @@ struct PayPeriodView: View {
         DataStorageSystem.shared.fetchJobEntries(dateRange: payPeriod.range)
     }
 
-    var totalHoursString : String {
+    var totalHours : Double {
         var total = 0.0
         for job in self.jobEntries {
-            total += job.startTime.hrsOffset(relativeTo: job.endTime)
+            total += job.totalHours()
         }
-        return String(total)
+        return total
     }
     
     
@@ -83,32 +85,58 @@ struct PayPeriodView: View {
 
                     ScrollView() {
                         
-                        Color.clear.frame(height: 140)
+                        Color.clear.frame(height: 0)
+                            .id("top")
                         
-                        ForEach(
-                            self.jobEntries
-                        ) { entry in
+                        let entries = self.jobEntries
+                        let isHighlighting = self.highlightedJob != nil
+                        
+                        ForEach(entries.indices, id: \.self) { i in
+                            
+                            if (i == 0 || !Calendar.current.isDate(entries[i].startTime, inSameDayAs: entries[i-1].startTime)) {
+                                
+                                HStack() {
+                                    
+                                    Button(entries[i].startTime.clearTime().toDate()) {
+                                        RumbleSystem.shared.rumble()
+                                    }
+                                        .foregroundColor(
+                                            isHighlighting ? .gray : Color(hex: "#9f9f9f")
+                                        )
+                                        .font(.title3)
+                                        .fontWeight(.black)
+                                        .monospaced()
+                                        .blur(radius: isHighlighting ? 5 : 0)
+                                    
+                                    Spacer()
+                                    
+                                }
+                                .padding([.leading, .trailing], 20)
+                                .padding(.top, 15)
+                                .transition(.move(edge: .leading))
+                                .id(entries[i].startTime.toDate())
+                                
+                                .modifier(ConditionalScrollTransition(condition: true))
+                            }
                             
                             ListItemView(
-                                job: entry,
+                                job: entries[i],
                                 highlightedJob: $highlightedJob,
                                 editJob: $editJob,
                                 preview: false
                             )
                             .padding([.leading, .trailing], 10)
-                            .id(entry.entryID)
-                            .transition(
-                                .push(from: .bottom)
-                                .combined(with: .opacity)
-                                .combined(with: .scale)
-                            )
+                            .id(entries[i].entryID)
+                            
+                            .modifier(ConditionalScrollTransition(
+                                condition: true
+                            ))
+                        
                             
                         } // For Each
-                        .onDelete(perform: { indexSet in
-                            
-                        })
+                        .transition(.opacity.combined(with: .scale(scale: 0.2, anchor: .center)))
                         
-                        Color.clear.frame(height: 80)
+                        Color.clear.frame(height: 20)
                         
                         
                     } // Scroll View
@@ -116,8 +144,26 @@ struct PayPeriodView: View {
                     .onAppear {
                         scrollProxyHolder.proxy = proxy
                     }
-                }
+                    .scrollDisabled(self.highlightedJob != nil)
+                } // Scroll View Reader
+                .gesture(DragGesture(minimumDistance: 10, coordinateSpace: .local)
+                    .onEnded({value in
+                        if (abs(value.translation.height) > abs(value.translation.width)) { return }
+                        
+                        if (value.translation.width > 0) {
+                            self.shiftPayPeriod(forwards: false)
+                        } else {
+                            self.shiftPayPeriod(forwards: true)
+                        }
+                        
+                        RumbleSystem.shared.rumble()
+                    })
+                )
+    
             }
+            .padding(.top, 115)
+            .padding(.bottom, 70)
+            
             
             VStack() { // Blurs
                 
@@ -209,7 +255,7 @@ struct PayPeriodView: View {
                 .padding([.leading, .trailing], 25)
                 
                 
-                Button(self.totalHoursString + " hrs") {
+                Button(self.totalHours.toHrsString()) {
                     self.showingExportAlert = true;
                     RumbleSystem.shared.rumble()
                 }
@@ -223,7 +269,7 @@ struct PayPeriodView: View {
                     VStack() {
                         DatePicker(
                             selection: $payPeriod.startDate,
-                            in: DataStorageSystem.shared.dataBounds.startDate...DataStorageSystem.shared.dataBounds.endDate
+                            in: DataStorageSystem.shared.dataBounds.range
                         ) {
                             Text("Start Time:")
                         }
@@ -334,10 +380,10 @@ struct PayPeriodView: View {
 
         }
         .animation(.bouncy(), value: self.showingDatesForm)
-        .animation(.bouncy(), value: self.payPeriod)
+        .animation(.bouncy(duration: 0.5), value: self.payPeriod)
         .animation(.snappy, value: self.editJob)
         .animation(.snappy, value: self.showingNewEntryForm)
-        .animation(.bouncy(), value: self.highlightedJob)
+        .animation(.bouncy(duration: 1.5), value: self.highlightedJob)
         .animation(.bouncy(), value: DataStorageSystem.shared.canUndo)
         .animation(.bouncy(), value: DataStorageSystem.shared.canRedo)
         .animation(.bouncy(), value: DataStorageSystem.shared.showUndo)
@@ -430,7 +476,9 @@ struct PayPeriodView: View {
         }
         
         .onChange(of: self.highlightedJob) {
-            scrollTo(id: self.highlightedJob)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
+                scrollTo(id: self.highlightedJob)
+            }
         }
         .onChange(of: highlightedDate) {
             if (highlightedDate == nil) { return; }
@@ -446,20 +494,28 @@ struct PayPeriodView: View {
     
 
     func scrollTo(id: UUID?) {
-        DispatchQueue.main.async() {
-            withAnimation(.easeInOut) {
-                scrollProxyHolder.proxy!.scrollTo(id, anchor: .init(x: 0.5, y: 0.5))
-            }
+        withAnimation(.bouncy) {
+            scrollProxyHolder.proxy!.scrollTo(id, anchor: .init(x: 0.5, y: 0.5))
+        }
+    }
+    func scrollTo(id: String) {
+        withAnimation(.bouncy(duration: 10)) {
+            scrollProxyHolder.proxy!.scrollTo(id, anchor: .init(x: 0.5, y: 0.5))
         }
     }
     
     func shiftPayPeriod(forwards: Bool) {
+        self.highlightedJob = nil
+        
         if (forwards) {
+            if (!self.canGoForwards) { return }
             
             self.payPeriod.endDate = self.payPeriod.endDate.addDays(days: 14)
             self.payPeriod.startDate = self.payPeriod.startDate.addDays(days: 14)
             
+            
         } else {
+            if (!self.canGoBack) { return }
             
             self.payPeriod.startDate = self.payPeriod.startDate.addDays(days: -14)
             self.payPeriod.endDate = self.payPeriod.endDate.addDays(days: -14)
@@ -471,7 +527,6 @@ struct PayPeriodView: View {
         var totalPay = 0.0
         var totalHours = 0.0
         
-
         let entries = self.jobEntries
         for entry in entries {
             let hrs : Double = entry.startTime.hrsOffset(relativeTo: entry.endTime)
@@ -483,10 +538,14 @@ struct PayPeriodView: View {
             )
         }
         
-        var infoTXT = String(totalHours) + " hrs\n$" + String(floor(totalPay * 0.88)) + "\n"
+        var infoTXT = entries.getHoursTotals().toText()
         
-        infoTXT += entries.getHoursTotals().toText()
-        
+        infoTXT += "\n"
+        if (entries.count != 0) {
+            infoTXT += "\n"
+        }
+        infoTXT += totalHours.toHrsString() + " -> " + totalPay.toMoneyString()
+
         return infoTXT
     }
     
@@ -496,6 +555,35 @@ struct PayPeriodView: View {
     }
 
 }
+
+
+
+
+
+
+struct ConditionalScrollTransition: ViewModifier {
+    let condition: Bool
+
+    func body(content: Content) -> some View {
+        Group {
+            if condition {
+                content
+                    .scrollTransition { content, phase in
+                        content
+                            .scaleEffect(phase.isIdentity ? 1 : 0.93, anchor: .center)
+                            .blur(radius: phase.isIdentity ? 0 : 3)
+                            .opacity(phase.isIdentity ? 1 : 0.9)
+                            .offset(y: phase.value * 10)
+                    }
+            } else {
+                content
+            }
+        }
+    }
+}
+
+
+
 
 
 

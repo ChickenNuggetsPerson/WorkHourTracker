@@ -96,9 +96,8 @@ struct ListItemView: View {
         self.miniPreviewMode = true
     }
     
-    
     var body: some View {
-        HStack() {
+        VStack() {
             
             Button(action: {
                 if (self.previewMode) {
@@ -114,101 +113,79 @@ struct ListItemView: View {
                 RumbleSystem.shared.rumble()
             }) {
                 
-                VStack(alignment: .leading) {
+                ZStack() {
                     
-                    
-                    ZStack() {
-                        
-                        
-                        HStack() {
-                            VStack(alignment: .leading) {
-                                let color = getJobColor(jobID: getJobFromID(id: self.entryJobID).rawValue)
-                                
-                                Text(getJobFromID(id: self.entryJobID).rawValue)
-                                    .fontWeight(.black)
-                                    .foregroundColor(color)
-                                    .font(.title2)
-                                
-                                Text(self.entryStart.toDate())
-                                    .foregroundColor(.white)
-                                    .font(.title3)
-                                    .fontWeight(.bold)
-                                
-                                Text(
-                                    self.entryStart.getTimeText()
-                                    + " - "
-                                    + self.entryEnd.getTimeText()
+                    HStack() {
+                        VStack(alignment: .leading) {
+                                              
+                            Text(getJobFromID(id: self.entryJobID).rawValue)
+                                .fontWeight(.black)
+                                .foregroundColor(
+                                    getJobColor(jobID: getJobFromID(id: self.entryJobID).rawValue)
                                 )
-                                    .foregroundColor(.white)
-                                    .font(.title3)
-                                    .fontWeight(.bold)
-                                
-                            }
+                                .font(.title2)
                             
-                            Spacer()
+                            Text(self.entryStart.toDate())
+                                .foregroundColor(.white)
+                                .font(.title3)
+                                .fontWeight(.bold)
+                            
+                            Text(
+                                self.entryStart.getTimeText()
+                                + " - "
+                                + self.entryEnd.getTimeText()
+                            )
+                                .foregroundColor(.white)
+                                .font(.title3)
+                                .fontWeight(.bold)
+                            
                         }
                         
-                        
-                        
-                        if (!self.miniPreviewMode) {
+                        Spacer()
+                    }
+                    
+                    
+                    
+                    if (!self.miniPreviewMode) {
+                        VStack {
+                            
+                            let totalTime: Double = self.entryStart.hrsOffset(relativeTo: self.entryEnd)
                             HStack() {
                                 
                                 Spacer()
                                 
-                                Text(self.entryStart.hrsOffset(relativeTo: self.entryEnd))
+                                Text(totalTime.toHrsString())
                                 .foregroundColor(.white)
                                 .font(.title2)
                                 .fontWeight(.black)
                                 .monospaced()
                                 
-                                
                             }
-                        }
                             
-                
-                    }
-                    .padding(.bottom, self.isHighlighted ? 0 : -7)
-                    
-                    if (self.isHighlighted) {
-                        Divider()
-                    }
-                    
-                    VStack(alignment: .leading) {
-                        
-                        HStack() {
-                            Text(self.isHighlighted ? "Job Description:" : " ")
-                                .font(.title2)
-                                .fontWeight(.black)
-                                .foregroundColor(.white)
-                            
-                            Spacer()
-                            
-                            if (!self.previewMode && self.isHighlighted) {
-                                Button("", systemImage: "pencil") {
-                                    // Edit mode
+                            if (self.isHighlighted) {
+                                HStack() {
                                     
-                                    self.editJobBinding = self.entryID
+                                    Spacer()
+                                    
+                                    Text(
+                                       getPayFromJob(id: self.entryJobID, hrs: totalTime).toMoneyString()
+                                    )
+                                    .foregroundColor(.gray)
+                                    .font(.title2)
+                                    .fontWeight(.black)
+                                    .monospaced()
+                                    
                                     
                                 }
-                                .fontWeight(.black)
-                                .font(.title2)
+                                .transition(.move(edge: .top).combined(with: .opacity))
                             }
                         }
                         
-                        
-                        HStack() {
-                            Text(self.isHighlighted ? self.entryDesc : " ")
-                                .font(.body)
-                                .foregroundColor(.white)
-                                .multilineTextAlignment(.leading)
-                                .monospaced()
-                        }
                     }
-                    .padding(0)
-                    .frame(maxHeight: self.isHighlighted ? nil : 0)
-                    
-                   
-                } // VStack
+                        
+            
+                }
+                .padding(.bottom, self.isHighlighted ? 0 : -7)
                 
             } // Button
             .padding()
@@ -222,7 +199,56 @@ struct ListItemView: View {
                 // Optional: Perform an action on long press
             })
             
-        } // HStack
+            VStack() {
+                if (self.isHighlighted) {
+                    Divider()
+                    
+                    VStack(alignment: .leading) {
+                        
+                        HStack() {
+                            Text(self.entryDesc != "" ? "Job Description:" : "No Description:")
+                                .font(.title2)
+                                .fontWeight(.black)
+                                .foregroundColor(.white)
+                            
+                            Spacer()
+                            
+                            Button("", systemImage: "pencil") {
+                                // Edit mode
+                                self.editJobBinding = self.entryID
+                            }
+                            .fontWeight(.black)
+                            .font(.title2)
+                        }
+                        
+                        
+                        ScrollView {
+                            if (self.entryDesc != "") {
+                                Text(self.entryDesc)
+                                    .font(.body)
+                                    .foregroundColor(.white)
+                                    .multilineTextAlignment(.leading)
+                                    .monospaced()
+                                    .padding()
+                                    .frame(minWidth: 300)
+                            }
+                        }
+                        .background(Color.black.darkened(by: -0.05))
+                        .cornerRadius(15)
+                        .frame(maxHeight: 300)
+                        
+                        
+                    }
+                    .padding(0)
+                    .transition(.opacity.combined(with: .scale(0.1, anchor: .top)))
+                    .animation(.snappy(duration: 0.3), value: self.isHighlighted)
+                    .clipped()
+                    .padding(.bottom)
+                } // Highlighted If Statement
+            } // VStack
+            .padding([.leading, .trailing])
+            
+        } // VStack
         .padding([.leading, .trailing])
         .padding([.top, .bottom], 5)
         .background(
@@ -249,6 +275,7 @@ struct ListItemView: View {
         )
         
         .animation(.bouncy, value: self.isDetectingHold)
+        .animation(.snappy, value: self.isHighlighted)
         .contentTransition(.numericText())
         
         .padding([.top, .bottom], self.isDetectingHold ? 5 : 0)
@@ -289,12 +316,11 @@ struct ListItemView: View {
 
 
 #Preview {
-    ListItemView(
-        jobTypeID: getIDFromJob(type: .Manager),
-        startTime: Date().addHours(hours: -1).addMinutes(minutes: -15),
-        endTime: Date(),
-        jobDesc: "- Super Cool Job",
-        highlightedJob: .constant(nil),
-        preview: true
+    PayPeriodView(
+        period: getCurrentPayperiod()
     )
+    .modelContainer(DataStorageSystem.shared.container)
+    .modelContext(DataStorageSystem.shared.context)
+//    
+//    EmptyView()
 }

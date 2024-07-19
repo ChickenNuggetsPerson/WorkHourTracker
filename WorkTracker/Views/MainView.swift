@@ -153,7 +153,6 @@ struct MainView: View {
                         preview: true
                     )
                     .padding([.leading, .trailing], 10)
-//                    .transition(.slide)
                     .transition(.move(edge: .bottom).combined(with: .opacity))
                 } else {
                     ListItemView(

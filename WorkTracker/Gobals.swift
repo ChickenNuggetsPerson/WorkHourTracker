@@ -173,9 +173,7 @@ extension Date {
         return floor(relativeTo.timeIntervalSince(self) / 36) / 100
     }
     func hrsOffset(relativeTo: Date = Date()) -> String {
-        let result = floor(relativeTo.timeIntervalSince(self) / 36) / 100
-        
-        return String(result) + ((result == 1.0) ? " hr" : " hrs")
+        return self.hrsOffset(relativeTo: relativeTo).toHrsString()
     }
     
     
@@ -289,7 +287,7 @@ func getPayFromJob(id: String, hrs: Double) -> Double {
             rate = 0
     }
     
-    return rate * hrs
+    return rate * hrs * 0.88
 }
 
 
@@ -348,4 +346,28 @@ extension JobHoursDict {
 }
 
 
-class EmptyClass {}
+
+extension Double {
+    func toString() -> String {
+        return String(floor(self * 100) / 100)
+    }
+    func toHrsString() -> String {
+        if (self == 1.0) {
+            return self.toString() + " hr"
+        } else {
+            return self.toString() + " hrs"
+        }
+    }
+    func toMoneyString() -> String {
+        return "$" + self.toString()
+    }
+}
+
+class EmptyObject {}
+
+
+
+
+
+
+

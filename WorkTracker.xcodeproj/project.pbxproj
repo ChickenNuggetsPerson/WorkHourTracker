@@ -24,6 +24,7 @@
 		0A7696AF2C0A1779001CB02B /* StorageSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A7696AE2C0A1779001CB02B /* StorageSystem.swift */; };
 		0A7696B62C0ABA81001CB02B /* NSManagedObjectPatch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A7696B52C0ABA81001CB02B /* NSManagedObjectPatch.swift */; };
 		0A7696B82C0ABCF0001CB02B /* Sharesheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A7696B72C0ABCF0001CB02B /* Sharesheet.swift */; };
+		0A81C87B2C409BE700D96FBE /* NavButtons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A81C87A2C409BE700D96FBE /* NavButtons.swift */; };
 		0A9918762C24BC7D00CD8694 /* RumbleSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A9918752C24BC7D00CD8694 /* RumbleSystem.swift */; };
 		0A9918782C24BF9400CD8694 /* TimerSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A9918772C24BF9400CD8694 /* TimerSystem.swift */; };
 		0A9918842C2513FD00CD8694 /* TimerIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A9918832C2513FD00CD8694 /* TimerIntents.swift */; };
@@ -33,7 +34,6 @@
 		0A9918882C2515D400CD8694 /* LiveActivitySystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A127B442C0940F800D801EC /* LiveActivitySystem.swift */; };
 		0A99188A2C2515FA00CD8694 /* RumbleSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A9918752C24BC7D00CD8694 /* RumbleSystem.swift */; };
 		0A99188E2C2516EE00CD8694 /* JobItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A99188D2C2516EE00CD8694 /* JobItemView.swift */; };
-		0A99188F2C2516EE00CD8694 /* JobItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A99188D2C2516EE00CD8694 /* JobItemView.swift */; };
 		0ABC7B252C2D5CFA00EFFB7A /* TimeTrackingAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AEE4CA92C07735F00CD5E7A /* TimeTrackingAttributes.swift */; };
 		0AD9F5EA2C29D3B80004892E /* StorageSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A7696AE2C0A1779001CB02B /* StorageSystem.swift */; };
 		0AD9F5EC2C29E3650004892E /* JobEntryForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AD9F5EB2C29E3650004892E /* JobEntryForm.swift */; };
@@ -90,6 +90,7 @@
 		0A7696AE2C0A1779001CB02B /* StorageSystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = StorageSystem.swift; path = ../WorkTracker/Storage/StorageSystem.swift; sourceTree = "<group>"; };
 		0A7696B52C0ABA81001CB02B /* NSManagedObjectPatch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSManagedObjectPatch.swift; sourceTree = "<group>"; };
 		0A7696B72C0ABCF0001CB02B /* Sharesheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sharesheet.swift; sourceTree = "<group>"; };
+		0A81C87A2C409BE700D96FBE /* NavButtons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavButtons.swift; sourceTree = "<group>"; };
 		0A9918752C24BC7D00CD8694 /* RumbleSystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RumbleSystem.swift; sourceTree = "<group>"; };
 		0A9918772C24BF9400CD8694 /* TimerSystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerSystem.swift; sourceTree = "<group>"; };
 		0A9918832C2513FD00CD8694 /* TimerIntents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerIntents.swift; sourceTree = "<group>"; };
@@ -139,6 +140,7 @@
 				0A127B492C09A39300D801EC /* PayPeriodView.swift */,
 				0A99188D2C2516EE00CD8694 /* JobItemView.swift */,
 				0AD9F5EB2C29E3650004892E /* JobEntryForm.swift */,
+				0A81C87A2C409BE700D96FBE /* NavButtons.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -351,6 +353,7 @@
 				0A9918782C24BF9400CD8694 /* TimerSystem.swift in Sources */,
 				0A6A7B3E2C25B33F005F3172 /* ShortcutsProvider.swift in Sources */,
 				0A7696B82C0ABCF0001CB02B /* Sharesheet.swift in Sources */,
+				0A81C87B2C409BE700D96FBE /* NavButtons.swift in Sources */,
 				0A0E1CC52C2917580067AFAE /* DynamicIslandIntents.swift in Sources */,
 				0A6CCCD32C068596009CD0DA /* WorkTrackerApp.swift in Sources */,
 				0AD9F5EC2C29E3650004892E /* JobEntryForm.swift in Sources */,
@@ -368,7 +371,6 @@
 				0A0E1CC92C29281C0067AFAE /* JobEntryIntents.swift in Sources */,
 				0A9918852C2513FD00CD8694 /* TimerIntents.swift in Sources */,
 				0AEE4CC42C07780100CD5E7A /* TimeTrackingAttributes.swift in Sources */,
-				0A99188F2C2516EE00CD8694 /* JobItemView.swift in Sources */,
 				0A0E1CE92C29326F0067AFAE /* Sharesheet.swift in Sources */,
 				0A6A7B3F2C25B33F005F3172 /* ShortcutsProvider.swift in Sources */,
 				0A99188A2C2515FA00CD8694 /* RumbleSystem.swift in Sources */,
