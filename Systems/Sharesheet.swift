@@ -112,10 +112,10 @@ func createTimeCardPDF(entries : [JobEntry], payperiod: PayPeriod, showingDesc: 
             (getJobFromID(id: entry.jobTypeID).rawValue).draw(at: CGPoint(x: jobXpos, y: yOffset), withAttributes: normalText)
             
             // Start Text
-            dateToTime(date: entry.startTime).draw(at: CGPoint(x: starTimeXPos, y: yOffset), withAttributes: normalText)
+            entry.startTime.getTimeText().draw(at: CGPoint(x: starTimeXPos, y: yOffset), withAttributes: normalText)
             
             // End Text
-            dateToTime(date: entry.endTime).draw(at: CGPoint(x: endTimeXPos, y: yOffset), withAttributes: normalText)
+            entry.endTime.getTimeText().draw(at: CGPoint(x: endTimeXPos, y: yOffset), withAttributes: normalText)
             
             // Total Time
             entry.startTime.hrsOffset(relativeTo: entry.endTime).draw(at: CGPoint(x: totalTimeXPos, y: yOffset), withAttributes: normalText)

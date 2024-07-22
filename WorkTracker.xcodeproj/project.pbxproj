@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0A0DD74E2C4E361B00C5F2E7 /* PayPeriod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A0DD74D2C4E361B00C5F2E7 /* PayPeriod.swift */; };
+		0A0DD74F2C4E36E200C5F2E7 /* PayPeriod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A0DD74D2C4E361B00C5F2E7 /* PayPeriod.swift */; };
 		0A0E1CC52C2917580067AFAE /* DynamicIslandIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A0E1CC42C2917580067AFAE /* DynamicIslandIntents.swift */; };
 		0A0E1CC62C2917580067AFAE /* DynamicIslandIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A0E1CC42C2917580067AFAE /* DynamicIslandIntents.swift */; };
 		0A0E1CC82C29281C0067AFAE /* JobEntryIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A0E1CC72C29281C0067AFAE /* JobEntryIntents.swift */; };
@@ -75,6 +77,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		0A0DD74D2C4E361B00C5F2E7 /* PayPeriod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PayPeriod.swift; sourceTree = "<group>"; };
 		0A0E1CC42C2917580067AFAE /* DynamicIslandIntents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DynamicIslandIntents.swift; sourceTree = "<group>"; };
 		0A0E1CC72C29281C0067AFAE /* JobEntryIntents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobEntryIntents.swift; sourceTree = "<group>"; };
 		0A127B442C0940F800D801EC /* LiveActivitySystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveActivitySystem.swift; sourceTree = "<group>"; };
@@ -173,13 +176,14 @@
 		0A6CCCD12C068596009CD0DA /* WorkTracker */ = {
 			isa = PBXGroup;
 			children = (
-				0AD9F5E92C29B9D50004892E /* WorkTrackerDebug.entitlements */,
-				0AFF99A32C0D7BE90019160F /* WorkTracker.entitlements */,
 				0A6CCCE62C0697AB009CD0DA /* Gobals.swift */,
+				0A0DD74D2C4E361B00C5F2E7 /* PayPeriod.swift */,
 				0AEE4CC82C078F3700CD5E7A /* Info.plist */,
-				0AEE4CCB2C07933C00CD5E7A /* Launch Screen.storyboard */,
 				0A127B462C09961700D801EC /* Views */,
 				0A6CCCD62C068597009CD0DA /* Assets.xcassets */,
+				0AEE4CCB2C07933C00CD5E7A /* Launch Screen.storyboard */,
+				0AD9F5E92C29B9D50004892E /* WorkTrackerDebug.entitlements */,
+				0AFF99A32C0D7BE90019160F /* WorkTracker.entitlements */,
 				0A6CCCD82C068597009CD0DA /* Preview Content */,
 			);
 			path = WorkTracker;
@@ -303,6 +307,9 @@
 				Base,
 			);
 			mainGroup = 0A6CCCC62C068595009CD0DA;
+			packageReferences = (
+				0A0DD74C2C4E2F3400C5F2E7 /* XCRemoteSwiftPackageReference "swift-algorithms" */,
+			);
 			productRefGroup = 0A6CCCD02C068596009CD0DA /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -355,6 +362,7 @@
 				0A7696B82C0ABCF0001CB02B /* Sharesheet.swift in Sources */,
 				0A81C87B2C409BE700D96FBE /* NavButtons.swift in Sources */,
 				0A0E1CC52C2917580067AFAE /* DynamicIslandIntents.swift in Sources */,
+				0A0DD74E2C4E361B00C5F2E7 /* PayPeriod.swift in Sources */,
 				0A6CCCD32C068596009CD0DA /* WorkTrackerApp.swift in Sources */,
 				0AD9F5EC2C29E3650004892E /* JobEntryForm.swift in Sources */,
 				0ABC7B252C2D5CFA00EFFB7A /* TimeTrackingAttributes.swift in Sources */,
@@ -366,6 +374,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0A0DD74F2C4E36E200C5F2E7 /* PayPeriod.swift in Sources */,
 				0A9918862C2515B300CD8694 /* TimerSystem.swift in Sources */,
 				0AEE4CB92C07779200CD5E7A /* TrackingActivity.swift in Sources */,
 				0A0E1CC92C29281C0067AFAE /* JobEntryIntents.swift in Sources */,
@@ -689,6 +698,17 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		0A0DD74C2C4E2F3400C5F2E7 /* XCRemoteSwiftPackageReference "swift-algorithms" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-algorithms.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.2.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
 	};
 	rootObject = 0A6CCCC72C068595009CD0DA /* Project object */;
 }

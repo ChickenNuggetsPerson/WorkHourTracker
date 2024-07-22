@@ -11,6 +11,10 @@ import UIKit
 import SwiftData
 
 
+enum PayPeriodViewMode : String {
+    case PayPeriod = "Pay Period"
+    case Week = "Week"
+}
 
 
 struct PayPeriodView: View {
@@ -21,12 +25,30 @@ struct PayPeriodView: View {
     
     @State var refresh: Bool = false
     
-    @State var payPeriod : PayPeriod
-    @State var titleText: String
-    @State var titleColor: Color
+    @State var viewMode: PayPeriodViewMode = .PayPeriod
+    @State var viewRange : PayPeriod = getCurrentPayperiod()
+    
+    var defaultViewRange: PayPeriod {
+        switch self.viewMode {
+        case .PayPeriod:
+            return getCurrentPayperiod()
+        case .Week:
+            return getCurrentWeek()
+        }
+    }
+    
+    var titleColor: Color {
+        switch self.viewMode {
+            case .PayPeriod:
+                return Color.green
+            case .Week:
+                return Color.init(hex: "#FF6463")
+        }
+    }
+    
     
     var jobEntries: [JobEntry] {
-        DataStorageSystem.shared.fetchJobEntries(dateRange: payPeriod.range)
+        DataStorageSystem.shared.fetchJobEntries(dateRange: viewRange.range)
     }
 
     var totalHours : Double {
@@ -38,8 +60,8 @@ struct PayPeriodView: View {
     }
     
     
-    var canGoBack : Bool { payPeriod.startDate > DataStorageSystem.shared.dataBounds.startDate }
-    var canGoForwards : Bool { payPeriod.endDate < DataStorageSystem.shared.dataBounds.endDate }
+    var canGoBack : Bool { viewRange.startDate > DataStorageSystem.shared.dataBounds.startDate }
+    var canGoForwards : Bool { viewRange.endDate < DataStorageSystem.shared.dataBounds.endDate }
     
     
     @State var highlightedJob : UUID? = nil
@@ -59,18 +81,6 @@ struct PayPeriodView: View {
         @Published var proxy: ScrollViewProxy?
     }
     @StateObject private var scrollProxyHolder = ScrollProxyHolder()
-    
-    init(
-        period : PayPeriod = getCurrentPayperiod(),
-        title: String = "Pay Period:",
-        color: Color = Color.green
-    ) {
-        
-        self.payPeriod = period
-        self.titleText = title
-        self.titleColor = color
-
-    }
 
     
     
@@ -89,34 +99,15 @@ struct PayPeriodView: View {
                             .id("top")
                         
                         let entries = self.jobEntries
-                        let isHighlighting = self.highlightedJob != nil
                         
                         ForEach(entries.indices, id: \.self) { i in
                             
                             if (i == 0 || !Calendar.current.isDate(entries[i].startTime, inSameDayAs: entries[i-1].startTime)) {
                                 
-                                HStack() {
-                                    
-                                    Button(entries[i].startTime.clearTime().toDate()) {
-                                        RumbleSystem.shared.rumble()
-                                    }
-                                        .foregroundColor(
-                                            isHighlighting ? .gray : Color(hex: "#9f9f9f")
-                                        )
-                                        .font(.title3)
-                                        .fontWeight(.black)
-                                        .monospaced()
-                                        .blur(radius: isHighlighting ? 5 : 0)
-                                    
-                                    Spacer()
-                                    
-                                }
-                                .padding([.leading, .trailing], 20)
-                                .padding(.top, 15)
-                                .transition(.move(edge: .leading))
-                                .id(entries[i].startTime.toDate())
-                                
-                                .modifier(ConditionalScrollTransition(condition: true))
+                                DayDivider(
+                                    day: entries[i].startTime,
+                                    blur: self.highlightedJob != nil
+                                )
                             }
                             
                             ListItemView(
@@ -204,16 +195,31 @@ struct PayPeriodView: View {
             VStack() { // Menus
                 
                 
-                Button(self.titleText) {
-                    self.payPeriod = getCurrentPayperiod()
+                Button(self.viewMode.rawValue) {
+                    
+                    if (self.viewRange == self.defaultViewRange) {
+                        
+                        // Switch Mode
+                        switch self.viewMode {
+                            case .PayPeriod:
+                                self.viewMode = .Week
+                            case .Week:
+                                self.viewMode = .PayPeriod
+                        }
+                        
+                    }
+                    
+                    self.viewRange = self.defaultViewRange
+                    
                     self.highlightedJob = nil
                     RumbleSystem.shared.rumble()
                 }
                 .foregroundColor(
-                    self.payPeriod.isCurrent ? self.titleColor : .gray
+                    (self.viewRange == self.defaultViewRange) ? self.titleColor : .gray
                 )
                 .font(.largeTitle)
                 .fontWeight(.black)
+                .contentTransition(.interpolate)
             
                     
                 HStack() {
@@ -229,7 +235,7 @@ struct PayPeriodView: View {
                     
                     Spacer()
                     
-                    Button(self.payPeriod.toString()) {
+                    Button(self.viewRange.toString()) {
                         self.showingDatesForm.toggle()
                         RumbleSystem.shared.rumble()
                     }
@@ -268,15 +274,15 @@ struct PayPeriodView: View {
                     Divider()
                     VStack() {
                         DatePicker(
-                            selection: $payPeriod.startDate,
+                            selection: $viewRange.startDate,
                             in: DataStorageSystem.shared.dataBounds.range
                         ) {
                             Text("Start Time:")
                         }
                         
                         DatePicker(
-                            selection: $payPeriod.endDate,
-                            in: self.payPeriod.startDate...DataStorageSystem.shared.dataBounds.endDate
+                            selection: $viewRange.endDate,
+                            in: self.viewRange.startDate...DataStorageSystem.shared.dataBounds.endDate
                         ) {
                             Text("End Time:")
                         }
@@ -380,7 +386,7 @@ struct PayPeriodView: View {
 
         }
         .animation(.bouncy(), value: self.showingDatesForm)
-        .animation(.bouncy(duration: 0.5), value: self.payPeriod)
+        .animation(.bouncy(duration: 0.5), value: self.viewRange)
         .animation(.snappy, value: self.editJob)
         .animation(.snappy, value: self.showingNewEntryForm)
         .animation(.bouncy(duration: 1.5), value: self.highlightedJob)
@@ -390,7 +396,7 @@ struct PayPeriodView: View {
         .contentTransition(.numericText())
         
         .alert(
-            self.payPeriod.toString() + " Info",
+            self.viewRange.toString() + " Info",
             isPresented: $showingInfoAlert
         ) {
             
@@ -456,7 +462,7 @@ struct PayPeriodView: View {
             Button("With Descriptions", role: .none) {
                 let url = createTimeCardPDF(
                     entries: self.jobEntries,
-                    payperiod: self.payPeriod,
+                    payperiod: self.viewRange,
                     showingDesc: true
                 )
                 
@@ -466,7 +472,7 @@ struct PayPeriodView: View {
             Button("Without Descriptions", role: .none) {
                 let url = createTimeCardPDF(
                     entries: self.jobEntries,
-                    payperiod: self.payPeriod,
+                    payperiod: self.viewRange,
                     showingDesc: false
                 )
                 
@@ -485,8 +491,13 @@ struct PayPeriodView: View {
             
             print("Calc Show Date")
             
-            if (!self.payPeriod.range.contains(self.highlightedDate!)) {
-                self.payPeriod = getPayPeriod(refDay: highlightedDate!)
+            if (!self.viewRange.range.contains(self.highlightedDate!)) {
+                self.viewMode = .PayPeriod
+                self.viewRange = getPayPeriod(refDay: highlightedDate!)
+                
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                    scrollTo(id: self.highlightedJob)
+                }
             }
         }
         
@@ -507,18 +518,26 @@ struct PayPeriodView: View {
     func shiftPayPeriod(forwards: Bool) {
         self.highlightedJob = nil
         
+        var moveAmt = 0
+        switch self.viewMode {
+            case .PayPeriod:
+                moveAmt = 14
+            case .Week:
+                moveAmt = 7
+        }
+        
         if (forwards) {
             if (!self.canGoForwards) { return }
             
-            self.payPeriod.endDate = self.payPeriod.endDate.addDays(days: 14)
-            self.payPeriod.startDate = self.payPeriod.startDate.addDays(days: 14)
+            self.viewRange.endDate = self.viewRange.endDate.addDays(days: moveAmt)
+            self.viewRange.startDate = self.viewRange.startDate.addDays(days: moveAmt)
             
             
         } else {
             if (!self.canGoBack) { return }
             
-            self.payPeriod.startDate = self.payPeriod.startDate.addDays(days: -14)
-            self.payPeriod.endDate = self.payPeriod.endDate.addDays(days: -14)
+            self.viewRange.startDate = self.viewRange.startDate.addDays(days: -moveAmt)
+            self.viewRange.endDate = self.viewRange.endDate.addDays(days: -moveAmt)
         }
     
     }
@@ -559,6 +578,37 @@ struct PayPeriodView: View {
 
 
 
+struct DayDivider: View {
+    var day: Date
+    var blur: Bool
+    
+    var body: some View {
+        HStack() {
+            
+            Button(self.day.toDate()) {
+                RumbleSystem.shared.rumble()
+            }
+            .foregroundColor(
+                self.blur ? .gray : Color(hex: "#9f9f9f")
+            )
+            .font(.title3)
+            .fontWeight(.black)
+            .monospaced()
+            .blur(radius: self.blur ? 5 : 0)
+            
+            Spacer()
+            
+        }
+        .padding([.leading, .trailing], 20)
+        .padding(.top, 15)
+        .transition(.move(edge: .leading))
+        .id(self.day.toDate())
+        
+        .modifier(ConditionalScrollTransition(condition: true))
+    }
+}
+
+
 
 
 struct ConditionalScrollTransition: ViewModifier {
@@ -590,9 +640,8 @@ struct ConditionalScrollTransition: ViewModifier {
 
 
 #Preview {
-    return PayPeriodView(
-        period: getCurrentPayperiod()
-    )
+    return PayPeriodView()
     .modelContainer(DataStorageSystem.shared.container)
     .modelContext(DataStorageSystem.shared.context)
 }
+

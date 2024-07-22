@@ -230,7 +230,7 @@ struct ListItemView: View {
                                     .multilineTextAlignment(.leading)
                                     .monospaced()
                                     .padding()
-                                    .frame(minWidth: 300)
+                                    .frame(minWidth: 300, alignment: .leading)
                             }
                         }
                         .background(Color.black.darkened(by: -0.05))
@@ -316,9 +316,7 @@ struct ListItemView: View {
 
 
 #Preview {
-    PayPeriodView(
-        period: getCurrentPayperiod()
-    )
+    PayPeriodView()
     .modelContainer(DataStorageSystem.shared.container)
     .modelContext(DataStorageSystem.shared.context)
 //    

@@ -11,90 +11,6 @@ import SwiftUI
 import Combine
 import AppIntents
 
-// NULL Object identifier binding -> Binding<ObjectIdentifier?>(get: { nil }, set: { _ in })
-
-struct PayPeriod : Equatable, Sendable {
-    var startDate: Date
-    var endDate: Date
-    
-    init(startDate: Date, endDate: Date) {
-        self.startDate = startDate.clearTime()
-        self.endDate = endDate.edgeDay()
-    }
-    init(entityID : String) {
-        let dates = entityID.components(separatedBy: "_")
-        
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "MM-dd-yyyy"
-                
-        self.startDate = dateFormatter.date(from: dates[0]) ?? Date()
-        self.endDate = dateFormatter.date(from: dates[1]) ?? Date()
-        
-        self.startDate = self.startDate.clearTime()
-        self.endDate = self.endDate.edgeDay()
-    }
-    
-    var isCurrent : Bool { return self == getCurrentPayperiod() }
-    
-    var range : ClosedRange<Date> { self.startDate...self.endDate }
-    
-    func toString(
-        full: Bool = false,
-        fileSafe: Bool = false
-    ) -> String {
-        let dateFormatter = DateFormatter()
-        
-        if (fileSafe) {
-            
-            dateFormatter.dateFormat = "MM-dd-yyyy"
-            
-            return dateFormatter.string(from: startDate) + "_" + dateFormatter.string(from: endDate)
-            
-        } else {
-            
-            
-            if (full) {
-                dateFormatter.dateFormat = "MM/dd/yyyy"
-            } else {
-                dateFormatter.dateFormat = "M/dd"
-            }
-            
-            return dateFormatter.string(from: startDate) + " - " + dateFormatter.string(from: endDate)
-            
-            
-        }
-        
-    }
-}
-
-
-
-func getCurrentPayperiod() -> PayPeriod {
-    return getPayPeriod(refDay: Date())
-}
-func getPayPeriod(refDay : Date) -> PayPeriod {
-    let formatter = DateFormatter()
-    formatter.dateFormat = "yyyy-MM-dd"
-    
-    var now = refDay
-
-    var start = Date()
-    var end = formatter.date(from: "2024-05-18") ?? Date()
-    
-    
-    now = now.clearTime()
-    end = end.clearTime()
-
-    while (now > end) {
-        end = end.addDays(days: 14)
-    }
-    
-    start = end.addDays(days: -13)
-    
-    return PayPeriod(startDate: start.clearTime(), endDate: end.edgeDay())
-}
-
-
 
 func roundTime(time: Date) -> Date {
     var components = time.getDateComponents()
@@ -116,17 +32,7 @@ func roundTime(time: Date) -> Date {
     
     return Calendar.current.date(from: components) ?? Date()
 }
-func dateToTime(date: Date) -> String {
-    let hour = Calendar.current.component(.hour, from: date)
-    let minutes = Calendar.current.component(.minute, from: date)
-    
-    return String(
-        (hour == 0 || hour == 12) ? 12 : hour % 12)
-        + ":"
-        + (minutes == 0 ? "00" : String(minutes))
-        + (hour >= 12 ? " PM" : " AM"
-    )
-}
+
 
 
 extension Date {
@@ -181,26 +87,29 @@ extension Date {
         return Calendar.current.dateComponents([.era, .year, .month, .day, .hour, .minute], from: self)
     }
     
-    func timecardDayString() -> String {
+    
+    
+    
+    func timecardDayString() -> String { //     Tue July 26, 2024
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "E MMM d, yyyy"
         return dateFormatter.string(from: self)
     }
     
-    func toHeaderText() -> String {
+    func toHeaderText() -> String { //          Monday: 1/05/24
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "EEEE: M/d/yy"
         return dateFormatter.string(from: self)
     }
     
-    func getTimeText() -> String {
+    func getTimeText() -> String { //           12:00 PM
         let formatter = DateFormatter()
         formatter.dateStyle = .none
         formatter.timeStyle = .short
         return formatter.string(from: self)
     }
     
-    func toDate() -> String {
+    func toDate() -> String { //                July 4, 2024
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "MMM d, yyyy"
         return dateFormatter.string(from: self)

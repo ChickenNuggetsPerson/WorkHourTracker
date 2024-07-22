@@ -389,12 +389,12 @@ struct MainView: View {
         
         if (self.timerSystem.running) {
             
-            self.startTimeString = dateToTime(date: roundTime(time: self.timerSystem.startTime))
+            self.startTimeString = roundTime(time: self.timerSystem.startTime).getTimeText()
         } else {
-            self.startTimeString = dateToTime(date: roundTime(time: Date()))
+            self.startTimeString = roundTime(time: Date()).getTimeText()
         }
         
-        self.endTimeString = dateToTime(date: roundTime(time: Date()))
+        self.endTimeString = roundTime(time: Date()).getTimeText()
     }
     
     func startStopButtonPress() {
