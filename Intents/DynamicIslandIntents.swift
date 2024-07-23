@@ -34,6 +34,13 @@ struct ChangeSaveStateIntent : AppIntent, LiveActivityIntent {
                 saveState: true,
                 newTitle: TimerSystem.shared.isValidTime ? "Save Job?" : "Cancel Job?"
             )
+            
+            try await Task.sleep(until: .now + .seconds(5))
+            
+            if (TimerSystem.shared.running) {
+                TimerSystem.shared.updateLiveActivity(saveState: false)
+            }
+            
         } else {
             TimerSystem.shared.updateLiveActivity(saveState: false)
         }

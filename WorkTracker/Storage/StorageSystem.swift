@@ -60,7 +60,10 @@ class DataStorageSystem : ObservableObject {
         }
         
         self.genDataBounds()
+        
     }
+    
+    
     
     
     
@@ -72,7 +75,7 @@ class DataStorageSystem : ObservableObject {
         endTime: Date,
         desc: String,
         undoable: Bool = true
-    ) {
+    ) -> UUID {
         let newEntry = JobEntry(
             jobTypeID: jobTypeID,
             startTime: startTime,
@@ -87,17 +90,20 @@ class DataStorageSystem : ObservableObject {
         }
         
         self.genDataBounds()
-        
+        self.invalidateCache()
         print("Created Entry: \(newEntry)")
+        
+        return newEntry.entryID
     }
     func deleteEntry(
         entry: JobEntry
     ) {
         self.context.delete(entry)
         self.showUndo = true
-        print("Deleted Entry: \(entry)")
         
+        self.invalidateCache()
         self.genDataBounds()
+        print("Deleted Entry: \(entry)")
     }
     func updateEntry(
         entry: JobEntry,
@@ -131,6 +137,7 @@ class DataStorageSystem : ObservableObject {
             print("Updated Entry: \(job)")
             
             self.genDataBounds()
+            self.invalidateCache()
             
         } catch {
             print("Error Updated Entry")
@@ -152,7 +159,21 @@ class DataStorageSystem : ObservableObject {
             return []
         }
     }
+    
+    // Fetch all job entries in the specified daterange
+    private var cachedData : [JobEntry] = []
+    private var pprdHash : Int = 0
+    func invalidateCache() {
+        pprdHash = 0
+    }
+ 
     func fetchJobEntries(dateRange: ClosedRange<Date>) -> [JobEntry] {
+        
+        if (pprdHash == dateRange.hashValue) { // Check if the data is cached
+            return cachedData
+        }
+        
+        
         let predicate = #Predicate<JobEntry> {
             $0.startTime > dateRange.lowerBound && $0.startTime < dateRange.upperBound
         }
@@ -162,10 +183,14 @@ class DataStorageSystem : ObservableObject {
         )
         
         do {
-            return try context.fetch(descriptor)
+            cachedData = try context.fetch(descriptor)
         } catch {
-            return []
+            cachedData = []
         }
+        
+        print("Refresh Cache: " + String(dateRange.hashValue))
+        pprdHash = dateRange.hashValue
+        return cachedData
     }
     func fetchJobEntry(uuid: UUID) throws -> JobEntry {
         let predicate = #Predicate<JobEntry> {
@@ -312,17 +337,15 @@ class DataStorageSystem : ObservableObject {
         self.context.undoManager?.undo()
         self.showUndo = true
         self.genDataBounds()
+        self.invalidateCache()
     }
     func redo() {
         self.context.undoManager?.redo()
         self.showUndo = true
         self.genDataBounds()
+        self.invalidateCache()
     }
-    
-    
-    
-    
-    
+
     
     
     func exportToJSON() throws -> URL {
@@ -397,4 +420,41 @@ func convertStringToDate(_ dateString: String) -> Date {
     dateFormatter.locale = Locale(identifier: "en_US_POSIX") // Ensure consistent date parsing
     return dateFormatter.date(from: dateString) ?? Date()
 }
+
+
+
+
+
+struct SurroundingEntries {
+    var prevJob: UUID?
+    var nextJob: UUID?
+}
+extension [JobEntry] {
+    func getSurroundingEntries(id : UUID?) -> SurroundingEntries {
+        
+        var surrounding = SurroundingEntries(prevJob: id, nextJob: id)
+        
+        guard let id = id else { return surrounding }
+        
+        let index = self.firstIndex { $0.entryID == id }
+        guard let index = index else { return surrounding }
+        
+        
+        if (self.indices.contains(index - 1)) {
+            surrounding.prevJob = self[index - 1].entryID
+        }
+
+        
+        if (self.indices.contains(index + 1)) {
+            surrounding.nextJob = self[index + 1].entryID
+        }
+       
+        
+        return surrounding
+    }
+}
+
+
+
+
 

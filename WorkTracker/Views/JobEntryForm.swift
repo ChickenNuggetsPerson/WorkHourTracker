@@ -200,19 +200,21 @@ struct JobEntryForm: View {
     }
     
     private func addJob() {
-        let newEntry = JobEntry(
-            jobTypeID: self.newEntryJobID,
-            startTime: roundTime(time: self.newEntryStart),
-            endTime: roundTime(time: self.newEntryEnd),
-            desc: self.newEntryDesc
-        )
+        
+        var jobID : UUID?
         withAnimation {
-            modelContext.insert(newEntry)
+            jobID = DataStorageSystem.shared.createEntry(
+                jobTypeID: self.newEntryJobID,
+                startTime: roundTime(time: self.newEntryStart),
+                endTime: roundTime(time: self.newEntryEnd),
+                desc: self.newEntryDesc,
+                undoable: true
+            )
         }
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-            actualHighlightID = newEntry.entryID
-            highlightDate = newEntry.startTime
+            actualHighlightID = jobID
+            highlightDate = roundTime(time: self.newEntryStart)
         }
         
         self.closeForm()

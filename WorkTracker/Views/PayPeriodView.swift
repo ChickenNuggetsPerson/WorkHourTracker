@@ -11,57 +11,11 @@ import UIKit
 import SwiftData
 
 
+
+
 enum PayPeriodViewMode : String {
     case PayPeriod = "Pay Period"
     case Week = "Week"
-}
-
-struct SurroundingEntries {
-    var prevJob: UUID?
-    var nextJob: UUID?
-}
-extension [JobEntry] {
-    func getSurroundingEntries(id : UUID?) -> SurroundingEntries {
-        print(id ?? "")
-        
-        var surrounding = SurroundingEntries(prevJob: id, nextJob: id)
-        
-        guard let id = id else { return surrounding }
-        
-        let index = self.firstIndex { $0.entryID == id }
-        guard let index = index else { return surrounding }
-        
-        
-        if (self.indices.contains(index - 1)) {
-            surrounding.prevJob = self[index - 1].entryID
-        }
-
-        
-        if (self.indices.contains(index + 1)) {
-            surrounding.nextJob = self[index + 1].entryID
-        }
-       
-        
-        return surrounding
-    }
-}
-
-
-class JobEntryCacher {
-    static var shared : JobEntryCacher = JobEntryCacher()
-    
-    var cachedData : [JobEntry] = []
-    var pprdHash : Int = 0
-    
-    func data(range: PayPeriod) -> [JobEntry] {
-        if (pprdHash != range.hashValue) {
-            print("Refresh Cache: " + UUID().uuidString)
-            cachedData = DataStorageSystem.shared.fetchJobEntries(dateRange: range.range)
-            pprdHash = range.hashValue
-        }
-        
-        return cachedData
-    }
 }
 
 
@@ -95,7 +49,9 @@ struct PayPeriodView: View {
     }
     
     
-    var jobEntries: [JobEntry] { JobEntryCacher.shared.data(range: viewRange) }
+    var jobEntries: [JobEntry] {
+        DataStorageSystem.shared.fetchJobEntries(dateRange: self.viewRange.range)
+    }
 
     var totalHours : Double {
         var total = 0.0

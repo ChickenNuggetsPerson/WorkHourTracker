@@ -99,13 +99,26 @@ struct LargeLiveActivityView: View {
                     .buttonStyle(PlainButtonStyle())
                     
                 }
+            
                 
-                Text(context.state.startTime, style: .timer)
-                    .font(.title2)
-                    .fontWeight(.black)
-                    .foregroundColor(.white)
-                    .multilineTextAlignment(.center)
-                    .monospaced()
+                if (context.state.saveState || context.state.jobType == "Saved") {
+                    Text(context.state.startTime.hrsOffset(relativeTo: roundTime(time: Date())).toHrsString())
+                        .font(.title2)
+                        .fontWeight(.black)
+                        .foregroundColor(.white)
+                        .multilineTextAlignment(.center)
+                        .monospaced()
+                        .transition(.move(edge: .bottom).combined(with: .opacity).combined(with: .scale))
+                } else {
+                    Text(context.state.startTime, style: .timer)
+                        .font(.title2)
+                        .fontWeight(.black)
+                        .foregroundColor(.white)
+                        .multilineTextAlignment(.center)
+                        .monospaced()
+                        .transition(.move(edge: .top).combined(with: .opacity).combined(with: .scale))
+                }
+                
         
                 
             }
@@ -133,6 +146,14 @@ struct DynamicIslandView: View {
         return String(firstLetters).uppercased()
     }
     
+    func getInterval() -> ClosedRange<Date> {
+        
+        let start = context.state.startTime
+        let end = start.addHours(hours: 8)
+        
+        return start...end
+    }
+    
     var body: some View {
         HStack() {
             if (self.pos == 0) { // Compact Leading
@@ -140,17 +161,42 @@ struct DynamicIslandView: View {
                     .font(.title)
                     .fontWeight(.black)
                     .foregroundColor(context.state.jobColor)
-                
             } else if (self.pos == 1) { // Compact Trailing
-                Image(systemName: "clock")
-                    .font(.largeTitle)
-                    .fontWeight(.black)
-                    .foregroundColor(context.state.jobColor)
+               
+            
+                ProgressView(
+                    timerInterval: self.getInterval(),
+                        countsDown: true,
+                        label: {
+                            EmptyView()
+                        },
+                        currentValueLabel: {
+                            Image(systemName: "clock")
+                                .font(.largeTitle)
+                                .fontWeight(.black)
+                                .foregroundColor(context.state.jobColor)
+                        }
+                    )
+                    .progressViewStyle(.circular)
+                    .tint(context.state.jobColor.darkened(by: 0.2))
             } else { // Minimal
-                Text(self.getAbriviation(str: context.state.jobType))
-                    .font(.title)
-                    .fontWeight(.black)
-                    .foregroundColor(context.state.jobColor)
+                
+                ProgressView(
+                    timerInterval: self.getInterval(),
+                        countsDown: true,
+                        label: {
+                            EmptyView()
+                        },
+                        currentValueLabel: {
+                            Text(self.getAbriviation(str: context.state.jobType))
+                                .font(.title)
+                                .fontWeight(.black)
+                                .foregroundColor(context.state.jobColor)
+                        }
+                    )
+                    .progressViewStyle(.circular)
+                    .tint(context.state.jobColor.darkened(by: 0.2))
+                
             
             }
         }
@@ -158,3 +204,7 @@ struct DynamicIslandView: View {
         
     }
 }
+
+
+
+

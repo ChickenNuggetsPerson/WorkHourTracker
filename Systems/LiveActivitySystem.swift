@@ -79,6 +79,8 @@ class LiveActivitySystem {
         saveState: Bool = false
     ) {
         Task {
+
+            
             let contentState = TimeTrackingAttributes.ContentState(
                 startTime: startTime,
                 jobType: jobState,
@@ -95,5 +97,5 @@ class LiveActivitySystem {
             }
         }
     }
-    
+
 }

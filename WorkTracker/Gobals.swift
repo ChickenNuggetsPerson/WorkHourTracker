@@ -44,9 +44,18 @@ extension Date {
         return Calendar.current.date(byAdding: .hour, value: hours, to: self)!
     }
     func addHours(hours: Double) -> Date {
-        let hrs : Int = Int(floor(hours))
-        var mins = hours - floor(hours)
-        mins *= 60
+//        let hrs : Int = Int(floor(hours))
+//        var mins = hours - floor(hours)
+//        mins *= 60
+       
+        let abHours = abs(hours)
+        var hrs = Int(abHours)
+        var mins = Int(abHours * 60.0) - (hrs * 60)
+        
+        if (hours < 0) {
+            hrs *= -1
+            mins *= -1
+        }
         
         return self.addHours(hours: hrs).addMinutes(minutes: Int(mins))
     }
