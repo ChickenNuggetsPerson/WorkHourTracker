@@ -16,6 +16,54 @@ enum PayPeriodViewMode : String {
     case Week = "Week"
 }
 
+struct SurroundingEntries {
+    var prevJob: UUID?
+    var nextJob: UUID?
+}
+extension [JobEntry] {
+    func getSurroundingEntries(id : UUID?) -> SurroundingEntries {
+        print(id ?? "")
+        
+        var surrounding = SurroundingEntries(prevJob: id, nextJob: id)
+        
+        guard let id = id else { return surrounding }
+        
+        let index = self.firstIndex { $0.entryID == id }
+        guard let index = index else { return surrounding }
+        
+        
+        if (self.indices.contains(index - 1)) {
+            surrounding.prevJob = self[index - 1].entryID
+        }
+
+        
+        if (self.indices.contains(index + 1)) {
+            surrounding.nextJob = self[index + 1].entryID
+        }
+       
+        
+        return surrounding
+    }
+}
+
+
+class JobEntryCacher {
+    static var shared : JobEntryCacher = JobEntryCacher()
+    
+    var cachedData : [JobEntry] = []
+    var pprdHash : Int = 0
+    
+    func data(range: PayPeriod) -> [JobEntry] {
+        if (pprdHash != range.hashValue) {
+            print("Refresh Cache: " + UUID().uuidString)
+            cachedData = DataStorageSystem.shared.fetchJobEntries(dateRange: range.range)
+            pprdHash = range.hashValue
+        }
+        
+        return cachedData
+    }
+}
+
 
 struct PayPeriodView: View {
     
@@ -47,9 +95,7 @@ struct PayPeriodView: View {
     }
     
     
-    var jobEntries: [JobEntry] {
-        DataStorageSystem.shared.fetchJobEntries(dateRange: viewRange.range)
-    }
+    var jobEntries: [JobEntry] { JobEntryCacher.shared.data(range: viewRange) }
 
     var totalHours : Double {
         var total = 0.0
@@ -83,6 +129,10 @@ struct PayPeriodView: View {
     @StateObject private var scrollProxyHolder = ScrollProxyHolder()
 
     
+    init() {
+       
+    }
+    
     
     var body: some View {
         
@@ -98,26 +148,24 @@ struct PayPeriodView: View {
                         Color.clear.frame(height: 0)
                             .id("top")
                         
-                        let entries = self.jobEntries
-                        
-                        ForEach(entries.indices, id: \.self) { i in
+                        ForEach(self.jobEntries.indices, id: \.self) { i in
                             
-                            if (i == 0 || !Calendar.current.isDate(entries[i].startTime, inSameDayAs: entries[i-1].startTime)) {
+                            if (i == 0 || !Calendar.current.isDate(self.jobEntries[i].startTime, inSameDayAs: self.jobEntries[i-1].startTime)) {
                                 
                                 DayDivider(
-                                    day: entries[i].startTime,
+                                    day: self.jobEntries[i].startTime,
                                     blur: self.highlightedJob != nil
                                 )
                             }
                             
                             ListItemView(
-                                job: entries[i],
+                                job: self.jobEntries[i],
                                 highlightedJob: $highlightedJob,
                                 editJob: $editJob,
                                 preview: false
                             )
                             .padding([.leading, .trailing], 10)
-                            .id(entries[i].entryID)
+                            .id(self.jobEntries[i].entryID)
                             
                             .modifier(ConditionalScrollTransition(
                                 condition: true
@@ -139,13 +187,33 @@ struct PayPeriodView: View {
                 } // Scroll View Reader
                 .gesture(DragGesture(minimumDistance: 10, coordinateSpace: .local)
                     .onEnded({value in
-                        if (abs(value.translation.height) > abs(value.translation.width)) { return }
                         
-                        if (value.translation.width > 0) {
-                            self.shiftPayPeriod(forwards: false)
+                        
+                        if (abs(value.translation.height) > abs(value.translation.width)) {
+                            // Vertical Swipe
+                            
+                            if (self.highlightedJob == nil) { return }
+                            if (value.translation.height > 0) {
+                                
+                                self.highlightedJob = self.jobEntries.getSurroundingEntries(id: self.highlightedJob).prevJob
+                                
+                            } else {
+                                
+                                self.highlightedJob = self.jobEntries.getSurroundingEntries(id: self.highlightedJob).nextJob
+                                
+                            }
+                            
+                            
                         } else {
-                            self.shiftPayPeriod(forwards: true)
+                            // Horizontal Swipe
+                            if (value.translation.width > 0) {
+                                self.shiftPayPeriod(forwards: false)
+                            } else {
+                                self.shiftPayPeriod(forwards: true)
+                            }
                         }
+                        
+                       
                         
                         RumbleSystem.shared.rumble()
                     })

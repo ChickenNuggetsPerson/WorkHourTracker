@@ -58,19 +58,7 @@ class TimerSystem : ObservableObject {
         self.enableDisableLiveAcitivty()
     }
     
-    func enableDisableLiveAcitivty() {
-        if (self.running) {
-            LiveActivitySystem.shared.stopLiveActivity()
-            
-            LiveActivitySystem.shared.startLiveActivity(
-                startTime: self.startTime,
-                jobState: self.jobState.rawValue,
-                jobColor: getJobColor(jobID: self.jobState.rawValue)
-            )
-        } else {
-            LiveActivitySystem.shared.stopLiveActivity()
-        }
-    }
+
     
     
     func toggleTimer() { // Start - Stop Button
@@ -115,6 +103,20 @@ class TimerSystem : ObservableObject {
         self.updateLiveActivity()
     }
     
+    
+    func enableDisableLiveAcitivty() {
+        if (self.running) {
+            LiveActivitySystem.shared.stopLiveActivity()
+            
+            LiveActivitySystem.shared.startLiveActivity(
+                startTime: self.startTime,
+                jobState: self.jobState.rawValue,
+                jobColor: getJobColor(jobID: self.jobState.rawValue)
+            )
+        } else {
+            LiveActivitySystem.shared.stopLiveActivity()
+        }
+    }
     func updateLiveActivity(saveState: Bool = false) {
         LiveActivitySystem.shared.updateActivity(
             startTime: self.startTime,

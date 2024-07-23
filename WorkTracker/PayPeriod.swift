@@ -9,7 +9,7 @@ import Foundation
 
 
 
-struct PayPeriod : Equatable, Sendable {
+struct PayPeriod : Equatable, Sendable, Hashable {
     var startDate: Date
     var endDate: Date
     

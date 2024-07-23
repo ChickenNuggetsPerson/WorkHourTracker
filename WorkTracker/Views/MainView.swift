@@ -108,6 +108,7 @@ struct MainView: View {
                             
                             Button("Done") {
                                 self.showingEditSheet.toggle()
+                                RumbleSystem.shared.rumble()
                             }
                             .foregroundColor(.white)
                             .fontWeight(.black)
@@ -185,6 +186,7 @@ struct MainView: View {
                     if (self.timerSystem.running && !self.showingEditSheet) {
                         Button(action: {
                             self.showingEditSheet.toggle()
+                            RumbleSystem.shared.rumble()
                         }) {
                             Text(
                                 "Start:\n" + self.startTimeString
@@ -202,7 +204,9 @@ struct MainView: View {
                         Spacer()
                         
                         
-                        Button(action: {}) {
+                        Button(action: {
+                            RumbleSystem.shared.rumble()
+                        }) {
                             Text(
                                 "End:\n" + self.endTimeString
                             )
@@ -269,7 +273,10 @@ struct MainView: View {
             VStack() { // Top Bar
                 
                 VStack() {
-                    Text(payPeriod.toString())
+                    Button(payPeriod.toString()) {
+                        self.timerSystem.enableDisableLiveAcitivty()
+                        RumbleSystem.shared.rumble()
+                    }
                         .font(.title)
                         .fontWeight(.black)
                         .foregroundColor(.white)
@@ -278,6 +285,7 @@ struct MainView: View {
                     
                     Button(self.timerSystem.jobState.rawValue) {
                         self.showingDesc.toggle()
+                        RumbleSystem.shared.rumble()
                     }
                     .font(
                         (self.timerSystem.running && !self.showingEditSheet) ? .system(size: 60) : .title
@@ -328,6 +336,7 @@ struct MainView: View {
                             Button("Close") {
                                 self.showingDesc = false
                                 self.hideKeyboard()
+                                RumbleSystem.shared.rumble()
                             }
                             .foregroundColor(.blue)
                             .fontWeight(.bold)
@@ -352,9 +361,11 @@ struct MainView: View {
                 self.timerSystem.save()
                 self.timerSystem.stopTimer()
                 self.listItemSwipeToggle.toggle()
+                RumbleSystem.shared.rumble()
             }
             Button("Stop Timer (Don't Save)", role: .destructive) {
                 self.timerSystem.stopTimer()
+                RumbleSystem.shared.rumble()
             }
             Button("Cancel", role: .cancel) { }
         }
