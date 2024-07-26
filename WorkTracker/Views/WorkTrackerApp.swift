@@ -22,7 +22,7 @@ enum Pages : String, CaseIterable {
 
 @main
 struct WorkTrackerApp: App {
-    
+
     @ObservedObject var globalData = GlobalData.shared
 
     var body: some Scene {
@@ -35,8 +35,7 @@ struct WorkTrackerApp: App {
         }
         .modelContainer(DataStorageSystem.shared.container)
         .modelContext(DataStorageSystem.shared.context)
-        
-        
+    
     }
     
     @ViewBuilder
@@ -54,5 +53,6 @@ struct WorkTrackerApp: App {
     
     
 }
+
 
 

@@ -36,6 +36,23 @@
 		0A9918882C2515D400CD8694 /* LiveActivitySystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A127B442C0940F800D801EC /* LiveActivitySystem.swift */; };
 		0A99188A2C2515FA00CD8694 /* RumbleSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A9918752C24BC7D00CD8694 /* RumbleSystem.swift */; };
 		0A99188E2C2516EE00CD8694 /* JobItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A99188D2C2516EE00CD8694 /* JobItemView.swift */; };
+		0AA177EC2C53603900098E36 /* KeyboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA177EB2C53603900098E36 /* KeyboardViewController.swift */; };
+		0AA177F02C53603900098E36 /* KeyboardExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 0AA177E92C53603900098E36 /* KeyboardExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		0AA177F42C53619B00098E36 /* Gobals.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A6CCCE62C0697AB009CD0DA /* Gobals.swift */; };
+		0AA177F52C5361AA00098E36 /* RumbleSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A9918752C24BC7D00CD8694 /* RumbleSystem.swift */; };
+		0AA177F62C5361AC00098E36 /* TimerSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A9918772C24BF9400CD8694 /* TimerSystem.swift */; };
+		0AA177F72C5361AF00098E36 /* Sharesheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A7696B72C0ABCF0001CB02B /* Sharesheet.swift */; };
+		0AA177F82C5361B200098E36 /* LiveActivitySystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A127B442C0940F800D801EC /* LiveActivitySystem.swift */; };
+		0AA177F92C5361B500098E36 /* ColorPatch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AEE4CC52C077AA500CD5E7A /* ColorPatch.swift */; };
+		0AA177FA2C5361DF00098E36 /* TimeTrackingAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AEE4CA92C07735F00CD5E7A /* TimeTrackingAttributes.swift */; };
+		0AA177FB2C5361ED00098E36 /* PayPeriod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A0DD74D2C4E361B00C5F2E7 /* PayPeriod.swift */; };
+		0AA177FC2C5361FF00098E36 /* DynamicIslandIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A0E1CC42C2917580067AFAE /* DynamicIslandIntents.swift */; };
+		0AA177FD2C53620100098E36 /* TimerIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A9918832C2513FD00CD8694 /* TimerIntents.swift */; };
+		0AA177FE2C53620300098E36 /* JobEntryIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A0E1CC72C29281C0067AFAE /* JobEntryIntents.swift */; };
+		0AA177FF2C53620600098E36 /* ShortcutsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A6A7B3D2C25B33F005F3172 /* ShortcutsProvider.swift */; };
+		0AA178002C53621D00098E36 /* StorageSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A7696AE2C0A1779001CB02B /* StorageSystem.swift */; };
+		0AA178012C5364D400098E36 /* KeyboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA177EB2C53603900098E36 /* KeyboardViewController.swift */; };
+		0AA178032C53685C00098E36 /* JobItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A99188D2C2516EE00CD8694 /* JobItemView.swift */; };
 		0ABC7B252C2D5CFA00EFFB7A /* TimeTrackingAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AEE4CA92C07735F00CD5E7A /* TimeTrackingAttributes.swift */; };
 		0AD9F5EA2C29D3B80004892E /* StorageSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A7696AE2C0A1779001CB02B /* StorageSystem.swift */; };
 		0AD9F5EC2C29E3650004892E /* JobEntryForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AD9F5EB2C29E3650004892E /* JobEntryForm.swift */; };
@@ -53,6 +70,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		0AA177EE2C53603900098E36 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0A6CCCC72C068595009CD0DA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 0AA177E82C53603900098E36;
+			remoteInfo = KeyboardExtension;
+		};
 		0AEE4CBD2C07779300CD5E7A /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 0A6CCCC72C068595009CD0DA /* Project object */;
@@ -70,6 +94,7 @@
 			dstSubfolderSpec = 13;
 			files = (
 				0AEE4CBF2C07779300CD5E7A /* TrackingWidgetExtension.appex in Embed Foundation Extensions */,
+				0AA177F02C53603900098E36 /* KeyboardExtension.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -82,7 +107,6 @@
 		0A0E1CC72C29281C0067AFAE /* JobEntryIntents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobEntryIntents.swift; sourceTree = "<group>"; };
 		0A127B442C0940F800D801EC /* LiveActivitySystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveActivitySystem.swift; sourceTree = "<group>"; };
 		0A127B492C09A39300D801EC /* PayPeriodView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PayPeriodView.swift; sourceTree = "<group>"; };
-		0A2545D52C2D266B006C4E3A /* TrackingWidgetExtensionDebug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TrackingWidgetExtensionDebug.entitlements; sourceTree = "<group>"; };
 		0A6A7B3D2C25B33F005F3172 /* ShortcutsProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShortcutsProvider.swift; sourceTree = "<group>"; };
 		0A6CCCCF2C068596009CD0DA /* WorkTracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WorkTracker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0A6CCCD22C068596009CD0DA /* WorkTrackerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkTrackerApp.swift; sourceTree = "<group>"; };
@@ -93,11 +117,16 @@
 		0A7696AE2C0A1779001CB02B /* StorageSystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = StorageSystem.swift; path = ../WorkTracker/Storage/StorageSystem.swift; sourceTree = "<group>"; };
 		0A7696B52C0ABA81001CB02B /* NSManagedObjectPatch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSManagedObjectPatch.swift; sourceTree = "<group>"; };
 		0A7696B72C0ABCF0001CB02B /* Sharesheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sharesheet.swift; sourceTree = "<group>"; };
+		0A7B17F82C52CA960017E04F /* TrackingWidgetExtensionDebug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TrackingWidgetExtensionDebug.entitlements; sourceTree = "<group>"; };
 		0A81C87A2C409BE700D96FBE /* NavButtons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavButtons.swift; sourceTree = "<group>"; };
 		0A9918752C24BC7D00CD8694 /* RumbleSystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RumbleSystem.swift; sourceTree = "<group>"; };
 		0A9918772C24BF9400CD8694 /* TimerSystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerSystem.swift; sourceTree = "<group>"; };
 		0A9918832C2513FD00CD8694 /* TimerIntents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerIntents.swift; sourceTree = "<group>"; };
 		0A99188D2C2516EE00CD8694 /* JobItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobItemView.swift; sourceTree = "<group>"; };
+		0AA177E92C53603900098E36 /* KeyboardExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = KeyboardExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		0AA177EB2C53603900098E36 /* KeyboardViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardViewController.swift; sourceTree = "<group>"; };
+		0AA177ED2C53603900098E36 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		0AA178022C5366EA00098E36 /* KeyboardExtensionDebug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = KeyboardExtensionDebug.entitlements; sourceTree = "<group>"; };
 		0AD9F5E92C29B9D50004892E /* WorkTrackerDebug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WorkTrackerDebug.entitlements; sourceTree = "<group>"; };
 		0AD9F5EB2C29E3650004892E /* JobEntryForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobEntryForm.swift; sourceTree = "<group>"; };
 		0AEE4CA92C07735F00CD5E7A /* TimeTrackingAttributes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeTrackingAttributes.swift; sourceTree = "<group>"; };
@@ -117,6 +146,13 @@
 
 /* Begin PBXFrameworksBuildPhase section */
 		0A6CCCCC2C068595009CD0DA /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		0AA177E62C53603900098E36 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -151,7 +187,7 @@
 		0A6CCCC62C068595009CD0DA = {
 			isa = PBXGroup;
 			children = (
-				0A2545D52C2D266B006C4E3A /* TrackingWidgetExtensionDebug.entitlements */,
+				0A7B17F82C52CA960017E04F /* TrackingWidgetExtensionDebug.entitlements */,
 				0A99187C2C2511D700CD8694 /* Intents */,
 				0AEE4CC92C07929100CD5E7A /* Artboard 1.png */,
 				0AEE4CC52C077AA500CD5E7A /* ColorPatch.swift */,
@@ -159,6 +195,7 @@
 				0A9918892C2515E800CD8694 /* Systems */,
 				0A6CCCD12C068596009CD0DA /* WorkTracker */,
 				0AEE4CB52C07779200CD5E7A /* TrackingWidget */,
+				0AA177EA2C53603900098E36 /* KeyboardExtension */,
 				0AEE4CB02C07779200CD5E7A /* Frameworks */,
 				0A6CCCD02C068596009CD0DA /* Products */,
 			);
@@ -169,6 +206,7 @@
 			children = (
 				0A6CCCCF2C068596009CD0DA /* WorkTracker.app */,
 				0AEE4CAF2C07779200CD5E7A /* TrackingWidgetExtension.appex */,
+				0AA177E92C53603900098E36 /* KeyboardExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -220,6 +258,16 @@
 			path = Systems;
 			sourceTree = "<group>";
 		};
+		0AA177EA2C53603900098E36 /* KeyboardExtension */ = {
+			isa = PBXGroup;
+			children = (
+				0AA178022C5366EA00098E36 /* KeyboardExtensionDebug.entitlements */,
+				0AA177EB2C53603900098E36 /* KeyboardViewController.swift */,
+				0AA177ED2C53603900098E36 /* Info.plist */,
+			);
+			path = KeyboardExtension;
+			sourceTree = "<group>";
+		};
 		0AEE4CB02C07779200CD5E7A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -257,11 +305,29 @@
 			);
 			dependencies = (
 				0AEE4CBE2C07779300CD5E7A /* PBXTargetDependency */,
+				0AA177EF2C53603900098E36 /* PBXTargetDependency */,
 			);
 			name = WorkTracker;
 			productName = WorkTracker;
 			productReference = 0A6CCCCF2C068596009CD0DA /* WorkTracker.app */;
 			productType = "com.apple.product-type.application";
+		};
+		0AA177E82C53603900098E36 /* KeyboardExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 0AA177F12C53603900098E36 /* Build configuration list for PBXNativeTarget "KeyboardExtension" */;
+			buildPhases = (
+				0AA177E52C53603900098E36 /* Sources */,
+				0AA177E62C53603900098E36 /* Frameworks */,
+				0AA177E72C53603900098E36 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = KeyboardExtension;
+			productName = KeyboardExtension;
+			productReference = 0AA177E92C53603900098E36 /* KeyboardExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
 		};
 		0AEE4CAE2C07779200CD5E7A /* TrackingWidgetExtension */ = {
 			isa = PBXNativeTarget;
@@ -293,6 +359,9 @@
 					0A6CCCCE2C068595009CD0DA = {
 						CreatedOnToolsVersion = 15.4;
 					};
+					0AA177E82C53603900098E36 = {
+						CreatedOnToolsVersion = 15.4;
+					};
 					0AEE4CAE2C07779200CD5E7A = {
 						CreatedOnToolsVersion = 15.4;
 					};
@@ -316,6 +385,7 @@
 			targets = (
 				0A6CCCCE2C068595009CD0DA /* WorkTracker */,
 				0AEE4CAE2C07779200CD5E7A /* TrackingWidgetExtension */,
+				0AA177E82C53603900098E36 /* KeyboardExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -329,6 +399,13 @@
 				0A6CCCD72C068597009CD0DA /* Assets.xcassets in Resources */,
 				0AEE4CCC2C07933C00CD5E7A /* Launch Screen.storyboard in Resources */,
 				0AEE4CCA2C07929100CD5E7A /* Artboard 1.png in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		0AA177E72C53603900098E36 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -351,6 +428,7 @@
 				0A9918762C24BC7D00CD8694 /* RumbleSystem.swift in Sources */,
 				0A0E1CC82C29281C0067AFAE /* JobEntryIntents.swift in Sources */,
 				0AEE4CC62C077AA500CD5E7A /* ColorPatch.swift in Sources */,
+				0AA178012C5364D400098E36 /* KeyboardViewController.swift in Sources */,
 				0A127B452C0940F800D801EC /* LiveActivitySystem.swift in Sources */,
 				0A6CCCE72C0697AB009CD0DA /* Gobals.swift in Sources */,
 				0A127B4A2C09A39300D801EC /* PayPeriodView.swift in Sources */,
@@ -367,6 +445,28 @@
 				0AD9F5EC2C29E3650004892E /* JobEntryForm.swift in Sources */,
 				0ABC7B252C2D5CFA00EFFB7A /* TimeTrackingAttributes.swift in Sources */,
 				0A99188E2C2516EE00CD8694 /* JobItemView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		0AA177E52C53603900098E36 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0AA177FA2C5361DF00098E36 /* TimeTrackingAttributes.swift in Sources */,
+				0AA177EC2C53603900098E36 /* KeyboardViewController.swift in Sources */,
+				0AA177F52C5361AA00098E36 /* RumbleSystem.swift in Sources */,
+				0AA177FB2C5361ED00098E36 /* PayPeriod.swift in Sources */,
+				0AA177F72C5361AF00098E36 /* Sharesheet.swift in Sources */,
+				0AA177F82C5361B200098E36 /* LiveActivitySystem.swift in Sources */,
+				0AA178002C53621D00098E36 /* StorageSystem.swift in Sources */,
+				0AA177FF2C53620600098E36 /* ShortcutsProvider.swift in Sources */,
+				0AA177F62C5361AC00098E36 /* TimerSystem.swift in Sources */,
+				0AA177F42C53619B00098E36 /* Gobals.swift in Sources */,
+				0AA177FC2C5361FF00098E36 /* DynamicIslandIntents.swift in Sources */,
+				0AA177FD2C53620100098E36 /* TimerIntents.swift in Sources */,
+				0AA177FE2C53620300098E36 /* JobEntryIntents.swift in Sources */,
+				0AA177F92C5361B500098E36 /* ColorPatch.swift in Sources */,
+				0AA178032C53685C00098E36 /* JobItemView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -395,6 +495,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		0AA177EF2C53603900098E36 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 0AA177E82C53603900098E36 /* KeyboardExtension */;
+			targetProxy = 0AA177EE2C53603900098E36 /* PBXContainerItemProxy */;
+		};
 		0AEE4CBE2C07779300CD5E7A /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 0AEE4CAE2C07779200CD5E7A /* TrackingWidgetExtension */;
@@ -517,6 +622,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
+				"SWIFT_ACTIVE_COMPILATION_CONDITIONS[arch=*]" = "";
 				SWIFT_COMPILATION_MODE = wholemodule;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -604,6 +710,59 @@
 			};
 			name = Release;
 		};
+		0AA177F22C53603900098E36 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = KeyboardExtension/KeyboardExtensionDebug.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 6RRXN3FBY9;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = KeyboardExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = KeyboardExtension;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = HSteele.WorkTracker.KeyboardExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		0AA177F32C53603900098E36 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 6RRXN3FBY9;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = KeyboardExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = KeyboardExtension;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = HSteele.WorkTracker.KeyboardExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 		0AEE4CC12C07779300CD5E7A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -684,6 +843,15 @@
 			buildConfigurations = (
 				0A6CCCDE2C068597009CD0DA /* Debug */,
 				0A6CCCDF2C068597009CD0DA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		0AA177F12C53603900098E36 /* Build configuration list for PBXNativeTarget "KeyboardExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0AA177F22C53603900098E36 /* Debug */,
+				0AA177F32C53603900098E36 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

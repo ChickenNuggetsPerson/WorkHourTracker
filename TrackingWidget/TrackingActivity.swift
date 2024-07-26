@@ -12,17 +12,27 @@ import ActivityKit
 
 
 struct TrackingActivity: Widget {
+    
+    func getInterval(state: TimeTrackingAttributes.ContentState) -> ClosedRange<Date> {
+        
+        let start = state.startTime
+        let end = start.addHours(hours: 12)
+
+        
+        return start...end
+    }
 
     var body: some WidgetConfiguration {
         ActivityConfiguration(for: TimeTrackingAttributes.self) { context in
             
-            LargeLiveActivityView(context: context)
+            LargeLiveActivityView(context: context, timeRange: self.getInterval(state: context.state))
                 .padding()
+                .activityBackgroundTint(.black)
     
         } dynamicIsland: { context in
             DynamicIsland {
                 DynamicIslandExpandedRegion(.bottom) {
-                    LargeLiveActivityView(context: context)
+                    LargeLiveActivityView(context: context, timeRange: self.getInterval(state: context.state))
                         .contentTransition(.numericText())
                 }
                 DynamicIslandExpandedRegion(.leading) {
@@ -34,11 +44,11 @@ struct TrackingActivity: Widget {
 
             }
             compactLeading: {
-                DynamicIslandView(context: context, pos: 0)
+                DynamicIslandView(context: context, pos: 0, timeRange: self.getInterval(state: context.state))
             } compactTrailing: {
-                DynamicIslandView(context: context, pos: 1)
+                DynamicIslandView(context: context, pos: 1, timeRange: self.getInterval(state: context.state))
             } minimal: {
-                DynamicIslandView(context: context, pos: 2)
+                DynamicIslandView(context: context, pos: 2, timeRange: self.getInterval(state: context.state))
             }
             .keylineTint(context.state.jobColor)
         }
@@ -51,6 +61,7 @@ struct TrackingActivity: Widget {
 struct LargeLiveActivityView: View {
     let context: ActivityViewContext<TimeTrackingAttributes>
     var saveState : Bool { context.state.saveState }
+    let timeRange : ClosedRange<Date>
     
     var body: some View {
        
@@ -101,22 +112,31 @@ struct LargeLiveActivityView: View {
                 }
             
                 
-                if (context.state.saveState || context.state.jobType == "Saved") {
+                if (
+                    context.state.saveState ||
+                    context.state.jobType == "Saved" ||
+                    context.state.jobType == "Canceled"
+                ) {
                     Text(context.state.startTime.hrsOffset(relativeTo: roundTime(time: Date())).toHrsString())
                         .font(.title2)
                         .fontWeight(.black)
                         .foregroundColor(.white)
                         .multilineTextAlignment(.center)
                         .monospaced()
-                        .transition(.move(edge: .bottom).combined(with: .opacity).combined(with: .scale))
+                        .transition(.move(edge: .bottom).combined(with: .opacity))
+                        .clipped()
                 } else {
-                    Text(context.state.startTime, style: .timer)
-                        .font(.title2)
-                        .fontWeight(.black)
-                        .foregroundColor(.white)
-                        .multilineTextAlignment(.center)
-                        .monospaced()
-                        .transition(.move(edge: .top).combined(with: .opacity).combined(with: .scale))
+                    Text(
+                        timerInterval: self.timeRange,
+                        countsDown: false
+                    )
+                    .font(.title2)
+                    .fontWeight(.black)
+                    .foregroundColor(.white)
+                    .multilineTextAlignment(.center)
+                    .monospaced()
+                    .transition(.move(edge: .top).combined(with: .opacity))
+                    .clipped()
                 }
                 
         
@@ -134,8 +154,9 @@ struct LargeLiveActivityView: View {
 
 
 struct DynamicIslandView: View {
-    let context: ActivityViewContext<TimeTrackingAttributes>
+    let context : ActivityViewContext<TimeTrackingAttributes>
     let pos : Int
+    var timeRange : ClosedRange<Date>
     
     func getAbriviation(str: String) -> String {
         let components = str.components(separatedBy: .whitespacesAndNewlines)
@@ -146,56 +167,37 @@ struct DynamicIslandView: View {
         return String(firstLetters).uppercased()
     }
     
-    func getInterval() -> ClosedRange<Date> {
-        
-        let start = context.state.startTime
-        let end = start.addHours(hours: 8)
-        
-        return start...end
-    }
+    
     
     var body: some View {
-        HStack() {
+        VStack() {
             if (self.pos == 0) { // Compact Leading
                 Text(self.getAbriviation(str: context.state.jobType))
                     .font(.title)
                     .fontWeight(.black)
                     .foregroundColor(context.state.jobColor)
+                    .padding(.leading, 5)
+                
             } else if (self.pos == 1) { // Compact Trailing
                
-            
-                ProgressView(
-                    timerInterval: self.getInterval(),
-                        countsDown: true,
-                        label: {
-                            EmptyView()
-                        },
-                        currentValueLabel: {
-                            Image(systemName: "clock")
-                                .font(.largeTitle)
-                                .fontWeight(.black)
-                                .foregroundColor(context.state.jobColor)
-                        }
-                    )
-                    .progressViewStyle(.circular)
-                    .tint(context.state.jobColor.darkened(by: 0.2))
+                Text(
+                    timerInterval: self.timeRange,
+                    countsDown: false
+                )
+                    .font(.title)
+                    .fontWeight(.black)
+                    .foregroundColor(context.state.jobColor)
+                    .monospaced()
+                    .frame(maxWidth: 45)
+                    .minimumScaleFactor(0.5)
+                
+                
             } else { // Minimal
                 
-                ProgressView(
-                    timerInterval: self.getInterval(),
-                        countsDown: true,
-                        label: {
-                            EmptyView()
-                        },
-                        currentValueLabel: {
-                            Text(self.getAbriviation(str: context.state.jobType))
-                                .font(.title)
-                                .fontWeight(.black)
-                                .foregroundColor(context.state.jobColor)
-                        }
-                    )
-                    .progressViewStyle(.circular)
-                    .tint(context.state.jobColor.darkened(by: 0.2))
+                Text(self.getAbriviation(str: context.state.jobType))
+                    .font(.title)
+                    .fontWeight(.black)
+                    .foregroundColor(context.state.jobColor)
                 
             
             }

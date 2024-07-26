@@ -41,6 +41,17 @@
                ReferencedContainer = "container:WorkTracker.xcodeproj">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "0AA177D92C535F2D00098E36"
+               BuildableName = "WorkTrackerUITests.xctest"
+               BlueprintName = "WorkTrackerUITests"
+               ReferencedContainer = "container:WorkTracker.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction

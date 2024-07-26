@@ -263,9 +263,13 @@ class DataStorageSystem : ObservableObject {
             )
             farthestDesc.fetchLimit = 1
             
-            let date = try context.fetch(farthestDesc).first!.startTime
+            if let entry = try context.fetch(farthestDesc).first {
+                pprd.startDate = getPayPeriod(refDay: entry.startTime).startDate
+            }
             
-            pprd.startDate = getPayPeriod(refDay: date).startDate
+            
+            
+           
         } catch {}
         
         do { // Recent Date
@@ -274,8 +278,10 @@ class DataStorageSystem : ObservableObject {
             )
             latestDesc.fetchLimit = 1
             
-            let date = try context.fetch(latestDesc).first!.startTime
-            pprd.endDate = getPayPeriod(refDay: date).endDate
+            if let entry = try context.fetch(latestDesc).first {
+                pprd.endDate = getPayPeriod(refDay: entry.startTime).endDate
+            }
+            
         } catch {}
         
         let currentPPRD = getCurrentPayperiod()

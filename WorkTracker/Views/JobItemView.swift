@@ -315,10 +315,9 @@ struct ListItemView: View {
 }
 
 
-#Preview {
-    PayPeriodView()
-    .modelContainer(DataStorageSystem.shared.container)
-    .modelContext(DataStorageSystem.shared.context)
-//    
-//    EmptyView()
-}
+//#Preview {
+//    PayPeriodView()
+//    .modelContainer(DataStorageSystem.shared.container)
+//    .modelContext(DataStorageSystem.shared.context)
+//
+//}
