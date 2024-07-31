@@ -390,12 +390,12 @@ class DataStorageSystem : ObservableObject {
 
 
 extension JobEntry {
-    func toDict() -> [String: String] {
+    func toDict(stripDesc: Bool = false) -> [String: String] {
         return [
             "jobTypeID": self.jobTypeID,
             "startTime": self.startTime.description,
             "endTime": self.endTime.description,
-            "desc": self.desc,
+            "desc": stripDesc ? "" : self.desc,
             "entryID": self.entryID.description
        ]
     }

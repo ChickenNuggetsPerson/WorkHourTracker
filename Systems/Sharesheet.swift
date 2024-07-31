@@ -5,6 +5,7 @@
 //  Created by Hayden Steele on 5/31/24.
 //
 
+
 import Foundation
 import SwiftUI
 import UIKit
@@ -242,3 +243,4 @@ func wrapText(str : String, charWidth : Int, lineWidth : Int) -> [Substring] {
         
     return newStr.split(separator: "\n")
 }
+

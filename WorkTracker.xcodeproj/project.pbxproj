@@ -24,9 +24,26 @@
 		0A6CCCDA2C068597009CD0DA /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0A6CCCD92C068597009CD0DA /* Preview Assets.xcassets */; };
 		0A6CCCE72C0697AB009CD0DA /* Gobals.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A6CCCE62C0697AB009CD0DA /* Gobals.swift */; };
 		0A7696AF2C0A1779001CB02B /* StorageSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A7696AE2C0A1779001CB02B /* StorageSystem.swift */; };
-		0A7696B62C0ABA81001CB02B /* NSManagedObjectPatch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A7696B52C0ABA81001CB02B /* NSManagedObjectPatch.swift */; };
 		0A7696B82C0ABCF0001CB02B /* Sharesheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A7696B72C0ABCF0001CB02B /* Sharesheet.swift */; };
 		0A81C87B2C409BE700D96FBE /* NavButtons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A81C87A2C409BE700D96FBE /* NavButtons.swift */; };
+		0A9227FD2C59AA6E004B8352 /* WatchWorkTrackerAppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A9227FC2C59AA6E004B8352 /* WatchWorkTrackerAppApp.swift */; };
+		0A9227FF2C59AA6E004B8352 /* WatchScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A9227FE2C59AA6E004B8352 /* WatchScrollView.swift */; };
+		0A9228012C59AA6F004B8352 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0A9228002C59AA6F004B8352 /* Assets.xcassets */; };
+		0A9228042C59AA6F004B8352 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0A9228032C59AA6F004B8352 /* Preview Assets.xcassets */; };
+		0A9228072C59AA6F004B8352 /* WatchWorkTrackerApp Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 0A9227FA2C59AA6E004B8352 /* WatchWorkTrackerApp Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		0A92280D2C59ABEA004B8352 /* StorageSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A7696AE2C0A1779001CB02B /* StorageSystem.swift */; };
+		0A92280F2C59ABF0004B8352 /* TimerSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A9918772C24BF9400CD8694 /* TimerSystem.swift */; };
+		0A9228122C59ABF9004B8352 /* ColorPatch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AEE4CC52C077AA500CD5E7A /* ColorPatch.swift */; };
+		0A9228182C59AE38004B8352 /* Gobals.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A6CCCE62C0697AB009CD0DA /* Gobals.swift */; };
+		0A9228192C59AF0F004B8352 /* PayPeriod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A0DD74D2C4E361B00C5F2E7 /* PayPeriod.swift */; };
+		0A92281C2C59B1D8004B8352 /* WatchJobEntryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A92281B2C59B1D8004B8352 /* WatchJobEntryView.swift */; };
+		0A92281D2C59B53C004B8352 /* Artboard 1.png in Resources */ = {isa = PBXBuildFile; fileRef = 0AEE4CC92C07929100CD5E7A /* Artboard 1.png */; };
+		0A92281F2C59B6DB004B8352 /* WatchTimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A92281E2C59B6DB004B8352 /* WatchTimerView.swift */; };
+		0A9228212C59B99F004B8352 /* WatchConnectivity.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A9228202C59B99F004B8352 /* WatchConnectivity.framework */; };
+		0A9228232C59B9A9004B8352 /* WatchConnectivity.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A9228222C59B9A9004B8352 /* WatchConnectivity.framework */; };
+		0A9228252C59B9C7004B8352 /* DataTransferSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A9228242C59B9C7004B8352 /* DataTransferSystem.swift */; };
+		0A9228262C59B9C7004B8352 /* DataTransferSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A9228242C59B9C7004B8352 /* DataTransferSystem.swift */; };
+		0A9228292C59E6D2004B8352 /* WatchDataFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A9228272C59E6D2004B8352 /* WatchDataFetcher.swift */; };
 		0A9918762C24BC7D00CD8694 /* RumbleSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A9918752C24BC7D00CD8694 /* RumbleSystem.swift */; };
 		0A9918782C24BF9400CD8694 /* TimerSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A9918772C24BF9400CD8694 /* TimerSystem.swift */; };
 		0A9918842C2513FD00CD8694 /* TimerIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A9918832C2513FD00CD8694 /* TimerIntents.swift */; };
@@ -35,24 +52,7 @@
 		0A9918872C2515BE00CD8694 /* Gobals.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A6CCCE62C0697AB009CD0DA /* Gobals.swift */; };
 		0A9918882C2515D400CD8694 /* LiveActivitySystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A127B442C0940F800D801EC /* LiveActivitySystem.swift */; };
 		0A99188A2C2515FA00CD8694 /* RumbleSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A9918752C24BC7D00CD8694 /* RumbleSystem.swift */; };
-		0A99188E2C2516EE00CD8694 /* JobItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A99188D2C2516EE00CD8694 /* JobItemView.swift */; };
-		0AA177EC2C53603900098E36 /* KeyboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA177EB2C53603900098E36 /* KeyboardViewController.swift */; };
-		0AA177F02C53603900098E36 /* KeyboardExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 0AA177E92C53603900098E36 /* KeyboardExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		0AA177F42C53619B00098E36 /* Gobals.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A6CCCE62C0697AB009CD0DA /* Gobals.swift */; };
-		0AA177F52C5361AA00098E36 /* RumbleSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A9918752C24BC7D00CD8694 /* RumbleSystem.swift */; };
-		0AA177F62C5361AC00098E36 /* TimerSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A9918772C24BF9400CD8694 /* TimerSystem.swift */; };
-		0AA177F72C5361AF00098E36 /* Sharesheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A7696B72C0ABCF0001CB02B /* Sharesheet.swift */; };
-		0AA177F82C5361B200098E36 /* LiveActivitySystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A127B442C0940F800D801EC /* LiveActivitySystem.swift */; };
-		0AA177F92C5361B500098E36 /* ColorPatch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AEE4CC52C077AA500CD5E7A /* ColorPatch.swift */; };
-		0AA177FA2C5361DF00098E36 /* TimeTrackingAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AEE4CA92C07735F00CD5E7A /* TimeTrackingAttributes.swift */; };
-		0AA177FB2C5361ED00098E36 /* PayPeriod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A0DD74D2C4E361B00C5F2E7 /* PayPeriod.swift */; };
-		0AA177FC2C5361FF00098E36 /* DynamicIslandIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A0E1CC42C2917580067AFAE /* DynamicIslandIntents.swift */; };
-		0AA177FD2C53620100098E36 /* TimerIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A9918832C2513FD00CD8694 /* TimerIntents.swift */; };
-		0AA177FE2C53620300098E36 /* JobEntryIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A0E1CC72C29281C0067AFAE /* JobEntryIntents.swift */; };
-		0AA177FF2C53620600098E36 /* ShortcutsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A6A7B3D2C25B33F005F3172 /* ShortcutsProvider.swift */; };
-		0AA178002C53621D00098E36 /* StorageSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A7696AE2C0A1779001CB02B /* StorageSystem.swift */; };
-		0AA178012C5364D400098E36 /* KeyboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA177EB2C53603900098E36 /* KeyboardViewController.swift */; };
-		0AA178032C53685C00098E36 /* JobItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A99188D2C2516EE00CD8694 /* JobItemView.swift */; };
+		0A99188E2C2516EE00CD8694 /* JobEntryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A99188D2C2516EE00CD8694 /* JobEntryView.swift */; };
 		0ABC7B252C2D5CFA00EFFB7A /* TimeTrackingAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AEE4CA92C07735F00CD5E7A /* TimeTrackingAttributes.swift */; };
 		0AD9F5EA2C29D3B80004892E /* StorageSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A7696AE2C0A1779001CB02B /* StorageSystem.swift */; };
 		0AD9F5EC2C29E3650004892E /* JobEntryForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AD9F5EB2C29E3650004892E /* JobEntryForm.swift */; };
@@ -70,12 +70,12 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		0AA177EE2C53603900098E36 /* PBXContainerItemProxy */ = {
+		0A9228052C59AA6F004B8352 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 0A6CCCC72C068595009CD0DA /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 0AA177E82C53603900098E36;
-			remoteInfo = KeyboardExtension;
+			remoteGlobalIDString = 0A9227F92C59AA6E004B8352;
+			remoteInfo = "WatchWorkTrackerApp Watch App";
 		};
 		0AEE4CBD2C07779300CD5E7A /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -87,6 +87,17 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		0A92280B2C59AA6F004B8352 /* Embed Watch Content */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
+			dstSubfolderSpec = 16;
+			files = (
+				0A9228072C59AA6F004B8352 /* WatchWorkTrackerApp Watch App.app in Embed Watch Content */,
+			);
+			name = "Embed Watch Content";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		0AEE4CC32C07779300CD5E7A /* Embed Foundation Extensions */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -94,7 +105,6 @@
 			dstSubfolderSpec = 13;
 			files = (
 				0AEE4CBF2C07779300CD5E7A /* TrackingWidgetExtension.appex in Embed Foundation Extensions */,
-				0AA177F02C53603900098E36 /* KeyboardExtension.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -115,18 +125,25 @@
 		0A6CCCD92C068597009CD0DA /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		0A6CCCE62C0697AB009CD0DA /* Gobals.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Gobals.swift; sourceTree = "<group>"; };
 		0A7696AE2C0A1779001CB02B /* StorageSystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = StorageSystem.swift; path = ../WorkTracker/Storage/StorageSystem.swift; sourceTree = "<group>"; };
-		0A7696B52C0ABA81001CB02B /* NSManagedObjectPatch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSManagedObjectPatch.swift; sourceTree = "<group>"; };
 		0A7696B72C0ABCF0001CB02B /* Sharesheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sharesheet.swift; sourceTree = "<group>"; };
 		0A7B17F82C52CA960017E04F /* TrackingWidgetExtensionDebug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TrackingWidgetExtensionDebug.entitlements; sourceTree = "<group>"; };
 		0A81C87A2C409BE700D96FBE /* NavButtons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavButtons.swift; sourceTree = "<group>"; };
+		0A9227FA2C59AA6E004B8352 /* WatchWorkTrackerApp Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "WatchWorkTrackerApp Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		0A9227FC2C59AA6E004B8352 /* WatchWorkTrackerAppApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchWorkTrackerAppApp.swift; sourceTree = "<group>"; };
+		0A9227FE2C59AA6E004B8352 /* WatchScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchScrollView.swift; sourceTree = "<group>"; };
+		0A9228002C59AA6F004B8352 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		0A9228032C59AA6F004B8352 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		0A92280C2C59AA85004B8352 /* WatchWorkTrackerApp Watch AppDebug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "WatchWorkTrackerApp Watch AppDebug.entitlements"; sourceTree = "<group>"; };
+		0A92281B2C59B1D8004B8352 /* WatchJobEntryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchJobEntryView.swift; sourceTree = "<group>"; };
+		0A92281E2C59B6DB004B8352 /* WatchTimerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchTimerView.swift; sourceTree = "<group>"; };
+		0A9228202C59B99F004B8352 /* WatchConnectivity.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WatchConnectivity.framework; path = System/Library/Frameworks/WatchConnectivity.framework; sourceTree = SDKROOT; };
+		0A9228222C59B9A9004B8352 /* WatchConnectivity.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WatchConnectivity.framework; path = Platforms/WatchOS.platform/Developer/SDKs/WatchOS10.5.sdk/System/Library/Frameworks/WatchConnectivity.framework; sourceTree = DEVELOPER_DIR; };
+		0A9228242C59B9C7004B8352 /* DataTransferSystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataTransferSystem.swift; sourceTree = "<group>"; };
+		0A9228272C59E6D2004B8352 /* WatchDataFetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchDataFetcher.swift; sourceTree = "<group>"; };
 		0A9918752C24BC7D00CD8694 /* RumbleSystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RumbleSystem.swift; sourceTree = "<group>"; };
 		0A9918772C24BF9400CD8694 /* TimerSystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerSystem.swift; sourceTree = "<group>"; };
 		0A9918832C2513FD00CD8694 /* TimerIntents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerIntents.swift; sourceTree = "<group>"; };
-		0A99188D2C2516EE00CD8694 /* JobItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobItemView.swift; sourceTree = "<group>"; };
-		0AA177E92C53603900098E36 /* KeyboardExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = KeyboardExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
-		0AA177EB2C53603900098E36 /* KeyboardViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardViewController.swift; sourceTree = "<group>"; };
-		0AA177ED2C53603900098E36 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		0AA178022C5366EA00098E36 /* KeyboardExtensionDebug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = KeyboardExtensionDebug.entitlements; sourceTree = "<group>"; };
+		0A99188D2C2516EE00CD8694 /* JobEntryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobEntryView.swift; sourceTree = "<group>"; };
 		0AD9F5E92C29B9D50004892E /* WorkTrackerDebug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WorkTrackerDebug.entitlements; sourceTree = "<group>"; };
 		0AD9F5EB2C29E3650004892E /* JobEntryForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobEntryForm.swift; sourceTree = "<group>"; };
 		0AEE4CA92C07735F00CD5E7A /* TimeTrackingAttributes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeTrackingAttributes.swift; sourceTree = "<group>"; };
@@ -149,13 +166,15 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0A9228212C59B99F004B8352 /* WatchConnectivity.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		0AA177E62C53603900098E36 /* Frameworks */ = {
+		0A9227F72C59AA6E004B8352 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0A9228232C59B9A9004B8352 /* WatchConnectivity.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -177,7 +196,7 @@
 				0A6CCCD22C068596009CD0DA /* WorkTrackerApp.swift */,
 				0A6CCCD42C068596009CD0DA /* MainView.swift */,
 				0A127B492C09A39300D801EC /* PayPeriodView.swift */,
-				0A99188D2C2516EE00CD8694 /* JobItemView.swift */,
+				0A99188D2C2516EE00CD8694 /* JobEntryView.swift */,
 				0AD9F5EB2C29E3650004892E /* JobEntryForm.swift */,
 				0A81C87A2C409BE700D96FBE /* NavButtons.swift */,
 			);
@@ -191,11 +210,10 @@
 				0A99187C2C2511D700CD8694 /* Intents */,
 				0AEE4CC92C07929100CD5E7A /* Artboard 1.png */,
 				0AEE4CC52C077AA500CD5E7A /* ColorPatch.swift */,
-				0A7696B52C0ABA81001CB02B /* NSManagedObjectPatch.swift */,
 				0A9918892C2515E800CD8694 /* Systems */,
 				0A6CCCD12C068596009CD0DA /* WorkTracker */,
 				0AEE4CB52C07779200CD5E7A /* TrackingWidget */,
-				0AA177EA2C53603900098E36 /* KeyboardExtension */,
+				0A9227FB2C59AA6E004B8352 /* WatchWorkTrackerApp Watch App */,
 				0AEE4CB02C07779200CD5E7A /* Frameworks */,
 				0A6CCCD02C068596009CD0DA /* Products */,
 			);
@@ -206,7 +224,7 @@
 			children = (
 				0A6CCCCF2C068596009CD0DA /* WorkTracker.app */,
 				0AEE4CAF2C07779200CD5E7A /* TrackingWidgetExtension.appex */,
-				0AA177E92C53603900098E36 /* KeyboardExtension.appex */,
+				0A9227FA2C59AA6E004B8352 /* WatchWorkTrackerApp Watch App.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -235,6 +253,29 @@
 			path = "Preview Content";
 			sourceTree = "<group>";
 		};
+		0A9227FB2C59AA6E004B8352 /* WatchWorkTrackerApp Watch App */ = {
+			isa = PBXGroup;
+			children = (
+				0A92280C2C59AA85004B8352 /* WatchWorkTrackerApp Watch AppDebug.entitlements */,
+				0A9227FC2C59AA6E004B8352 /* WatchWorkTrackerAppApp.swift */,
+				0A92281E2C59B6DB004B8352 /* WatchTimerView.swift */,
+				0A9227FE2C59AA6E004B8352 /* WatchScrollView.swift */,
+				0A92281B2C59B1D8004B8352 /* WatchJobEntryView.swift */,
+				0A9228002C59AA6F004B8352 /* Assets.xcassets */,
+				0A9228022C59AA6F004B8352 /* Preview Content */,
+				0A9228272C59E6D2004B8352 /* WatchDataFetcher.swift */,
+			);
+			path = "WatchWorkTrackerApp Watch App";
+			sourceTree = "<group>";
+		};
+		0A9228022C59AA6F004B8352 /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				0A9228032C59AA6F004B8352 /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
 		0A99187C2C2511D700CD8694 /* Intents */ = {
 			isa = PBXGroup;
 			children = (
@@ -254,23 +295,16 @@
 				0A9918772C24BF9400CD8694 /* TimerSystem.swift */,
 				0A127B442C0940F800D801EC /* LiveActivitySystem.swift */,
 				0A7696B72C0ABCF0001CB02B /* Sharesheet.swift */,
+				0A9228242C59B9C7004B8352 /* DataTransferSystem.swift */,
 			);
 			path = Systems;
-			sourceTree = "<group>";
-		};
-		0AA177EA2C53603900098E36 /* KeyboardExtension */ = {
-			isa = PBXGroup;
-			children = (
-				0AA178022C5366EA00098E36 /* KeyboardExtensionDebug.entitlements */,
-				0AA177EB2C53603900098E36 /* KeyboardViewController.swift */,
-				0AA177ED2C53603900098E36 /* Info.plist */,
-			);
-			path = KeyboardExtension;
 			sourceTree = "<group>";
 		};
 		0AEE4CB02C07779200CD5E7A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				0A9228202C59B99F004B8352 /* WatchConnectivity.framework */,
+				0A9228222C59B9A9004B8352 /* WatchConnectivity.framework */,
 				0AEE4CB12C07779200CD5E7A /* WidgetKit.framework */,
 				0AEE4CB32C07779200CD5E7A /* SwiftUI.framework */,
 			);
@@ -300,34 +334,35 @@
 				0A6CCCCC2C068595009CD0DA /* Frameworks */,
 				0A6CCCCD2C068595009CD0DA /* Resources */,
 				0AEE4CC32C07779300CD5E7A /* Embed Foundation Extensions */,
+				0A92280B2C59AA6F004B8352 /* Embed Watch Content */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 				0AEE4CBE2C07779300CD5E7A /* PBXTargetDependency */,
-				0AA177EF2C53603900098E36 /* PBXTargetDependency */,
+				0A9228062C59AA6F004B8352 /* PBXTargetDependency */,
 			);
 			name = WorkTracker;
 			productName = WorkTracker;
 			productReference = 0A6CCCCF2C068596009CD0DA /* WorkTracker.app */;
 			productType = "com.apple.product-type.application";
 		};
-		0AA177E82C53603900098E36 /* KeyboardExtension */ = {
+		0A9227F92C59AA6E004B8352 /* WatchWorkTrackerApp Watch App */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 0AA177F12C53603900098E36 /* Build configuration list for PBXNativeTarget "KeyboardExtension" */;
+			buildConfigurationList = 0A9228082C59AA6F004B8352 /* Build configuration list for PBXNativeTarget "WatchWorkTrackerApp Watch App" */;
 			buildPhases = (
-				0AA177E52C53603900098E36 /* Sources */,
-				0AA177E62C53603900098E36 /* Frameworks */,
-				0AA177E72C53603900098E36 /* Resources */,
+				0A9227F62C59AA6E004B8352 /* Sources */,
+				0A9227F72C59AA6E004B8352 /* Frameworks */,
+				0A9227F82C59AA6E004B8352 /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
-			name = KeyboardExtension;
-			productName = KeyboardExtension;
-			productReference = 0AA177E92C53603900098E36 /* KeyboardExtension.appex */;
-			productType = "com.apple.product-type.app-extension";
+			name = "WatchWorkTrackerApp Watch App";
+			productName = "WatchWorkTrackerApp Watch App";
+			productReference = 0A9227FA2C59AA6E004B8352 /* WatchWorkTrackerApp Watch App.app */;
+			productType = "com.apple.product-type.application";
 		};
 		0AEE4CAE2C07779200CD5E7A /* TrackingWidgetExtension */ = {
 			isa = PBXNativeTarget;
@@ -359,7 +394,7 @@
 					0A6CCCCE2C068595009CD0DA = {
 						CreatedOnToolsVersion = 15.4;
 					};
-					0AA177E82C53603900098E36 = {
+					0A9227F92C59AA6E004B8352 = {
 						CreatedOnToolsVersion = 15.4;
 					};
 					0AEE4CAE2C07779200CD5E7A = {
@@ -385,7 +420,7 @@
 			targets = (
 				0A6CCCCE2C068595009CD0DA /* WorkTracker */,
 				0AEE4CAE2C07779200CD5E7A /* TrackingWidgetExtension */,
-				0AA177E82C53603900098E36 /* KeyboardExtension */,
+				0A9227F92C59AA6E004B8352 /* WatchWorkTrackerApp Watch App */,
 			);
 		};
 /* End PBXProject section */
@@ -402,10 +437,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		0AA177E72C53603900098E36 /* Resources */ = {
+		0A9227F82C59AA6E004B8352 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0A9228042C59AA6F004B8352 /* Preview Assets.xcassets in Resources */,
+				0A9228012C59AA6F004B8352 /* Assets.xcassets in Resources */,
+				0A92281D2C59B53C004B8352 /* Artboard 1.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -428,12 +466,11 @@
 				0A9918762C24BC7D00CD8694 /* RumbleSystem.swift in Sources */,
 				0A0E1CC82C29281C0067AFAE /* JobEntryIntents.swift in Sources */,
 				0AEE4CC62C077AA500CD5E7A /* ColorPatch.swift in Sources */,
-				0AA178012C5364D400098E36 /* KeyboardViewController.swift in Sources */,
 				0A127B452C0940F800D801EC /* LiveActivitySystem.swift in Sources */,
 				0A6CCCE72C0697AB009CD0DA /* Gobals.swift in Sources */,
+				0A9228252C59B9C7004B8352 /* DataTransferSystem.swift in Sources */,
 				0A127B4A2C09A39300D801EC /* PayPeriodView.swift in Sources */,
 				0A9918842C2513FD00CD8694 /* TimerIntents.swift in Sources */,
-				0A7696B62C0ABA81001CB02B /* NSManagedObjectPatch.swift in Sources */,
 				0A7696AF2C0A1779001CB02B /* StorageSystem.swift in Sources */,
 				0A9918782C24BF9400CD8694 /* TimerSystem.swift in Sources */,
 				0A6A7B3E2C25B33F005F3172 /* ShortcutsProvider.swift in Sources */,
@@ -444,29 +481,25 @@
 				0A6CCCD32C068596009CD0DA /* WorkTrackerApp.swift in Sources */,
 				0AD9F5EC2C29E3650004892E /* JobEntryForm.swift in Sources */,
 				0ABC7B252C2D5CFA00EFFB7A /* TimeTrackingAttributes.swift in Sources */,
-				0A99188E2C2516EE00CD8694 /* JobItemView.swift in Sources */,
+				0A99188E2C2516EE00CD8694 /* JobEntryView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		0AA177E52C53603900098E36 /* Sources */ = {
+		0A9227F62C59AA6E004B8352 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0AA177FA2C5361DF00098E36 /* TimeTrackingAttributes.swift in Sources */,
-				0AA177EC2C53603900098E36 /* KeyboardViewController.swift in Sources */,
-				0AA177F52C5361AA00098E36 /* RumbleSystem.swift in Sources */,
-				0AA177FB2C5361ED00098E36 /* PayPeriod.swift in Sources */,
-				0AA177F72C5361AF00098E36 /* Sharesheet.swift in Sources */,
-				0AA177F82C5361B200098E36 /* LiveActivitySystem.swift in Sources */,
-				0AA178002C53621D00098E36 /* StorageSystem.swift in Sources */,
-				0AA177FF2C53620600098E36 /* ShortcutsProvider.swift in Sources */,
-				0AA177F62C5361AC00098E36 /* TimerSystem.swift in Sources */,
-				0AA177F42C53619B00098E36 /* Gobals.swift in Sources */,
-				0AA177FC2C5361FF00098E36 /* DynamicIslandIntents.swift in Sources */,
-				0AA177FD2C53620100098E36 /* TimerIntents.swift in Sources */,
-				0AA177FE2C53620300098E36 /* JobEntryIntents.swift in Sources */,
-				0AA177F92C5361B500098E36 /* ColorPatch.swift in Sources */,
-				0AA178032C53685C00098E36 /* JobItemView.swift in Sources */,
+				0A92280F2C59ABF0004B8352 /* TimerSystem.swift in Sources */,
+				0A92280D2C59ABEA004B8352 /* StorageSystem.swift in Sources */,
+				0A92281C2C59B1D8004B8352 /* WatchJobEntryView.swift in Sources */,
+				0A9228122C59ABF9004B8352 /* ColorPatch.swift in Sources */,
+				0A9228292C59E6D2004B8352 /* WatchDataFetcher.swift in Sources */,
+				0A9227FF2C59AA6E004B8352 /* WatchScrollView.swift in Sources */,
+				0A9227FD2C59AA6E004B8352 /* WatchWorkTrackerAppApp.swift in Sources */,
+				0A9228262C59B9C7004B8352 /* DataTransferSystem.swift in Sources */,
+				0A92281F2C59B6DB004B8352 /* WatchTimerView.swift in Sources */,
+				0A9228192C59AF0F004B8352 /* PayPeriod.swift in Sources */,
+				0A9228182C59AE38004B8352 /* Gobals.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -495,10 +528,10 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		0AA177EF2C53603900098E36 /* PBXTargetDependency */ = {
+		0A9228062C59AA6F004B8352 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 0AA177E82C53603900098E36 /* KeyboardExtension */;
-			targetProxy = 0AA177EE2C53603900098E36 /* PBXContainerItemProxy */;
+			target = 0A9227F92C59AA6E004B8352 /* WatchWorkTrackerApp Watch App */;
+			targetProxy = 0A9228052C59AA6F004B8352 /* PBXContainerItemProxy */;
 		};
 		0AEE4CBE2C07779300CD5E7A /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -710,56 +743,68 @@
 			};
 			name = Release;
 		};
-		0AA177F22C53603900098E36 /* Debug */ = {
+		0A9228092C59AA6F004B8352 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = KeyboardExtension/KeyboardExtensionDebug.entitlements;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
+				CODE_SIGN_ENTITLEMENTS = "WatchWorkTrackerApp Watch App/WatchWorkTrackerApp Watch AppDebug.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"WatchWorkTrackerApp Watch App/Preview Content\"";
 				DEVELOPMENT_TEAM = 6RRXN3FBY9;
+				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = KeyboardExtension/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = KeyboardExtension;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_CFBundleDisplayName = WatchWorkTrackerApp;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = HSteele.WorkTracker;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
-					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = HSteele.WorkTracker.KeyboardExtension;
+				PRODUCT_BUNDLE_IDENTIFIER = HSteele.WorkTracker.watchkitapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 10.5;
 			};
 			name = Debug;
 		};
-		0AA177F32C53603900098E36 /* Release */ = {
+		0A92280A2C59AA6F004B8352 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"WatchWorkTrackerApp Watch App/Preview Content\"";
 				DEVELOPMENT_TEAM = 6RRXN3FBY9;
+				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = KeyboardExtension/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = KeyboardExtension;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_CFBundleDisplayName = WatchWorkTrackerApp;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = HSteele.WorkTracker;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
-					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = HSteele.WorkTracker.KeyboardExtension;
+				PRODUCT_BUNDLE_IDENTIFIER = HSteele.WorkTracker.watchkitapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 10.5;
 			};
 			name = Release;
 		};
@@ -847,11 +892,11 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		0AA177F12C53603900098E36 /* Build configuration list for PBXNativeTarget "KeyboardExtension" */ = {
+		0A9228082C59AA6F004B8352 /* Build configuration list for PBXNativeTarget "WatchWorkTrackerApp Watch App" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				0AA177F22C53603900098E36 /* Debug */,
-				0AA177F32C53603900098E36 /* Release */,
+				0A9228092C59AA6F004B8352 /* Debug */,
+				0A92280A2C59AA6F004B8352 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

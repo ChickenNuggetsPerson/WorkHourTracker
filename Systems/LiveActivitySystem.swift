@@ -5,6 +5,7 @@
 //  Created by Hayden Steele on 5/30/24.
 //
 
+
 import Foundation
 import ActivityKit
 import SwiftUI
@@ -42,7 +43,7 @@ class LiveActivitySystem {
             print("Starting Live Activity: \(activity.id)")
         } catch {
             print("error starting activitiy: \(error.localizedDescription)")
-            fatalError(error.localizedDescription)
+            
         }
 
     }

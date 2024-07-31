@@ -32,6 +32,9 @@ struct WorkTrackerApp: App {
                     .animation(.snappy, value: globalData.currentPage)
                     .environment(\.colorScheme, .dark)
             }
+            .onAppear() {
+                DataTransferSystem.shared.wakeUpSystem()
+            }
         }
         .modelContainer(DataStorageSystem.shared.container)
         .modelContext(DataStorageSystem.shared.context)

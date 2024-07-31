@@ -76,7 +76,7 @@ struct JobEntryForm: View {
         VStack() {
             Form {
                 
-                ListItemView(
+                JobEntryView(
                     jobTypeID: self.newEntryJobID,
                     startTime: roundTime(time: self.newEntryStart),
                     endTime: roundTime(time: self.newEntryEnd),

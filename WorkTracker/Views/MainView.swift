@@ -145,7 +145,7 @@ struct MainView: View {
                 Spacer()
                 
                 if (self.listItemSwipeToggle) {
-                    ListItemView(
+                    JobEntryView(
                         jobTypeID: getIDFromJob(type: self.timerSystem.jobState),
                         startTime: self.timerSystem.running ? self.timerSystem.startTime : roundTime(time: Date()),
                         endTime: roundTime(time: Date()),
@@ -156,7 +156,7 @@ struct MainView: View {
                     .padding([.leading, .trailing], 10)
                     .transition(.move(edge: .bottom).combined(with: .opacity))
                 } else {
-                    ListItemView(
+                    JobEntryView(
                         jobTypeID: getIDFromJob(type: self.timerSystem.jobState),
                         startTime: self.timerSystem.running ? self.timerSystem.startTime : roundTime(time: Date()),
                         endTime: roundTime(time: Date()),
@@ -418,6 +418,7 @@ struct MainView: View {
         }
     
         self.timerSystem.toggleTimer()
+        RumbleSystem.shared.rumble()
     }
     
     private func hideKeyboard() {

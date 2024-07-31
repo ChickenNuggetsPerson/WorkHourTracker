@@ -8,7 +8,7 @@
 import Foundation
 import SwiftUI
 
-struct ListItemView: View {
+struct JobEntryView: View {
     
     @Binding var highlightedJob : UUID?
     @Binding var editJobBinding : UUID?
@@ -109,8 +109,9 @@ struct ListItemView: View {
                 } else {
                     self.highlightedJob = self.entryID
                 }
-                
+                #if os(iOS)
                 RumbleSystem.shared.rumble()
+                #endif
             }) {
                 
                 ZStack() {
@@ -281,8 +282,9 @@ struct ListItemView: View {
         .padding([.top, .bottom], self.isDetectingHold ? 5 : 0)
         .scaleEffect(self.isDetectingHold ? 0.95 : 1)
         
+        #if os(iOS)
         .draggable(self.render()!) {
-            ListItemView(
+            JobEntryView(
                 jobTypeID: self.entryJobID,
                 startTime: self.entryStart,
                 endTime: self.entryEnd,
@@ -290,12 +292,14 @@ struct ListItemView: View {
                 miniPreview: true
             )
         }
+        #endif
     }
     
+    #if os(iOS)
     @MainActor func render() -> Image? {
  
         let renderer = ImageRenderer(
-            content: ListItemView(
+            content: JobEntryView(
                         jobTypeID: self.entryJobID,
                         startTime: self.entryStart,
                         endTime: self.entryEnd,
@@ -312,12 +316,14 @@ struct ListItemView: View {
         
         return nil
    }
+    #endif
 }
 
+#if os(iOS)
+#Preview {
+    PayPeriodView()
+    .modelContainer(DataStorageSystem.shared.container)
+    .modelContext(DataStorageSystem.shared.context)
 
-//#Preview {
-//    PayPeriodView()
-//    .modelContainer(DataStorageSystem.shared.container)
-//    .modelContext(DataStorageSystem.shared.context)
-//
-//}
+}
+#endif

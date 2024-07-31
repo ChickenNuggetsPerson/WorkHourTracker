@@ -8,6 +8,47 @@
 import Foundation
 import WidgetKit
 
+
+public struct TimerStatus : Equatable {
+    var running : Bool = false
+    var jobState : JobTypes = .undef
+    var startTime : Date = Date()
+    
+    
+    
+    
+    func toJSONString() -> String {
+        let dict : [String: String] = [
+            "running": self.running ? "true" : "false",
+            "jobState": self.jobState.rawValue,
+            "startTime": self.startTime.description,
+       ]
+        do {
+            let data = try JSONSerialization.data(withJSONObject: dict, options: .prettyPrinted)
+            return String(data: data, encoding: .utf8)!
+        } catch {
+            return ""
+        }
+    }
+    static func fromJSONString(_ str: String) -> TimerStatus {
+        do {
+            let jsonData = str.data(using: .utf8)!
+            let jsonDict = try JSONSerialization.jsonObject(with: jsonData, options: []) as! [String: String]
+
+            var stats = TimerStatus()
+            stats.running = jsonDict["running"] == "true"
+            stats.jobState = JobTypes(rawValue: jsonDict["jobState"]!) ?? .undef
+            stats.startTime = convertStringToDate(jsonDict["startTime"]!)
+            
+            return stats
+        } catch {
+            return TimerStatus()
+        }
+    }
+}
+
+
+
 class TimerSystem : ObservableObject {
     static let shared = TimerSystem()
     
@@ -60,6 +101,33 @@ class TimerSystem : ObservableObject {
     
 
     
+    func acceptWatchStatus(state: TimerStatus) {
+        let prevRunning = self.running
+        
+        self.running = state.running
+        self.jobState = state.jobState
+        self.startTime = roundTime(time: state.startTime)
+        
+        if (!prevRunning && state.running) { // Timer Started
+            self.startTime = roundTime(time: Date())
+            self.enableDisableLiveAcitivty()
+            return
+        }
+        if (prevRunning && !state.running) { // Timer Stopped
+        
+            if (roundTime(time: self.startTime) != roundTime(time: Date())) {
+                self.save()
+            }
+            
+            self.enableDisableLiveAcitivty()
+            return
+        }
+        
+        // Data Updated
+        self.updateLiveActivity()
+    }
+    
+    
     
     func toggleTimer() { // Start - Stop Button
         self.running.toggle()
@@ -69,7 +137,6 @@ class TimerSystem : ObservableObject {
             self.stopTimer()
         }
         
-        RumbleSystem.shared.rumble()
     }
     
     func startTimer() {
@@ -105,6 +172,7 @@ class TimerSystem : ObservableObject {
     
     
     func enableDisableLiveAcitivty() {
+        #if os(iOS)
         if (self.running) {
             LiveActivitySystem.shared.stopLiveActivity()
             
@@ -116,21 +184,27 @@ class TimerSystem : ObservableObject {
         } else {
             LiveActivitySystem.shared.stopLiveActivity()
         }
+        #endif
     }
     func updateLiveActivity(saveState: Bool = false) {
+    #if os(iOS)
         LiveActivitySystem.shared.updateActivity(
             startTime: self.startTime,
             jobState: self.jobState.rawValue,
             jobColor: getJobColor(jobID: self.jobState.rawValue),
             saveState: saveState
         )
+    #endif
     }
     func updateLiveActivity(saveState: Bool, newTitle: String) {
+    #if os(iOS)
         LiveActivitySystem.shared.updateActivity(
             startTime: self.startTime,
             jobState: newTitle,
             jobColor: getJobColor(jobID: self.jobState.rawValue),
             saveState: saveState
         )
+    #endif
     }
+    
 }

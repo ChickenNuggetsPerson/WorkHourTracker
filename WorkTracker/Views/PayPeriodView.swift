@@ -114,7 +114,7 @@ struct PayPeriodView: View {
                                 )
                             }
                             
-                            ListItemView(
+                            JobEntryView(
                                 job: self.jobEntries[i],
                                 highlightedJob: $highlightedJob,
                                 editJob: $editJob,
