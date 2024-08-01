@@ -18,6 +18,15 @@ struct WatchTimerView: View {
         in: .common
     ).autoconnect()
     
+    private var loading : Bool {
+        dataFetcher.currentTimerStatus.jobState == .undef
+    }
+    private var headerText : String {
+        dataFetcher.currentTimerStatus.jobState == .undef
+             ? "Fetching Data"
+             : dataFetcher.currentTimerStatus.jobState.rawValue
+    }
+    
     var body: some View {
         ZStack() {
             
@@ -29,10 +38,7 @@ struct WatchTimerView: View {
                     HStack() {
                         Spacer()
                         
-                        Text(dataFetcher.currentTimerStatus.jobState == .undef
-                             ? "Fetching Data"
-                             : dataFetcher.currentTimerStatus.jobState.rawValue
-                        )
+                        Text(self.headerText)
                             .font(dataFetcher.currentTimerStatus.running ? .title2 : .title3)
                         .fontWeight(.black)
                         .multilineTextAlignment(.center)
@@ -45,9 +51,9 @@ struct WatchTimerView: View {
                 .ignoresSafeArea()
                 .frame(maxWidth: .infinity)
                 .background(
-                    dataFetcher.currentTimerStatus.running ?
-                    getJobColor(jobID: dataFetcher.currentTimerStatus.jobState.rawValue)
-                    : .gray.darkened(by: 0.4)
+                    
+                    dataFetcher.currentTimerStatus.running ? getJobColor(jobID: dataFetcher.currentTimerStatus.jobState.rawValue) : .gray.darkened(by: 0.4)
+                    
                 )
                 .frame(height: dataFetcher.currentTimerStatus.running ? 110 : 30)
                 
@@ -64,15 +70,22 @@ struct WatchTimerView: View {
                 
                 if (!dataFetcher.currentTimerStatus.running) {
                     Button("Edit") {
-                        self.showEditView.toggle()
+                        withAnimation {
+                            self.showEditView.toggle()
+                        }
                     }
-//                    .disabled(dataFetcher.currentTimerStatus.jobState == .undef)
+                    .disabled(dataFetcher.currentTimerStatus.jobState == .undef)
                     .padding(.bottom, 15)
                 }
                 
                 Button(dataFetcher.currentTimerStatus.running ? "Stop" : "Start") {
-                    dataFetcher.currentTimerStatus.running.toggle()
-                    dataFetcher.sendTimerStatus()
+                    
+                    dataFetcher.sendTimerStatus(
+                        status: TimerStatus(
+                            running: !dataFetcher.currentTimerStatus.running,
+                            jobState: dataFetcher.currentTimerStatus.jobState
+                        )
+                    )
                 }
                 .disabled(dataFetcher.currentTimerStatus.jobState == .undef)
                 .padding(.bottom, 5)
@@ -98,20 +111,27 @@ struct WatchTimerView: View {
                         .pickerStyle(.inline)
                         
                         Button("Close") {
-                            self.showEditView.toggle()
+                            withAnimation {
+                                self.showEditView.toggle()
+                            }
                             dataFetcher.sendTimerStatus()
                         }
                     }
                     .ignoresSafeArea()
                     .background(.black)
-                    .transition(.move(edge: .trailing).combined(with: .opacity))
+                    .transition(.opacity)
                     
                     
                 }
             }
             
         }
-        .animation(.bouncy, value: dataFetcher.currentTimerStatus)
+        
+        .animation(.bouncy, value: self.loading)
+        .animation(.bouncy, value: self.headerText)
+        .animation(.bouncy, value: dataFetcher.currentTimerStatus.running)
+        .animation(.bouncy, value: dataFetcher.currentTimerStatus.jobState)
+        .animation(.bouncy, value: dataFetcher.error)
         .contentTransition(.numericText())
         
         

@@ -7,8 +7,10 @@
 
 
 import Foundation
-import ActivityKit
 import SwiftUI
+#if os(iOS)
+import ActivityKit
+#endif
 
 class LiveActivitySystem {
     static let shared = LiveActivitySystem()

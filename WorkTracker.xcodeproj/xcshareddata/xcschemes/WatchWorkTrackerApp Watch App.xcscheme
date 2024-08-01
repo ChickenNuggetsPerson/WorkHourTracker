@@ -16,7 +16,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "0A9227F92C59AA6E004B8352"
-               BuildableName = "WatchWorkTrackerApp Watch App.app"
+               BuildableName = "WorkTrackerApp.app"
                BlueprintName = "WatchWorkTrackerApp Watch App"
                ReferencedContainer = "container:WorkTracker.xcodeproj">
             </BuildableReference>
@@ -59,7 +59,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "0A9227F92C59AA6E004B8352"
-            BuildableName = "WatchWorkTrackerApp Watch App.app"
+            BuildableName = "WorkTrackerApp.app"
             BlueprintName = "WatchWorkTrackerApp Watch App"
             ReferencedContainer = "container:WorkTracker.xcodeproj">
          </BuildableReference>
@@ -76,7 +76,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "0A9227F92C59AA6E004B8352"
-            BuildableName = "WatchWorkTrackerApp Watch App.app"
+            BuildableName = "WorkTrackerApp.app"
             BlueprintName = "WatchWorkTrackerApp Watch App"
             ReferencedContainer = "container:WorkTracker.xcodeproj">
          </BuildableReference>

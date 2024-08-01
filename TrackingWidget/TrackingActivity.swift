@@ -16,7 +16,7 @@ struct TrackingActivity: Widget {
     func getInterval(state: TimeTrackingAttributes.ContentState) -> ClosedRange<Date> {
         
         let start = state.startTime
-        let end = start.addHours(hours: 12)
+        let end = start.addHours(hours: 29)
 
         
         return start...end
@@ -111,33 +111,17 @@ struct LargeLiveActivityView: View {
                     
                 }
             
-                
-                if (
-                    context.state.saveState ||
-                    context.state.jobType == "Saved" ||
-                    context.state.jobType == "Canceled"
-                ) {
-                    Text(context.state.startTime.hrsOffset(relativeTo: roundTime(time: Date())).toHrsString())
-                        .font(.title2)
-                        .fontWeight(.black)
-                        .foregroundColor(.white)
-                        .multilineTextAlignment(.center)
-                        .monospaced()
-                        .transition(.move(edge: .bottom).combined(with: .opacity))
-                        .clipped()
-                } else {
-                    Text(
-                        timerInterval: self.timeRange,
-                        countsDown: false
-                    )
-                    .font(.title2)
-                    .fontWeight(.black)
-                    .foregroundColor(.white)
-                    .multilineTextAlignment(.center)
-                    .monospaced()
-                    .transition(.move(edge: .top).combined(with: .opacity))
-                    .clipped()
-                }
+
+                Text(
+                    timerInterval: self.timeRange,
+                    countsDown: false
+                )
+                .font(.title2)
+                .fontWeight(.black)
+                .foregroundColor(.white)
+                .multilineTextAlignment(.center)
+                .monospaced()
+
                 
         
                 
@@ -206,7 +190,4 @@ struct DynamicIslandView: View {
         
     }
 }
-
-
-
 

@@ -21,12 +21,17 @@ struct WatchScrollView: View {
                 .fontWeight(.black)
                 .font(.title3)
                 .foregroundStyle(.white.darkened(by: 0.1))
+                .onTapGesture {
+                    dataFetcher.fetchJobEntires(pprd: viewRange)
+                }
 
             Text(self.viewRange.toString())
                 .fontWeight(.bold)
                 .font(.title3)
                 .foregroundStyle(.gray)
-
+                .onTapGesture {
+                    dataFetcher.fetchJobEntires(pprd: viewRange)
+                }
 
             Divider()
                 .padding()
@@ -51,8 +56,6 @@ struct WatchScrollView: View {
 struct WatchEntryScrollItems: View {
     @Binding var jobEntries : [JobEntry]?
     @Binding var error: Bool
-    
-    @State var animVal = 0.8
     
     private enum ViewState {
         case Loading
@@ -79,18 +82,10 @@ struct WatchEntryScrollItems: View {
             switch currentViewState {
             case .Loading:
                 Text("Loading Data...")
-                    .opacity(self.animVal)
-                    .onAppear {
-                        var repeatingAnimation: Animation {
-                                Animation
-                                    .easeInOut(duration: 2)
-                                    .repeatForever()
-                        }
-                        
-                        withAnimation(repeatingAnimation) {
-                            self.animVal = 1
-                        }
-                    }
+                
+                ProgressView()
+                    .progressViewStyle(CircularProgressViewStyle(tint: .gray))
+                    .padding(.top, 5)
                 
                 
                 
@@ -98,7 +93,7 @@ struct WatchEntryScrollItems: View {
                 
                 if (self.jobEntries!.isEmpty) {
                     
-                    Text("No Data 😐")
+                    Text("No Entries")
                     
                 } else {
                     

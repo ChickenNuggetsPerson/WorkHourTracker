@@ -30,7 +30,7 @@
 		0A9227FF2C59AA6E004B8352 /* WatchScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A9227FE2C59AA6E004B8352 /* WatchScrollView.swift */; };
 		0A9228012C59AA6F004B8352 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0A9228002C59AA6F004B8352 /* Assets.xcassets */; };
 		0A9228042C59AA6F004B8352 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0A9228032C59AA6F004B8352 /* Preview Assets.xcassets */; };
-		0A9228072C59AA6F004B8352 /* WatchWorkTrackerApp Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 0A9227FA2C59AA6E004B8352 /* WatchWorkTrackerApp Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		0A9228072C59AA6F004B8352 /* WorkTrackerApp.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 0A9227FA2C59AA6E004B8352 /* WorkTrackerApp.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		0A92280D2C59ABEA004B8352 /* StorageSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A7696AE2C0A1779001CB02B /* StorageSystem.swift */; };
 		0A92280F2C59ABF0004B8352 /* TimerSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A9918772C24BF9400CD8694 /* TimerSystem.swift */; };
 		0A9228122C59ABF9004B8352 /* ColorPatch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AEE4CC52C077AA500CD5E7A /* ColorPatch.swift */; };
@@ -93,7 +93,7 @@
 			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
 			dstSubfolderSpec = 16;
 			files = (
-				0A9228072C59AA6F004B8352 /* WatchWorkTrackerApp Watch App.app in Embed Watch Content */,
+				0A9228072C59AA6F004B8352 /* WorkTrackerApp.app in Embed Watch Content */,
 			);
 			name = "Embed Watch Content";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -128,7 +128,7 @@
 		0A7696B72C0ABCF0001CB02B /* Sharesheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sharesheet.swift; sourceTree = "<group>"; };
 		0A7B17F82C52CA960017E04F /* TrackingWidgetExtensionDebug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TrackingWidgetExtensionDebug.entitlements; sourceTree = "<group>"; };
 		0A81C87A2C409BE700D96FBE /* NavButtons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavButtons.swift; sourceTree = "<group>"; };
-		0A9227FA2C59AA6E004B8352 /* WatchWorkTrackerApp Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "WatchWorkTrackerApp Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		0A9227FA2C59AA6E004B8352 /* WorkTrackerApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WorkTrackerApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0A9227FC2C59AA6E004B8352 /* WatchWorkTrackerAppApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchWorkTrackerAppApp.swift; sourceTree = "<group>"; };
 		0A9227FE2C59AA6E004B8352 /* WatchScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchScrollView.swift; sourceTree = "<group>"; };
 		0A9228002C59AA6F004B8352 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -224,7 +224,7 @@
 			children = (
 				0A6CCCCF2C068596009CD0DA /* WorkTracker.app */,
 				0AEE4CAF2C07779200CD5E7A /* TrackingWidgetExtension.appex */,
-				0A9227FA2C59AA6E004B8352 /* WatchWorkTrackerApp Watch App.app */,
+				0A9227FA2C59AA6E004B8352 /* WorkTrackerApp.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -361,7 +361,7 @@
 			);
 			name = "WatchWorkTrackerApp Watch App";
 			productName = "WatchWorkTrackerApp Watch App";
-			productReference = 0A9227FA2C59AA6E004B8352 /* WatchWorkTrackerApp Watch App.app */;
+			productReference = 0A9227FA2C59AA6E004B8352 /* WorkTrackerApp.app */;
 			productType = "com.apple.product-type.application";
 		};
 		0AEE4CAE2C07779200CD5E7A /* TrackingWidgetExtension */ = {
@@ -664,6 +664,7 @@
 		0A6CCCDE2C068597009CD0DA /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALLOW_TARGET_PLATFORM_SPECIALIZATION = YES;
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -692,8 +693,8 @@
 				PRODUCT_BUNDLE_IDENTIFIER = HSteele.WorkTracker;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
-				SUPPORTS_MACCATALYST = NO;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
+				SUPPORTS_MACCATALYST = YES;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -705,6 +706,7 @@
 		0A6CCCDF2C068597009CD0DA /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALLOW_TARGET_PLATFORM_SPECIALIZATION = YES;
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -733,8 +735,8 @@
 				PRODUCT_BUNDLE_IDENTIFIER = HSteele.WorkTracker;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
-				SUPPORTS_MACCATALYST = NO;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
+				SUPPORTS_MACCATALYST = YES;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -757,7 +759,6 @@
 				DEVELOPMENT_TEAM = 6RRXN3FBY9;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = WatchWorkTrackerApp;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = HSteele.WorkTracker;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -766,7 +767,7 @@
 				);
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = HSteele.WorkTracker.watchkitapp;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = WorkTrackerApp;
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -789,7 +790,6 @@
 				DEVELOPMENT_TEAM = 6RRXN3FBY9;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = WatchWorkTrackerApp;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = HSteele.WorkTracker;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -798,7 +798,7 @@
 				);
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = HSteele.WorkTracker.watchkitapp;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = WorkTrackerApp;
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;

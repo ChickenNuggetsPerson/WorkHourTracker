@@ -176,7 +176,7 @@ struct MainView: View {
                 Spacer()
                 NavView(gotoPage: Pages.PayPeriod)
             }
-            .padding(.bottom, 220)
+            .padding(.bottom, 210)
             
             VStack() { // Start / Stop Times
                 Spacer()
@@ -382,6 +382,7 @@ struct MainView: View {
                     self.updateTexts()
                 }
             }
+        
         }
         
         .animation(.snappy(duration: 0.5), value: self.timerSystem.running)

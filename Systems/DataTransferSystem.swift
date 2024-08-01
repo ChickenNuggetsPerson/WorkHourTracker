@@ -154,7 +154,6 @@ func handleRecivedData(key : String, message: Any) {
         var timerState = TimerStatus()
         timerState.running = TimerSystem.shared.running
         timerState.jobState = TimerSystem.shared.jobState
-        timerState.startTime = TimerSystem.shared.startTime
         
         DataTransferSystem.shared.sendMessage(DataTransferSystem.Messages.ReplyTimer.rawValue, timerState.toJSONString(), { error in
             print(error)
@@ -167,7 +166,7 @@ func handleRecivedData(key : String, message: Any) {
     if (key == DataTransferSystem.Messages.SendTimerState.rawValue) { // Watch Set Timer
         
         let data: String = message as! String
-        let newTimerState = TimerStatus.fromJSONString(data)
+        var newTimerState = TimerStatus(data)
         
         if (newTimerState.jobState == .undef) {
             print("Error: New timer state from watch is undefined")
